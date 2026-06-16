@@ -176,16 +176,16 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
 
 /* MATRIX */
 .mtx-wrap{overflow-x:auto}
-.mtx{width:100%;border-collapse:separate;border-spacing:3px;font-size:12px}
+.mtx{width:100%;table-layout:fixed;border-collapse:separate;border-spacing:3px;font-size:12px}
 .mtx th{padding:7px 9px;font-weight:700;color:var(--g400);text-align:center;font-size:10px;background:var(--g50);border-radius:4px;text-transform:uppercase;letter-spacing:.05em}
-.mtx th.lh{text-align:left;min-width:95px}
-.mtx td{padding:9px 5px;text-align:center;vertical-align:middle;border-radius:8px;min-width:100px;transition:transform .12s ease,box-shadow .15s ease}
+.mtx th.lh{text-align:left;width:86px}
+.mtx td{padding:9px 5px;text-align:center;vertical-align:middle;border-radius:8px;transition:transform .12s ease,box-shadow .15s ease}
 .mtx td:not(.rh):not(.h0):hover{transform:scale(1.05);box-shadow:var(--sh2);position:relative;z-index:2}
-.mtx td.rh{text-align:left;font-weight:700;background:var(--g50);font-size:11px;padding:9px 12px;border-radius:4px;color:var(--navy)}
+.mtx td.rh{text-align:left;font-weight:700;background:var(--g50);font-size:11px;padding:9px 10px;border-radius:4px;color:var(--navy);width:86px;overflow:hidden;text-overflow:ellipsis}
 .mcell{display:flex;flex-direction:column;align-items:center;gap:2px}
 .mline{display:flex;align-items:baseline;justify-content:space-between;gap:6px;line-height:1.25}
 .mlbl{font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;flex-shrink:0}
-.mval{font-size:12px;font-weight:700;font-variant-numeric:tabular-nums;text-align:right}
+.mval{font-size:12px;font-weight:700;font-variant-numeric:tabular-nums;text-align:right;min-width:0;overflow-wrap:anywhere}
 .mct{display:flex;gap:2px;justify-content:center;flex-wrap:wrap;margin-top:2px}
 .h0{background:var(--white)}.h1{background:#FEF9EC}.h2{background:#FEECC6}
 .h3{background:#FDD88A}.h4{background:#F5A623}.h5{background:#C0392B}
@@ -514,7 +514,7 @@ function diffBadge(val,base){
   var d=Math.round((val-base)*10)/10;
   if(Math.abs(d)<1.5)return'<div class="donut-diff" style="color:var(--g400)">≈ OVERVIEW</div>';
   var col=d>0?'var(--red)':'var(--blue)';
-  return'<div class="donut-diff" style="color:'+col+'">'+(d>0?'▲ +':'▼ ')+Math.abs(d)+'pt <span style="color:var(--g400);font-weight:600">vs OVERVIEW</span></div>';
+  return'<div class="donut-diff" style="color:'+col+'">'+(d>0?'↑ +':'↓ -')+Math.abs(d)+'pt <span style="color:var(--g400);font-weight:600">vs OVERVIEW</span></div>';
 }
 
 // ===== RECOMMENDATIONS =====
@@ -742,7 +742,7 @@ function diffColor(diff){
 function diffLabel(diff,isPct){
   if(diff===null)return'—';
   var u=isPct?'%pt':'';
-  return(diff>0?'▲ +':'▼ ')+Math.abs(diff)+u;
+  return(diff>0?'↑ +':'↓ -')+Math.abs(diff)+u;
 }
 
 function buildCmpPanel(z,sr,gr,color){
@@ -815,14 +815,31 @@ function buildCmpPanel(z,sr,gr,color){
 }
 
 // ===== CSV PARSE =====
+// 引用符内のカンマを保持する RFC4180 準拠の行パーサ
+function parseCSVLine(line){
+  var out=[],cur='',inQ=false;
+  for(var i=0;i<line.length;i++){
+    var ch=line[i];
+    if(inQ){
+      if(ch==='"'){ if(line[i+1]==='"'){cur+='"';i++;} else {inQ=false;} }
+      else cur+=ch;
+    }else{
+      if(ch==='"'){inQ=true;}
+      else if(ch===','){out.push(cur);cur='';}
+      else{cur+=ch;}
+    }
+  }
+  out.push(cur);
+  return out.map(function(v){return v.trim();});
+}
 function parseCSV(text){
   if(text.charCodeAt(0)===0xFEFF)text=text.slice(1);
   var lines=text.trim().split(/\r\n|\r|\n/);
   if(lines.length<2)throw new Error('データが少なすぎます');
-  var headers=lines[0].split(',').map(function(h){return h.trim().replace(/^"|"$/g,'').trim();});
+  var headers=parseCSVLine(lines[0]);
   if(headers.indexOf('ODK')<0)throw new Error('ODK列が見つかりません。ヘッダー行から貼り付けてください。');
   return lines.slice(1).filter(function(l){return l.trim();}).map(function(line){
-    var vals=line.split(',').map(function(v){return v.trim().replace(/^"|"$/g,'').trim();});
+    var vals=parseCSVLine(line);
     var row={};headers.forEach(function(h,i){row[h]=vals[i]!==undefined?vals[i]:'';});return row;
   });
 }
@@ -835,7 +852,7 @@ function boot(rows,label){
     var processed=processData(rows);
     var valid=processed.filter(function(r){return r.ZONE!=='UNKNOWN'&&r.ZONE!=='KNOCKOUT';});
     if(!valid.length){showErr('有効なディフェンスデータが見つかりません。\nCOVERAGE・DEF FRONT・BLITZのいずれかに値がある行が必要です。');return;}
-    document.getElementById('i-file').textContent='📄 '+label+'（'+valid.length+'プレー / Plays）';
+    document.getElementById('i-file').textContent='📄 '+label+'（'+valid.length+' Play）';
     document.getElementById('err-box').style.display='none';
     var splash=document.getElementById('splash');
     splash.classList.remove('out');splash.classList.add('on');
@@ -1013,7 +1030,7 @@ document.addEventListener('DOMContentLoaded',function(){
       scoutData=valid;
       __scoutDataGlobal=valid;
       document.getElementById('err-box').style.display='none';
-      document.getElementById('scout-filename').textContent='✅ '+name+' ('+valid.length+'プレー)';
+      document.getElementById('scout-filename').textContent='✅ '+name+' ('+valid.length+' Play)';
       boot(rows,name);
     }catch(e){showErr(e.message);console.error(e);}
   }
@@ -1025,7 +1042,7 @@ document.addEventListener('DOMContentLoaded',function(){
       if(!valid.length){showErr('有効なディフェンスデータが見つかりません。');return;}
       gameData=valid;
       document.getElementById('err-box').style.display='none';
-      document.getElementById('game-filename').textContent='✅ '+name+' ('+valid.length+'プレー)';
+      document.getElementById('game-filename').textContent='✅ '+name+' ('+valid.length+' Play)';
       __gameDataGlobal=valid;
       if(window.__scoutData) renderCompare(window.__scoutData,gameData);
     }catch(e){showErr(e.message);console.error(e);}
