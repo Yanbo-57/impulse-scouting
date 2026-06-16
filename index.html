@@ -151,6 +151,13 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
 .ins{background:linear-gradient(135deg,var(--blue-pale),#F3F8FE);border-left:3px solid var(--blue);border-radius:0 var(--r) var(--r) 0;padding:12px 16px;font-size:12px;line-height:1.7;margin:10px 0;color:var(--navy);box-shadow:var(--sh)}
 .ins ul li{margin-bottom:3px}
 .ins ul li::marker{color:var(--blue)}
+/* analyst insight list */
+.ins-list{list-style:none;margin:6px 0 0;padding:0}
+.ins-list li{padding:9px 0;border-top:1px dashed var(--g200)}
+.ins-list li:first-child{border-top:none;padding-top:2px}
+.ins-h{font-size:12.5px;font-weight:800;color:var(--navy);margin-bottom:2px}
+.ins-b{font-size:11.5px;color:var(--g600);line-height:1.65}
+.ins-en{font-size:10.5px;color:var(--g400);margin-top:1px}
 
 /* BARS */
 .brow{display:flex;align-items:center;gap:7px;margin:5px 0}
@@ -553,18 +560,13 @@ function buildRecommendations(rows,a){
 // ===== OVERVIEW =====
 function buildOverview(rows){
   var a=analyze(rows);
-  var ins=buildInsights(rows,a,'#0055A4',true);
-  var insCard='<div class="card"><div class="sec">KEY INSIGHTS</div>'+(ins||'<div style="color:var(--g400);font-size:12px;padding:6px 0">十分なデータがありません / Not enough data</div>')+'</div>';
+  var frontCard='<div class="card"><div class="sec">FRONT</div>'+makeBars(a.front,a.n,FRONT_COLORS)+'</div>';
   var donutC='<div class="card"><div class="sec">BLITZ / STUNTS TENDENCY / 傾向</div><div class="donut-row">'+donut(a.bp,'var(--blue)','BLITZ RATE',a.bn+' / '+a.n)+donut(a.sp,'var(--green)','STUNTS RATE',a.sn+' / '+a.n)+'</div></div>';
   var covCard='<div class="card"><div class="sec">COVERAGE OVERVIEW / カバー分布</div>'+makeBars(a.cov,a.n)+'</div>';
   var mtxCard='<div class="card" style="margin-bottom:14px"><div class="sec">DOWN &amp; DISTANCE ANALYSIS</div>'+buildMtxPanel('ALL',rows,'#0055A4')+'</div>';
-  var fH=FO.map(function(fg){
-    var s=rows.filter(function(r){return r.FG===fg;});if(!s.length)return'';
-    var fbn=s.filter(function(r){return r.HB;}).length;
-    return'<div class="brow"><span class="blb">'+fg+'</span><div class="bg"><div class="bf" style="width:'+p(fbn,s.length)+'%;background:'+FC[fg]+';color:#fff">'+s.length+'P / '+p(fbn,s.length)+'%</div></div></div>';
-  }).join('');
-  var formCard='<div class="card"><div class="sec">FORMATION別 BLITZ率 / by Formation</div>'+(fH||'<div style="color:var(--g400);font-size:12px">—</div>')+'<div class="sec" style="margin-top:13px">FRONT分布 / Front Distribution</div>'+makeBars(a.front,a.n,FRONT_COLORS)+'</div>';
-  return'<div class="ov3">'+insCard+donutC+covCard+'</div>'+mtxCard+'<div class="ov2">'+formCard+buildRecommendations(rows,a)+'</div>';
+  var ins=buildInsights(rows,a,'#0055A4',true);
+  var insCard='<div class="card"><div class="sec">KEY INSIGHTS</div>'+(ins||'<div style="color:var(--g400);font-size:12px;padding:6px 0">十分なデータがありません / Not enough data</div>')+'</div>';
+  return'<div class="ov3">'+frontCard+donutC+covCard+'</div>'+mtxCard+'<div class="ov2">'+insCard+buildRecommendations(rows,a)+'</div>';
 }
 
 function mCell(rows){
@@ -681,26 +683,49 @@ function buildFormPanel(fg,frows,color,allRows){
   return'<div class="print-zone-label">'+fg+' — FORMATION</div><div class="g3" style="margin-bottom:12px"><div class="mc"><div class="ml">総プレー / Plays</div><div class="mv">'+a.n+'</div></div><div class="mc"><div class="ml">BLITZ率 / Rate</div><div class="mv" style="color:'+vsColor(a.bp,fba.bp)+'">'+a.bp+'%</div><div class="ms">'+a.bn+'/'+a.n+vsBadge(a.bp,fba.bp)+'</div></div><div class="mc"><div class="ml">STUNTS率 / Rate</div><div class="mv" style="color:'+vsColor(a.sp,fba.sp)+'">'+a.sp+'%</div><div class="ms">'+vsBadge(a.sp,fba.sp).replace(/^ /,'')+'</div></div></div><div class="g2"><div class="card"><div class="sec">カバー / Coverage</div>'+makeBars(a.cov,a.n)+'<div style="margin-top:8px;font-size:10px;color:var(--g400)">STUNTS: '+a.stunt.slice(0,5).map(function(x){return x[0]+' ('+x[1]+'件)'}).join(' / ')+'</div></div><div class="card"><div class="sec">FRONT</div>'+makeBars(a.front,a.n,FRONT_COLORS)+'</div></div><div class="sec" style="margin-top:12px">ゾーン別詳細</div>'+zH;
 }
 
-// ===== KEY INSIGHTS =====
+// ===== KEY INSIGHTS (analyst-level cross-tab tendencies) =====
+function insTip(icon,title,jp,en){
+  return'<div class="ins-h">'+icon+' <b>'+title+'</b></div><div class="ins-b">'+jp+'</div><div class="ins-en">'+en+'</div>';
+}
 function buildInsights(rows,a,color,bare){
   var tips=[];
-  var dnBlitz=[1,2,3,4].map(function(dn){
-    var s=rows.filter(function(r){return r.DN===dn;});
-    if(!s.length)return null;
-    return{dn:dn,bp:p(s.filter(function(r){return r.HB;}).length,s.length),n:s.length};
-  }).filter(Boolean);
-  if(dnBlitz.length>=2){
-    var maxDn=dnBlitz.reduce(function(a2,b){return a2.bp>b.bp?a2:b;});
-    var minDn=dnBlitz.reduce(function(a2,b){return a2.bp<b.bp?a2:b;});
-    if(maxDn.bp-minDn.bp>=15){var dnLbl=(maxDn.dn===1?'1st':maxDn.dn===2?'2nd':maxDn.dn===3?'3rd':'4th')+' Down';tips.push('🎯 <b>'+dnLbl+'</b>でBLITZ率が最高: <b style="color:'+color+'">'+maxDn.bp+'%</b> ('+maxDn.n+'P)<br><span style="font-size:11px;color:var(--g600)">Highest blitz rate on '+dnLbl+'</span>');}
-  }
-  if(a.cov.length&&a.n>0&&p(a.cov[0][1],a.n)>=40)tips.push('📋 <b>'+a.cov[0][0]+'</b>が最多カバー: <b>'+p(a.cov[0][1],a.n)+'%</b> ('+a.cov[0][1]+'件)<br><span style="font-size:11px;color:var(--g600)">Most-used coverage: '+a.cov[0][0]+'</span>');
-  var btEntries=Object.entries(a.bt).filter(function(x){return x[1]>0;}).sort(function(x,y){return y[1]-x[1];});
-  if(btEntries.length&&a.bn>0&&p(btEntries[0][1],a.bn)>=60)tips.push('⚡ BLITZ方向: <b>'+btEntries[0][0]+'</b>サイドに集中 ('+p(btEntries[0][1],a.bn)+'%)<br><span style="font-size:11px;color:var(--g600)">Blitz favors the '+btEntries[0][0]+' side</span>');
-  if(a.sp>=35)tips.push('🔄 STUNTS率高め: <b style="color:'+color+'">'+a.sp+'%</b> — DL（ディフェンスライン）の動きに注意<br><span style="font-size:11px;color:var(--g600)">High stunt rate — watch the DL movement</span>');
-  if(a.bp>=60)tips.push('🚨 BLITZ率が高い ('+a.bp+'%): クイックパス・ホットルートを優先<br><span style="font-size:11px;color:var(--g600)">High blitz rate — prioritize quick passes / hot routes</span>');
+  var ov=a.bp;
+  var rate=function(sub){return sub.length?p(sub.filter(function(r){return r.HB;}).length,sub.length):0;};
+  var topcov=function(sub){var c={};sub.forEach(function(r){if(r.COVERAGE)c[r.COVERAGE]=(c[r.COVERAGE]||0)+1;});var t=topN(c,1)[0];return t?t[0]:'—';};
+  var isLong=function(r){return r.DIST_GRP==='LONG(7-10)'||r.DIST_GRP==='X-LONG(11+)';};
+
+  // 1) パスダウン（3rd & Long）の圧力傾向 + ビート方針
+  var d3l=rows.filter(function(r){return r.DN===3&&isLong(r);});
+  if(d3l.length>=3){var r3=rate(d3l),adv=r3>=ov+10?'パスダウンで圧力を上げる傾向。スクリーン/クイックでブリッツを無効化し、ホットを徹底。':r3<=ov-10?'圧力はむしろ控えめ。プロテクションに余裕があり縦も選択可。':'平均並みの圧力。テンポで的を絞らせない。';
+    tips.push(insTip('🎯','3rd & Long の狙いどころ','3rd & Long('+d3l.length+'P) は BLITZ <b style="color:'+color+'">'+r3+'%</b>／主カバー <b>'+topcov(d3l)+'</b>。'+adv,'3rd & Long: '+r3+'% blitz, mostly '+topcov(d3l)+'.'));}
+
+  // 2) ダウンでカバーが変わる＝コールが読める
+  var d1=rows.filter(function(r){return r.DN===1;}),d3=rows.filter(function(r){return r.DN===3;});
+  if(d1.length>=4&&d3.length>=4){var c1=topcov(d1),c3=topcov(d3);
+    if(c1!==c3&&c1!=='—'&&c3!=='—')tips.push(insTip('🧠','ダウンでコールが変化','1st Down は <b>'+c1+'</b> 中心 → 3rd Down は <b>'+c3+'</b> へシフト。ダウンでカバーが読めるため、3rd は '+c3+' のホールを突くコンセプトを用意。','Coverage shifts '+c1+' (1st) → '+c3+' (3rd) — exploitable tell.'));}
+
+  // 3) フィールドゾーンでの圧力エスカレーション
+  var mid=rows.filter(function(r){return r.ZONE==='GREEN';}),red=rows.filter(function(r){return r.ZONE==='RED'||r.ZONE==='WAR';});
+  if(mid.length>=3&&red.length>=3){var rm=rate(mid),rr=rate(red);
+    if(Math.abs(rr-rm)>=12)tips.push(insTip('🔥','ゴール前で圧力が変化','レッドゾーン圏 BLITZ <b style="color:'+color+'">'+rr+'%</b>／中盤 '+rm+'%。'+(rr>rm?'ゴール前で圧力を強める。短い縦・ピック系で即時リリースを。':'ゴール前は保守的。時間が作れるため縦の二段で攻略。'),'Red-zone blitz '+rr+'% vs midfield '+rm+'%.'));}
+
+  // 4) 最も傾向が偏る状況（予測されやすいセル）
+  var best=null;
+  [1,2,3,4].forEach(function(dn){DO.forEach(function(dg){var sub=rows.filter(function(r){return r.DN===dn&&r.DIST_GRP===dg;});if(sub.length>=4){var rt=rate(sub),dev=Math.abs(rt-ov);if(!best||dev>best.dev)best={dn:dn,dg:dg,rt:rt,n:sub.length,dev:dev};}});});
+  if(best&&best.dev>=20){var dl=(best.dn===1?'1st':best.dn===2?'2nd':best.dn===3?'3rd':'4th')+' & '+best.dg;
+    tips.push(insTip('📌','最も読める状況','<b>'+dl+'</b>('+best.n+'P)で BLITZ <b style="color:'+color+'">'+best.rt+'%</b>（全体 '+ov+'%）と大きく偏り。'+(best.rt>ov?'圧力前提のプロテクション/ホットを当てれば優位。':'圧力薄め、ここは縦・プレイアクションが効く。'),'Strongest tendency at '+dl+': '+best.rt+'% vs '+ov+'% overall.'));}
+
+  // 5) ディスガイズの少なさ＝的を絞れる
+  if(a.cov.length){var distinct=a.cov.length,top=a.cov[0],share=p(top[1],a.n);
+    if(distinct<=3||share>=45)tips.push(insTip('🪤','ディスガイズが少ない','カバーは実質 <b>'+distinct+'種</b>・最多 <b>'+top[0]+'</b> が <b>'+share+'%</b>。プリスナップの的を絞りやすく、'+top[0]+' を狙い撃つビートを準備。','Low disguise — '+top[0]+' '+share+'% across '+distinct+' coverages.'));}
+
+  // 6) STUNTS の起点フロント
+  if(a.sp>=35){var sf={};rows.forEach(function(r){if(r.HS&&r['DEF FRONT'])sf[r['DEF FRONT']]=(sf[r['DEF FRONT']]||0)+1;});var tf=topN(sf,1)[0];
+    tips.push(insTip('🔄','STUNTS の起点','STUNTS率 <b style="color:'+color+'">'+a.sp+'%</b>。'+(tf?'多くは <b>'+tf[0]+'</b> から発生。同フロント時は OL の受け渡しコールを徹底。':'OL のスタンツ対応コールを徹底。'),'Stunts '+a.sp+'%'+(tf?', mostly from '+tf[0]:'')+'.'));}
+
   if(!tips.length)return'';
-  var list='<ul style="margin:5px 0 0 16px;line-height:2.1">'+tips.map(function(t){return'<li>'+t+'</li>';}).join('')+'</ul>';
+  tips=tips.slice(0,5);
+  var list='<ul class="ins-list">'+tips.map(function(t){return'<li>'+t+'</li>';}).join('')+'</ul>';
   if(bare)return list;
   return'<div class="ins" style="border-left-color:'+color+';margin-bottom:12px"><b>💡 重要ポイント / Key Insights</b>'+list+'</div>';
 }
