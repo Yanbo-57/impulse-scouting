@@ -6,21 +6,20 @@
 <title>IMPULSE Defense Scouting</title>
 <style>
 :root{
-  /* DARK THEME — --navy now serves as the bright brand-blue accent (text/numbers) */
-  --navy:#3D93FF;--navy-deep:#07142B;--blue:#2C82F2;--blue-bright:#5FB0FF;--blue-pale:#122A4C;
-  --white:#101F3B;--g50:#0A1426;--g100:#1A2B49;--g200:#2A3B57;
-  --g400:#7E8AA2;--g600:#AEBAD2;--g900:#E9F0FB;
-  --red:#FF5B4D;--amber:#F4A52A;--green:#23C58C;
-  --sh:0 1px 2px rgba(0,0,0,.4),0 2px 10px rgba(0,0,0,.3);
-  --sh2:0 12px 40px rgba(0,0,0,.5),0 2px 10px rgba(0,0,0,.35);
+  --navy:#002B5C;--navy-deep:#001B3A;--blue:#0055A4;--blue-bright:#1A7AFF;--blue-pale:#E6EFF9;
+  --white:#FFFFFF;--g50:#F7FAFE;--g100:#EEF1F6;--g200:#D6DCE8;
+  --g400:#8A94A6;--g600:#4A5568;--g900:#1A1E2E;
+  --red:#C0392B;--amber:#D97706;--green:#059669;
+  --sh:0 1px 2px rgba(16,33,64,.06),0 2px 8px rgba(16,33,64,.07);
+  --sh2:0 10px 34px rgba(16,33,64,.13),0 2px 8px rgba(16,33,64,.06);
   --r:10px;--rl:14px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Inter',sans-serif;color:var(--g900);font-size:14px;line-height:1.6;
   background:
-    radial-gradient(1100px 520px at 100% -8%,rgba(61,147,255,.16),transparent 60%),
-    radial-gradient(900px 460px at -8% 2%,rgba(20,70,150,.18),transparent 55%),
-    linear-gradient(180deg,#0A1730 0%,#070F20 100%);
+    radial-gradient(1100px 520px at 100% -8%,rgba(26,122,255,.05),transparent 60%),
+    radial-gradient(900px 460px at -8% 2%,rgba(0,43,92,.04),transparent 55%),
+    #FFFFFF;
   background-attachment:fixed;min-height:100vh;
   -webkit-font-smoothing:antialiased}
 b,.mv,.mcp,.mcs,.i-stat b,td,th,.bf,.mcstunt{font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1}
@@ -55,7 +54,7 @@ b,.mv,.mcp,.mcs,.i-stat b,td,th,.bf,.mcstunt{font-variant-numeric:tabular-nums;f
 .hdr-badge{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.28);border-radius:20px;padding:6px 15px;font-size:11px;font-weight:800;letter-spacing:.14em;backdrop-filter:blur(6px)}
 
 /* ERROR */
-.err-box{background:rgba(255,91,77,.12);border-left:4px solid var(--red);border-radius:var(--r);padding:12px 16px;font-size:13px;color:#FFA497;margin:14px 18px;display:none;line-height:1.6}
+.err-box{background:#FEF2F2;border-left:4px solid var(--red);border-radius:var(--r);padding:12px 16px;font-size:13px;color:var(--red);margin:14px 18px;display:none;line-height:1.6}
 
 /* START */
 .start{padding:48px 24px;max-width:660px;margin:0 auto;animation:fadeUp .4s ease both}
@@ -63,7 +62,7 @@ b,.mv,.mcp,.mcs,.i-stat b,td,th,.bf,.mcstunt{font-variant-numeric:tabular-nums;f
 .start-head h2{font-size:25px;font-weight:800;color:var(--navy);margin-bottom:6px;letter-spacing:-.01em}
 .start-head p{font-size:13px;color:var(--g400)}
 .upload-card{background:var(--white);border:2px dashed var(--g200);border-radius:var(--rl);padding:32px 24px;margin-bottom:10px;text-align:center;transition:all .2s;box-shadow:var(--sh)}
-.upload-card:hover,.upload-card.drag{border-color:var(--blue-bright);background:linear-gradient(180deg,#13264A,#0E1F3C);box-shadow:var(--sh2);transform:translateY(-2px)}
+.upload-card:hover,.upload-card.drag{border-color:var(--blue);background:linear-gradient(180deg,#FFFFFF,var(--blue-pale));box-shadow:var(--sh2);transform:translateY(-2px)}
 .upload-icon{font-size:40px;margin-bottom:10px;display:block;transition:transform .2s}
 .upload-card:hover .upload-icon{transform:scale(1.12)}
 .upload-card h3{font-size:16px;font-weight:700;color:var(--navy);margin-bottom:5px}
@@ -87,7 +86,7 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
 .btn-ghost:hover{color:var(--g600);border-color:var(--g400)}
 
 /* INFOBAR */
-.info-bar{background:rgba(13,26,50,.82);backdrop-filter:blur(12px);border-bottom:1px solid var(--g200);padding:0 24px;height:54px;display:flex;align-items:center;gap:0;font-size:13px;box-shadow:var(--sh);position:sticky;top:0;z-index:20}
+.info-bar{background:rgba(255,255,255,.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--g200);padding:0 24px;height:54px;display:flex;align-items:center;gap:0;font-size:13px;box-shadow:var(--sh);position:sticky;top:0;z-index:20}
 .i-stat{display:flex;align-items:center;gap:7px;padding:0 18px;color:var(--g600)}
 .i-stat:first-child{padding-left:0}
 .i-stat b{color:var(--navy);font-weight:800;font-size:15px}
@@ -96,7 +95,7 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
 
 /* MAIN TABS */
 .main{padding:18px}
-.ttabs{display:flex;gap:4px;margin-bottom:18px;background:rgba(16,31,59,.7);border:1px solid var(--g200);border-radius:var(--rl);padding:5px;box-shadow:var(--sh);backdrop-filter:blur(8px)}
+.ttabs{display:flex;gap:4px;margin-bottom:18px;background:rgba(255,255,255,.75);border:1px solid var(--g200);border-radius:var(--rl);padding:5px;box-shadow:var(--sh);backdrop-filter:blur(8px)}
 .tt{flex:1;padding:10px 12px;border-radius:var(--r);border:none;background:transparent;font-size:12px;font-weight:700;cursor:pointer;color:var(--g600);transition:all .18s cubic-bezier(.4,0,.2,1);text-align:center}
 .tt:hover{background:var(--g100);color:var(--navy)}
 .tt.on{background:linear-gradient(135deg,var(--navy),#0044A0);color:var(--white);box-shadow:0 4px 14px rgba(0,43,92,.3)}
@@ -117,19 +116,25 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
 .g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
 .card{background:var(--white);border:1px solid var(--g200);border-radius:var(--rl);padding:16px 18px;box-shadow:var(--sh);transition:box-shadow .2s,transform .2s}
 .card:hover{box-shadow:var(--sh2)}
-.mc{position:relative;background:linear-gradient(180deg,#142A4E,#0F1F3B);border:1px solid var(--g200);border-radius:var(--rl);padding:14px 16px 13px;overflow:hidden;transition:transform .15s,box-shadow .2s}
+.mc{position:relative;background:linear-gradient(180deg,#FFFFFF,#FBFCFE);border:1px solid var(--g200);border-radius:var(--rl);padding:14px 16px 13px;overflow:hidden;transition:transform .15s,box-shadow .2s}
 .mc::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--blue-bright),var(--blue));opacity:.85}
 .mc:hover{transform:translateY(-2px);box-shadow:var(--sh2)}
 .ml{font-size:10px;font-weight:700;color:var(--g400);margin-bottom:6px;text-transform:uppercase;letter-spacing:.08em}
 .mv{font-size:26px;font-weight:800;color:var(--navy);letter-spacing:-.01em;line-height:1.05}
 .ms{font-size:11px;color:var(--g400);margin-top:4px}
 
+/* DONUT */
+.donut-row{display:flex;justify-content:space-around;align-items:center;gap:12px;padding:6px 0 2px}
+.donut{text-align:center;flex:1;max-width:170px}
+.donut-svg{width:100%;max-width:150px;height:auto;display:block;margin:0 auto}
+.donut-title{font-size:11px;font-weight:700;color:var(--g600);letter-spacing:.06em;margin-top:6px}
+
 /* SECTION TITLE */
 .sec{font-size:11px;font-weight:700;color:var(--g400);border-bottom:1px solid var(--g100);padding-bottom:6px;margin:16px 0 10px;text-transform:uppercase;letter-spacing:.07em;display:flex;align-items:center;gap:7px}
 .sec::before{content:'';width:3px;height:13px;background:linear-gradient(180deg,var(--blue-bright),var(--blue));border-radius:2px;flex-shrink:0}
 
 /* INSIGHT */
-.ins{background:linear-gradient(135deg,#142E52,#0F2238);border-left:3px solid var(--blue-bright);border-radius:0 var(--r) var(--r) 0;padding:12px 16px;font-size:12px;line-height:1.7;margin:10px 0;color:var(--g900);box-shadow:var(--sh)}
+.ins{background:linear-gradient(135deg,var(--blue-pale),#F3F8FE);border-left:3px solid var(--blue);border-radius:0 var(--r) var(--r) 0;padding:12px 16px;font-size:12px;line-height:1.7;margin:10px 0;color:var(--navy);box-shadow:var(--sh)}
 .ins ul li{margin-bottom:3px}
 .ins ul li::marker{color:var(--blue)}
 
@@ -160,8 +165,8 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
 .mlbl{font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;flex-shrink:0}
 .mval{font-size:12px;font-weight:700;font-variant-numeric:tabular-nums;text-align:right}
 .mct{display:flex;gap:2px;justify-content:center;flex-wrap:wrap;margin-top:2px}
-.h0{background:rgba(255,255,255,.03)}.h1{background:linear-gradient(160deg,#1E4F86,#173E6B)}.h2{background:linear-gradient(160deg,#2F7A55,#256044)}
-.h3{background:linear-gradient(160deg,#C2922B,#9E7620)}.h4{background:linear-gradient(160deg,#DD7A22,#B85F16)}.h5{background:linear-gradient(160deg,#D2493A,#AE3528)}
+.h0{background:var(--white)}.h1{background:#FEF9EC}.h2{background:#FEECC6}
+.h3{background:#FDD88A}.h4{background:#F5A623}.h5{background:#C0392B}
 .hleg{display:flex;gap:7px;align-items:center;font-size:11px;color:var(--g400);margin-bottom:12px;flex-wrap:wrap}
 .hl{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
 
@@ -305,11 +310,11 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
     <div class="tp" id="tab-mtx">
       <div class="hleg">
         <span style="font-weight:700;color:var(--navy)">セル背景 = BLITZ率 / Cell color = Blitz Rate:</span>
-        <span class="hl" style="background:#1E4F86;color:#fff">〜30%</span>
-        <span class="hl" style="background:#2F7A55;color:#fff">〜45%</span>
-        <span class="hl" style="background:#C2922B;color:#fff">〜60%</span>
-        <span class="hl" style="background:#DD7A22;color:#fff">〜75%</span>
-        <span class="hl" style="background:#D2493A;color:#fff">76%〜</span>
+        <span class="hl" style="background:#FEF9EC;color:#3A4252">〜30%</span>
+        <span class="hl" style="background:#FEECC6;color:#3A4252">〜45%</span>
+        <span class="hl" style="background:#FDD88A;color:#3A4252">〜60%</span>
+        <span class="hl" style="background:#F5A623;color:#fff">〜75%</span>
+        <span class="hl" style="background:#C0392B;color:#fff">76%〜</span>
       </div>
       <div class="hleg" style="background:var(--g50);border:1px solid var(--g100);border-radius:var(--r);padding:9px 14px">
         <span style="font-weight:700;color:var(--navy)">セルの見方 / Cell guide:</span>
@@ -496,6 +501,62 @@ function makeBars(arr,total,colors){
 function heatClass(bp){
   if(!bp)return'h0';if(bp<=30)return'h1';if(bp<=45)return'h2';if(bp<=60)return'h3';if(bp<=75)return'h4';return'h5';
 }
+
+// ===== DONUT (ring) CHART =====
+function donut(pct,color,title,sub){
+  var R=48,CIRC=2*Math.PI*R,on=CIRC*Math.max(0,Math.min(100,pct))/100;
+  return'<div class="donut">'
+    +'<svg viewBox="0 0 120 120" class="donut-svg">'
+    +'<circle cx="60" cy="60" r="'+R+'" fill="none" stroke="var(--g100)" stroke-width="13"/>'
+    +'<circle cx="60" cy="60" r="'+R+'" fill="none" stroke="'+color+'" stroke-width="13" stroke-linecap="round" stroke-dasharray="'+on.toFixed(1)+' '+(CIRC-on).toFixed(1)+'" transform="rotate(-90 60 60)" style="transition:stroke-dasharray .9s cubic-bezier(.2,.7,.3,1)"/>'
+    +'<text x="60" y="59" text-anchor="middle" font-size="25" font-weight="800" fill="'+color+'" style="font-variant-numeric:tabular-nums">'+pct+'%</text>'
+    +'<text x="60" y="77" text-anchor="middle" font-size="9.5" font-weight="600" fill="var(--g400)">'+sub+'</text>'
+    +'</svg><div class="donut-title">'+title+'</div></div>';
+}
+function donutCard(a){
+  return'<div class="card" style="margin-bottom:14px"><div class="sec">BLITZ / STUNTS 傾向 / Tendency</div><div class="donut-row">'
+    +donut(a.bp,'var(--blue)','BLITZ RATE',a.bn+' / '+a.n)
+    +donut(a.sp,'var(--green)','STUNTS RATE',a.sn+' / '+a.n)
+    +'</div></div>';
+}
+
+// ===== TRENDS OVER TIME (line chart) =====
+function trendChart(rows){
+  if(!rows||rows.length<6)return'';
+  var SEG=Math.min(8,rows.length),per=rows.length/SEG;
+  var segs=[];
+  for(var i=0;i<SEG;i++){
+    var part=rows.slice(Math.floor(i*per),Math.floor((i+1)*per));
+    if(!part.length){continue;}
+    var bn=part.filter(function(r){return r.HB;}).length;
+    var sn=part.filter(function(r){return r.HS;}).length;
+    segs.push({bp:p(bn,part.length),sp:p(sn,part.length),n:part.length});
+  }
+  if(segs.length<2)return'';
+  var W=620,H=230,padL=34,padR=14,padT=14,padB=30;
+  var pw=W-padL-padR,ph=H-padT-padB;
+  var xx=function(i){return padL+(segs.length===1?pw/2:i*pw/(segs.length-1));};
+  var yy=function(v){return padT+ph-(v/100*ph);};
+  var grid='';
+  [0,25,50,75,100].forEach(function(g){
+    var y=yy(g);
+    grid+='<line x1="'+padL+'" y1="'+y+'" x2="'+(W-padR)+'" y2="'+y+'" stroke="var(--g100)" stroke-width="1"/>';
+    grid+='<text x="'+(padL-7)+'" y="'+(y+3)+'" text-anchor="end" font-size="9" fill="var(--g400)">'+g+'</text>';
+  });
+  var xlab='';
+  segs.forEach(function(s,i){xlab+='<text x="'+xx(i)+'" y="'+(H-10)+'" text-anchor="middle" font-size="9" fill="var(--g400)">'+(i+1)+'</text>';});
+  function line(key,color){
+    var pts=segs.map(function(s,i){return xx(i)+','+yy(s[key]);}).join(' ');
+    var dots=segs.map(function(s,i){return'<circle cx="'+xx(i)+'" cy="'+yy(s[key])+'" r="3.2" fill="#fff" stroke="'+color+'" stroke-width="2"/>';}).join('');
+    return'<polyline points="'+pts+'" fill="none" stroke="'+color+'" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>'+dots;
+  }
+  return'<div class="card" style="margin-top:14px"><div class="sec" style="display:flex;justify-content:space-between"><span style="display:flex;align-items:center;gap:7px">TRENDS OVER TIME / 推移</span>'
+    +'<span style="display:flex;gap:14px;font-size:10px;color:var(--g600);text-transform:none;letter-spacing:0">'
+    +'<span><span style="display:inline-block;width:14px;height:3px;background:var(--blue);vertical-align:middle;margin-right:4px;border-radius:2px"></span>BLITZ率</span>'
+    +'<span><span style="display:inline-block;width:14px;height:3px;background:var(--green);vertical-align:middle;margin-right:4px;border-radius:2px"></span>STUNTS率</span></span></div>'
+    +'<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto;display:block">'+grid+line('bp','var(--blue)')+line('sp','var(--green)')+xlab+'</svg>'
+    +'<div style="font-size:10px;color:var(--g400);margin-top:2px;text-align:center">プレー進行順に'+segs.length+'分割 / split into '+segs.length+' segments by play sequence</div></div>';
+}
 function mCell(rows){
   if(!rows||!rows.length)return null;
   var n=rows.length,bn=0,sn=0,bt={B:0,F:0,BOTH:0},cc={};
@@ -508,10 +569,11 @@ function mCell(rows){
   return{n:n,bn:bn,sn:sn,bp:p(bn,n),sp:p(sn,n),bt:bt,tc:tc};
 }
 function renderMCell(c){
-  if(!c||!c.n)return'<td class="h0"><span style="color:rgba(255,255,255,.25)">—</span></td>';
-  var main='color:#fff';
-  var sub='color:rgba(255,255,255,.82)';
-  var lbl='color:rgba(255,255,255,.55)';
+  if(!c||!c.n)return'<td class="h0"><span style="color:var(--g200)">—</span></td>';
+  var vd=c.bp>75;
+  var main=vd?'color:#fff':'color:var(--navy)';
+  var sub=vd?'color:rgba(255,255,255,.88)':'color:var(--g600)';
+  var lbl=vd?'color:rgba(255,255,255,.65)':'color:var(--g400)';
   return'<td class="'+heatClass(c.bp)+'"><div class="mcell" style="align-items:stretch;gap:3px;text-align:left;padding:1px 3px">'
     +'<div class="mline"><span class="mlbl" style="'+lbl+'">BLITZ</span><span class="mval" style="'+main+';font-weight:800">'+c.bp+'%</span></div>'
     +'<div class="mline"><span class="mlbl" style="'+lbl+'">STUNTS</span><span class="mval" style="'+sub+'">'+c.sp+'%</span></div>'
@@ -584,7 +646,7 @@ function buildZonePanel(z,rows,color,base){
     dnH+='<div style="margin-bottom:10px"><div style="font-size:12px;font-weight:700;margin-bottom:5px;color:var(--navy)">'+(dn===1?'1st':dn===2?'2nd':dn===3?'3rd':'4th')+' Down（'+sub.length+'P）　BLITZ <span style="color:'+color+'">'+p(bn,sub.length)+'%</span></div><div style="font-size:11px;color:var(--g400);margin-bottom:4px">カバー: '+topC+'</div>'+distH+'</div>';
   });
   var cBp=z==='ALL'?null:(base?base.bp:null),cSp=z==='ALL'?null:(base?base.sp:null);
-  return'<div class="print-zone-label">'+(ZE[z]||'')+' '+z+' ZONE</div>'+buildInsights(rows,a,color)+'<div class="g3" style="margin-bottom:12px"><div class="mc"><div class="ml">総プレー / Plays</div><div class="mv">'+a.n+'</div></div><div class="mc"><div class="ml">BLITZ率 / Rate</div><div class="mv" style="color:'+vsColor(a.bp,cBp)+'">'+a.bp+'%</div><div class="ms">'+a.bn+'/'+a.n+vsBadge(a.bp,cBp)+'</div></div><div class="mc"><div class="ml">STUNTS率 / Rate</div><div class="mv" style="color:'+vsColor(a.sp,cSp)+'">'+a.sp+'%</div><div class="ms">'+a.sn+'/'+a.n+vsBadge(a.sp,cSp)+'</div></div></div>'+'<div class="g2"><div class="card"><div class="sec">カバー / Coverage</div>'+makeBars(a.cov,a.n)+'</div><div class="card"><div class="sec">FRONT</div>'+makeBars(a.front,a.n,FRONT_COLORS)+'<div style="margin-top:8px;font-size:10px;color:var(--g400)">STUNTS: '+a.stunt.slice(0,5).map(function(x){return x[0]+' ('+x[1]+'件)'}).join(' / ')+'</div></div></div>'+'<div class="sec" style="margin-top:14px">DOWN & DISTANCE</div>'+dnH+'<div class="ai-section" style="margin-top:16px"><div class="ai-box"><div class="ai-hdr"><span class="ai-badge">🤖 AI</span><span>コーチ分析 / Coach Analysis</span><button class="btn-ai" onclick="generateAnalysis(\''+z+'\',false)">分析を生成 / Generate</button></div><div class="ai-body" id="ai-'+z+'"><span class="ai-placeholder">「分析を生成」を押すとAIがこのゾーンを分析します<br>Press "Generate" for AI coaching insights.</span></div></div></div>';
+  return'<div class="print-zone-label">'+(ZE[z]||'')+' '+z+' ZONE</div>'+buildInsights(rows,a,color)+'<div class="g3" style="margin-bottom:12px"><div class="mc"><div class="ml">総プレー / Plays</div><div class="mv">'+a.n+'</div></div><div class="mc"><div class="ml">BLITZ率 / Rate</div><div class="mv" style="color:'+vsColor(a.bp,cBp)+'">'+a.bp+'%</div><div class="ms">'+a.bn+'/'+a.n+vsBadge(a.bp,cBp)+'</div></div><div class="mc"><div class="ml">STUNTS率 / Rate</div><div class="mv" style="color:'+vsColor(a.sp,cSp)+'">'+a.sp+'%</div><div class="ms">'+a.sn+'/'+a.n+vsBadge(a.sp,cSp)+'</div></div></div>'+donutCard(a)+'<div class="g2"><div class="card"><div class="sec">カバー / Coverage</div>'+makeBars(a.cov,a.n)+'</div><div class="card"><div class="sec">FRONT</div>'+makeBars(a.front,a.n,FRONT_COLORS)+'<div style="margin-top:8px;font-size:10px;color:var(--g400)">STUNTS: '+a.stunt.slice(0,5).map(function(x){return x[0]+' ('+x[1]+'件)'}).join(' / ')+'</div></div></div>'+'<div class="sec" style="margin-top:14px">DOWN & DISTANCE</div>'+dnH+trendChart(rows)+'<div class="ai-section" style="margin-top:16px"><div class="ai-box"><div class="ai-hdr"><span class="ai-badge">🤖 AI</span><span>コーチ分析 / Coach Analysis</span><button class="btn-ai" onclick="generateAnalysis(\''+z+'\',false)">分析を生成 / Generate</button></div><div class="ai-body" id="ai-'+z+'"><span class="ai-placeholder">「分析を生成」を押すとAIがこのゾーンを分析します<br>Press "Generate" for AI coaching insights.</span></div></div></div>';
 }
 
 // ===== FORM PANEL =====
