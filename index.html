@@ -507,12 +507,6 @@ function donut(pct,color,title,sub){
     +'<text x="60" y="77" text-anchor="middle" font-size="9.5" font-weight="600" fill="var(--g400)">'+sub+'</text>'
     +'</svg><div class="donut-title">'+title+'</div></div>';
 }
-function donutCard(a){
-  return'<div class="card" style="margin-bottom:14px"><div class="sec">BLITZ / STUNTS 傾向 / Tendency</div><div class="donut-row">'
-    +donut(a.bp,'var(--blue)','BLITZ RATE',a.bn+' / '+a.n)
-    +donut(a.sp,'var(--green)','STUNTS RATE',a.sn+' / '+a.n)
-    +'</div></div>';
-}
 
 // ===== RECOMMENDATIONS =====
 function recCard(icon,title,desc){
@@ -548,14 +542,15 @@ function insightsCard(rows,a,color){
   return'<div class="card"><div class="sec">KEY INSIGHTS</div>'+(ins||'<div style="color:var(--g400);font-size:12px;padding:6px 0">十分なデータがありません / Not enough data</div>')+'</div>';
 }
 
-// ===== OVERVIEW =====
-function buildOverview(rows){
+// ===== OVERVIEW (shared body: FRONT/TENDENCY/COVERAGE → heatmap → INSIGHTS/RECS) =====
+function overviewBody(rows,z){
   var a=analyze(rows);
   var frontCard='<div class="card"><div class="sec">FRONT</div>'+makeBars(a.front,a.n,FRONT_COLORS)+'</div>';
   var donutC='<div class="card"><div class="sec">BLITZ / STUNTS TENDENCY / 傾向</div><div class="donut-row">'+donut(a.bp,'var(--blue)','BLITZ RATE',a.bn+' / '+a.n)+donut(a.sp,'var(--green)','STUNTS RATE',a.sn+' / '+a.n)+'</div></div>';
   var covCard='<div class="card"><div class="sec">COVERAGE OVERVIEW / カバー分布</div>'+makeBars(a.cov,a.n)+'</div>';
-  return'<div class="ov3">'+frontCard+donutC+covCard+'</div>'+ddCard('ALL',rows,'#0055A4')+'<div class="ov2">'+insightsCard(rows,a,'#0055A4')+buildRecommendations(rows,a)+'</div>';
+  return'<div class="ov3">'+frontCard+donutC+covCard+'</div>'+ddCard(z||'ALL',rows,'#0055A4')+'<div class="ov2">'+insightsCard(rows,a,'#0055A4')+buildRecommendations(rows,a)+'</div>';
 }
+function buildOverview(rows){return overviewBody(rows,'ALL');}
 
 function mCell(rows){
   if(!rows||!rows.length)return null;
@@ -610,47 +605,13 @@ function mkTab(label,active,color,tabsId,bodyId,prefix){
 }
 
 // ===== ZONE PANEL =====
-// 数値をALL基準と比較して色付け（高い=赤 / 低い=青 / 同等=ネイビー）
-function vsColor(val,base){
-  if(base===null||base===undefined)return'var(--navy)';
-  var d=val-base;
-  if(d>=1.5)return'var(--red)';
-  if(d<=-1.5)return'var(--blue)';
-  return'var(--navy)';
-}
-function vsBadge(val,base){
-  if(base===null||base===undefined)return'';
-  var d=Math.round((val-base)*10)/10;
-  if(Math.abs(d)<1.5)return' <span style="color:var(--g400)">≈ ALL</span>';
-  var col=d>0?'var(--red)':'var(--blue)';
-  return' <span style="color:'+col+';font-weight:700">'+(d>0?'▲+':'▼')+Math.abs(d)+'</span><span style="color:var(--g400)"> vs ALL</span>';
-}
 function buildZonePanel(z,rows,color,base){
-  var a=analyze(rows);
-  var cBp=z==='ALL'?null:(base?base.bp:null),cSp=z==='ALL'?null:(base?base.sp:null);
-  return'<div class="print-zone-label">'+(ZE[z]||'')+' '+z+' ZONE</div>'+insightsCard(rows,a,color)+'<div class="g3" style="margin:12px 0"><div class="mc"><div class="ml">総プレー / Plays</div><div class="mv">'+a.n+'</div></div><div class="mc"><div class="ml">BLITZ率 / Rate</div><div class="mv" style="color:'+vsColor(a.bp,cBp)+'">'+a.bp+'%</div><div class="ms">'+a.bn+'/'+a.n+vsBadge(a.bp,cBp)+'</div></div><div class="mc"><div class="ml">STUNTS率 / Rate</div><div class="mv" style="color:'+vsColor(a.sp,cSp)+'">'+a.sp+'%</div><div class="ms">'+a.sn+'/'+a.n+vsBadge(a.sp,cSp)+'</div></div></div>'+donutCard(a)+ddCard(z,rows,color)+'<div class="g2"><div class="card"><div class="sec">カバー / Coverage</div>'+makeBars(a.cov,a.n)+'</div><div class="card"><div class="sec">FRONT</div>'+makeBars(a.front,a.n,FRONT_COLORS)+'<div style="margin-top:8px;font-size:10px;color:var(--g400)">STUNTS: '+a.stunt.slice(0,5).map(function(x){return x[0]+' ('+x[1]+'件)'}).join(' / ')+'</div></div></div><div style="margin-top:14px">'+buildRecommendations(rows,a)+'</div><div class="ai-section" style="margin-top:14px"><div class="ai-box"><div class="ai-hdr"><span class="ai-badge">🤖 AI</span><span>コーチ分析 / Coach Analysis</span><button class="btn-ai" onclick="generateAnalysis(\''+z+'\',false)">分析を生成 / Generate</button></div><div class="ai-body" id="ai-'+z+'"><span class="ai-placeholder">「分析を生成」を押すとAIがこのゾーンを分析します<br>Press "Generate" for AI coaching insights.</span></div></div></div>';
+  return'<div class="print-zone-label">'+(ZE[z]||'')+' '+z+' ZONE</div>'+overviewBody(rows,z)+'<div class="ai-section" style="margin-top:14px"><div class="ai-box"><div class="ai-hdr"><span class="ai-badge">🤖 AI</span><span>コーチ分析 / Coach Analysis</span><button class="btn-ai" onclick="generateAnalysis(\''+z+'\',false)">分析を生成 / Generate</button></div><div class="ai-body" id="ai-'+z+'"><span class="ai-placeholder">「分析を生成」を押すとAIがこのゾーンを分析します<br>Press "Generate" for AI coaching insights.</span></div></div></div>';
 }
 
 // ===== FORM PANEL =====
 function buildFormPanel(fg,frows,color,allRows){
-  var a=analyze(frows);
-  var zH=['YELLOW','GREEN','ORANGE','RED','WAR'].map(function(z){
-    var s=frows.filter(function(r){return r.ZONE===z;});if(!s.length)return'';
-    var bn=s.filter(function(r){return r.HB;}).length;
-    var bt={BOUNDARY:0,FIELD:0,BOTH:0};s.forEach(function(r){if(r.BT)bt[r.BT]++;});
-    var cc={};s.forEach(function(r){if(r.COVERAGE)cc[r.COVERAGE]=(cc[r.COVERAGE]||0)+1;});
-    var tc=topN(cc,3).map(function(x){return x[0]+'('+x[1]+')'}).join('/');
-    var dnD=[1,2,3,4].map(function(dn){
-      var ds=s.filter(function(r){return r.DN===dn;});if(!ds.length)return'';
-      var dbn=ds.filter(function(r){return r.HB;}).length;
-      var dcc={};ds.forEach(function(r){if(r.COVERAGE)dcc[r.COVERAGE]=(dcc[r.COVERAGE]||0)+1;});
-      var tdc=topN(dcc,2).map(function(x){return x[0]+'('+x[1]+')'}).join('/');
-      return'<div style="font-size:10px;color:var(--g400);margin:2px 0">'+(dn===1?'1st':dn===2?'2nd':dn===3?'3rd':'4th')+'Down('+ds.length+'P) BLITZ '+p(dbn,ds.length)+'%　'+tdc+'</div>';
-    }).join('');
-    return'<div class="dblock"><div class="dbtitle">'+(ZE[z]||'')+' '+z+' — '+s.length+'P　BLITZ '+p(bn,s.length)+'%</div><div style="font-size:10px;color:var(--g600);margin-bottom:3px">'+tc+'</div>'+dnD+'</div>';
-  }).join('');
-  var fba=analyze(allRows);
-  return'<div class="print-zone-label">'+fg+' — FORMATION</div>'+insightsCard(frows,a,color)+'<div class="g3" style="margin:12px 0"><div class="mc"><div class="ml">総プレー / Plays</div><div class="mv">'+a.n+'</div></div><div class="mc"><div class="ml">BLITZ率 / Rate</div><div class="mv" style="color:'+vsColor(a.bp,fba.bp)+'">'+a.bp+'%</div><div class="ms">'+a.bn+'/'+a.n+vsBadge(a.bp,fba.bp)+'</div></div><div class="mc"><div class="ml">STUNTS率 / Rate</div><div class="mv" style="color:'+vsColor(a.sp,fba.sp)+'">'+a.sp+'%</div><div class="ms">'+vsBadge(a.sp,fba.sp).replace(/^ /,'')+'</div></div></div>'+ddCard(fg,frows,color)+'<div class="g2"><div class="card"><div class="sec">カバー / Coverage</div>'+makeBars(a.cov,a.n)+'<div style="margin-top:8px;font-size:10px;color:var(--g400)">STUNTS: '+a.stunt.slice(0,5).map(function(x){return x[0]+' ('+x[1]+'件)'}).join(' / ')+'</div></div><div class="card"><div class="sec">FRONT</div>'+makeBars(a.front,a.n,FRONT_COLORS)+'</div></div><div style="margin-top:14px">'+buildRecommendations(frows,a)+'</div><div class="sec" style="margin-top:14px">ゾーン別詳細 / by Zone</div>'+zH;
+  return'<div class="print-zone-label">'+fg+' — FORMATION</div>'+overviewBody(frows,fg);
 }
 
 // ===== KEY INSIGHTS (analyst-level cross-tab tendencies) =====
@@ -843,7 +804,6 @@ function boot(rows,label){
     document.getElementById('dashboard').style.display='block';
 
     var zd=byZone(valid);
-    var allA=analyze(zd.ALL),baseStats={bp:allA.bp,sp:allA.sp};
 
     // Overview tab
     document.getElementById('overview-body').innerHTML=buildOverview(zd.ALL);
@@ -851,14 +811,16 @@ function boot(rows,label){
     // Zone tab
     var zte=document.getElementById('zone-tabs'),zbe=document.getElementById('zone-body');
     zte.innerHTML='';zbe.innerHTML='';
-    ZO.forEach(function(z,i){
+    var zoneFirst=true;
+    ZO.forEach(function(z){
+      if(z==='ALL')return; // ALL は OVERVIEW と重複するため FIELD ZONE では非表示
       var zrows=zd[z];if(!zrows||!zrows.length)return;
-      var color=ZCS[z];
-      zte.appendChild(mkTab(z,i===0,color,'zone-tabs','zone-body','zone-p-'));
+      var color=ZCS[z];var active=zoneFirst;zoneFirst=false;
+      zte.appendChild(mkTab(z,active,color,'zone-tabs','zone-body','zone-p-'));
       var panel=document.createElement('div');
-      panel.className='zp'+(i===0?' vis':'');
+      panel.className='zp'+(active?' vis':'');
       panel.id='zone-p-'+z;
-      panel.innerHTML=buildZonePanel(z,zrows,color,baseStats);
+      panel.innerHTML=buildZonePanel(z,zrows,color);
       zbe.appendChild(panel);
     });
 
