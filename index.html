@@ -131,8 +131,8 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
 .donut-diff{font-size:10.5px;font-weight:800;margin-top:3px;font-variant-numeric:tabular-nums}
 
 /* OVERVIEW GRID */
-.ov3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;align-items:start}
-.ov2{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+.ov3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;align-items:stretch}
+.ov2{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:stretch}
 @media(max-width:980px){.ov3{grid-template-columns:1fr}.ov2{grid-template-columns:1fr}}
 
 /* RECOMMENDATIONS */
@@ -141,6 +141,7 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
 .rec:hover{box-shadow:var(--sh);transform:translateY(-1px)}
 .rec-ico{flex-shrink:0;width:36px;height:36px;border-radius:9px;background:var(--white);border:1px solid var(--g200);display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:var(--sh)}
 .rec-title{font-size:13px;font-weight:800;color:var(--navy);margin-bottom:2px}
+.rec-title-en{font-size:10px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:.03em}
 .rec-desc{font-size:11.5px;color:var(--g600);line-height:1.7}
 .rec-en{color:var(--g400);font-size:10.5px}
 
@@ -157,6 +158,7 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
 .ins-list li{padding:9px 0;border-top:1px dashed var(--g200)}
 .ins-list li:first-child{border-top:none;padding-top:2px}
 .ins-h{font-size:12.5px;font-weight:800;color:var(--navy);margin-bottom:2px}
+.ins-h-en{font-size:10px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:.03em}
 .ins-b{font-size:11.5px;color:var(--g600);line-height:1.65}
 .ins-en{font-size:10.5px;color:var(--g400);margin-top:1px}
 
@@ -165,6 +167,7 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
 .blb{font-size:11px;color:var(--g600);min-width:90px;text-align:right;flex-shrink:0;font-weight:500}
 .bg{flex:1;height:20px;background:var(--g100);border-radius:4px;overflow:hidden}
 .bf{height:100%;border-radius:4px;display:flex;align-items:center;padding-left:8px;font-size:10px;font-weight:700;white-space:nowrap;overflow:hidden}
+.bf-out{font-size:10px;font-weight:700;color:var(--g600);white-space:nowrap;flex-shrink:0;font-variant-numeric:tabular-nums}
 .sbar{display:flex;height:22px;border-radius:4px;overflow:hidden;width:100%;margin:6px 0}
 .sb{display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--white)}
 
@@ -194,8 +197,8 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
 
 /* TABLE */
 .tbl{width:100%;border-collapse:collapse;font-size:12px}
-.tbl th{padding:8px 11px;font-weight:700;color:var(--g400);border-bottom:2px solid var(--g100);text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.05em}
-.tbl td{padding:8px 11px;border-bottom:1px solid var(--g100);color:var(--g600)}
+.tbl th{height:34px;padding:6px 11px;font-weight:700;color:var(--g400);border-bottom:2px solid var(--g100);text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.05em;vertical-align:middle}
+.tbl td{height:34px;padding:6px 11px;border-bottom:1px solid var(--g100);color:var(--g600);vertical-align:middle}
 .tbl tr:hover td{background:var(--g50)}
 .tbl tr:last-child td{border-bottom:none}
 
@@ -298,11 +301,6 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
     <label class="btn btn-navy" style="cursor:pointer">📁 ファイルを選択 / Select File<input type="file" id="input-scout" accept=".csv" style="display:none"></label>
     <div class="upload-status" id="scout-filename"></div>
   </div>
-  <div class="paste-wrap">
-    <div class="paste-label">▼ または Ctrl+C でコピーしたCSVを貼り付け / Or paste CSV content (Ctrl+C from Excel)</div>
-    <textarea id="paste-scout" placeholder="ここにCSVの内容を貼り付け / Paste CSV content here"></textarea>
-    <button class="btn btn-ghost" style="margin-top:8px" id="btn-paste-scout">▶ 貼り付けで分析 / Analyze from Paste</button>
-  </div>
 </div>
 
 <!-- DASHBOARD -->
@@ -335,29 +333,35 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
   </div>
   <div class="main">
     <div id="compare-upload" style="max-width:600px;margin:0 auto 18px">
-      <div class="upload-card game-card" id="drop-zone-game" style="border-radius:var(--rl) var(--rl) 0 0;margin-bottom:0">
+      <div class="upload-card game-card" id="drop-zone-game">
         <span class="upload-icon">🏈</span>
         <h3>試合後CSV / Post-Game CSV</h3>
         <p>試合後に記録したCSV（ODK=O）をドロップまたはファイル選択<br>Upload post-game CSV file (ODK=O)</p>
         <label class="btn btn-green" style="cursor:pointer">📁 ファイルを選択 / Select File<input type="file" id="input-game" accept=".csv" style="display:none"></label>
         <div class="upload-status" id="game-filename"></div>
       </div>
-      <div class="paste-wrap" style="border-radius:0 0 var(--rl) var(--rl)">
-        <div class="paste-label">▼ または試合後CSVを貼り付け / Or paste post-game CSV</div>
-        <textarea id="paste-game" placeholder="試合後CSVをここに貼り付け / Paste post-game CSV here"></textarea>
-        <button class="btn btn-ghost" style="margin-top:8px" id="btn-paste-game">▶ 貼り付けで比較 / Compare from Paste</button>
-      </div>
     </div>
     <div id="compare-result" style="display:none">
       <div class="diff-legend">
         <span style="font-weight:700;color:var(--navy)">差分 / Diff:</span>
-        <span><span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--red);margin-right:4px"></span>+10%pt〜 増加 / Increased</span>
-        <span><span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--amber);margin-right:4px"></span>±5〜10%pt 変化 / Changed</span>
-        <span><span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--blue);margin-right:4px"></span>減少 / Decreased</span>
-        <span style="color:var(--g400);font-size:11px">※ 件数ではなく割合(%pt)で比較 / Compared by % not count</span>
+        <span><span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--red);margin-right:4px"></span>+10%pt〜 大きく増加 / Up</span>
+        <span><span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--amber);margin-right:4px"></span>+5〜10%pt 増加 / Up</span>
+        <span><span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--blue);margin-right:4px"></span>-5〜10%pt 減少 / Down</span>
+        <span><span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:#0A357E;margin-right:4px"></span>-10%pt〜 大きく減少 / Down</span>
+        <span style="color:var(--g400);font-size:11px">※ 割合(%pt)で比較 / by % not count</span>
       </div>
-      <div class="ztabs" id="cmp-zone-tabs"></div>
-      <div id="cmp-zone-body"></div>
+      <div class="ttabs" id="cmp-mode" style="max-width:360px;margin-bottom:14px">
+        <div class="tt on" id="cmp-mode-zone">📍 FIELD ZONE</div>
+        <div class="tt" id="cmp-mode-form">📋 Formation</div>
+      </div>
+      <div id="cmp-zone-wrap">
+        <div class="ztabs" id="cmp-zone-tabs"></div>
+        <div id="cmp-zone-body"></div>
+      </div>
+      <div id="cmp-form-wrap" style="display:none">
+        <div class="ztabs" id="cmp-form-tabs"></div>
+        <div id="cmp-form-body"></div>
+      </div>
     </div>
   </div>
 </div>
@@ -457,16 +461,17 @@ function processData(rows){
 function analyze(rows){
   var n=rows.length,bn=0,sn=0;
   var bt={BOUNDARY:0,FIELD:0,BOTH:0};
-  var cov={},front={},stunt={},blitz={};
+  var cov={},front={},stunt={},blitz={},blitzRaw={};
   rows.forEach(function(r){
     if(r.HB)bn++; if(r.HS)sn++;
     if(r.BT)bt[r.BT]++;
     if(r.COVERAGE)cov[r.COVERAGE]=(cov[r.COVERAGE]||0)+1;
     if(r['DEF FRONT'])front[r['DEF FRONT']]=(front[r['DEF FRONT']]||0)+1;
     if(r.STUNT)stunt[r.STUNT]=(stunt[r.STUNT]||0)+1;
+    var bRaw=(r.BLITZ||'').trim();if(bRaw)blitzRaw[bRaw]=(blitzRaw[bRaw]||0)+1; // 生のBLITZコール（分割しない）
     r.BP.forEach(function(e){var k=e[0]+'-'+e[1];blitz[k]=(blitz[k]||0)+1;});
   });
-  return{n:n,bn:bn,sn:sn,bt:bt,cov:topN(cov,8),front:topN(front,6),stunt:topN(stunt,6),blitz:topN(blitz,8),bp:p(bn,n),sp:p(sn,n)};
+  return{n:n,bn:bn,sn:sn,bt:bt,cov:topN(cov,8),front:topN(front,6),stunt:topN(stunt,8),blitz:topN(blitz,8),blitzRaw:topN(blitzRaw,8),bp:p(bn,n),sp:p(sn,n)};
 }
 function byZone(rows){
   var z={ALL:[],YELLOW:[],GREEN:[],ORANGE:[],RED:[],WAR:[]};
@@ -482,6 +487,11 @@ var BAR_COLORS=['#0055A4','#059669','#7C3AED','#D97706','#C0392B','#8A94A6'];
 var FRONT_COLORS=['#C0392B','#0055A4','#8A94A6','#8A94A6','#8A94A6'];
 
 var BAR_GREY='#8A94A6';
+// 狭いバーは白文字が見切れるので、値はバー外（右側・濃色）に出す
+function barRow(label,w,fill,valText){
+  var inside=w>=34;
+  return'<div class="brow"><span class="blb">'+label+'</span><div class="bg"><div class="bf" style="width:'+w+'%;background:'+fill+';color:#fff">'+(inside?valText:'')+'</div></div>'+(inside?'':'<span class="bf-out">'+valText+'</span>')+'</div>';
+}
 function makeBars(arr,total,colors){
   if(!colors)colors=BAR_COLORS;
   var h='';
@@ -489,9 +499,18 @@ function makeBars(arr,total,colors){
     var k=item[0],v=item[1];
     var w=total?Math.round(v/total*100):0;
     var bg=(total&&v/total*100>=25)?colors[i%colors.length]:BAR_GREY;
-    h+='<div class="brow"><span class="blb">'+k+'</span><div class="bg"><div class="bf" style="width:'+w+'%;background:'+bg+';color:#fff">'+p(v,total)+'% ('+v+'件)</div></div></div>';
+    h+=barRow(k,w,bg,p(v,total)+'% ('+v+'件)');
   });
   return h;
+}
+// ダウン別BLITZ率の横棒
+function downBlitzBars(rows){
+  var h='';[1,2,3,4].forEach(function(dn){
+    var s=rows.filter(function(r){return r.DN===dn;});if(!s.length)return;
+    var bp=p(s.filter(function(r){return r.HB;}).length,s.length);
+    h+=barRow((dn===1?'1st':dn===2?'2nd':dn===3?'3rd':'4th')+' Down',bp,'var(--blue)',bp+'% ('+s.length+'P)');
+  });
+  return h||'<div style="color:var(--g400);font-size:12px">—</div>';
 }
 function heatClass(bp){
   if(!bp)return'h0';if(bp<=30)return'h1';if(bp<=45)return'h2';if(bp<=60)return'h3';if(bp<=75)return'h4';return'h5';
@@ -518,8 +537,8 @@ function diffBadge(val,base){
 }
 
 // ===== RECOMMENDATIONS =====
-function recCard(icon,title,desc,en){
-  return'<div class="rec"><div class="rec-ico">'+icon+'</div><div class="rec-tx"><div class="rec-title">'+title+'</div><div class="rec-desc">'+desc+(en?'<br><span class="rec-en">'+en+'</span>':'')+'</div></div></div>';
+function recCard(icon,tjp,ten,desc,en){
+  return'<div class="rec"><div class="rec-ico">'+icon+'</div><div class="rec-tx"><div class="rec-title">'+tjp+(ten?' <span class="rec-title-en">/ '+ten+'</span>':'')+'</div><div class="rec-desc">'+desc+(en?'<br><span class="rec-en">'+en+'</span>':'')+'</div></div></div>';
 }
 function buildRecommendations(rows,a){
   var recs=[];
@@ -534,31 +553,31 @@ function buildRecommendations(rows,a){
   if(d3l.length>=3){var r3=rate(d3l),c3=topcov(d3l)||'不明',s3=stuntRate(d3l);
     var plan=r3>=55?'<b>マックスプロテクト＋単独ホット</b>を基本に、ブリッツ側へ<b>スクリーン/スワング</b>で即時リリース。':r3>=ov?'<b>6メン保護＋ホット確認</b>を徹底し、'+c3+'のソフトスポットへ素早く投げ切る。':'圧力は薄め。<b>5メン保護で縦2段</b>を取り、'+c3+'のディープを突く。';
     if(s3>=40)plan+=' STUNTSも'+s3+'%と多く、<b>内側ガード/センターの受け渡し</b>を最優先。';
-    recs.push(recCard('🛡️','3rd & Long のプロテクション設計','3rd & Long('+d3l.length+'P) は BLITZ <b>'+r3+'%</b>・背後 <b>'+c3+'</b>・STUNTS '+s3+'%。'+plan,'3rd&Long: '+r3+'% blitz, '+c3+' behind, stunts '+s3+'%.'));}
+    recs.push(recCard('🛡️','3rd & Long のプロテクション設計','3rd & Long Protection','3rd & Long('+d3l.length+'P) は BLITZ <b>'+r3+'%</b>・背後 <b>'+c3+'</b>・STUNTS '+s3+'%。'+plan,'3rd&Long: '+r3+'% blitz, '+c3+' behind, stunts '+s3+'%.'));}
 
   // 2) 最多カバーを割る具体コンセプト
   if(a.cov[0]){var c1=a.cov[0][0],c1s=p(a.cov[0][1],a.n),c2=a.cov[1]?a.cov[1][0]:null;
     var depend=c1s>=45?'<b>'+c1+'偏重('+c1s+'%)で的を絞れる</b>。プリスナップで確認し、':'';
-    recs.push(recCard('🎯','最多カバー '+c1+' のビート手順',depend+'<b>フォーメーション/モーションで'+c1+'を誘発→想定どおりか確認→水平+垂直のストレッチ</b>でDBに二択を強いる。'+(c2?'チェック先の <b>'+c2+'</b> 用コールも1つ用意。':''),'Beat '+c1+' ('+c1s+'%)'+(c2?', check vs '+c2:'')+' with H/V stretch.'));}
+    recs.push(recCard('🎯','最多カバー '+c1+' のビート手順','Beat Top Coverage',depend+'<b>フォーメーション/モーションで'+c1+'を誘発→想定どおりか確認→水平+垂直のストレッチ</b>でDBに二択を強いる。'+(c2?'チェック先の <b>'+c2+'</b> 用コールも1つ用意。':''),'Beat '+c1+' ('+c1s+'%)'+(c2?', check vs '+c2:'')+' with H/V stretch.'));}
 
   // 3) 傾向ブレイカー：最も読める局面を逆手に
   var best=null;
   [1,2,3,4].forEach(function(dn){DO.forEach(function(dg){var sub=rows.filter(function(r){return r.DN===dn&&r.DIST_GRP===dg;});if(sub.length>=4){var rt=rate(sub),dev=Math.abs(rt-ov);if(!best||dev>best.dev)best={dn:dn,dg:dg,rt:rt,n:sub.length,dev:dev,cov:topcov(sub)};}});});
   if(best&&best.dev>=18){var dl=(best.dn===1?'1st':best.dn===2?'2nd':best.dn===3?'3rd':'4th')+' & '+best.dg;
     var act=best.rt>ov?'圧力前提で<b>クイック/ドロー/RPO</b>を常備し、テンポで的を絞らせない。':'圧力が薄い局面。<b>プレイアクション＋縦</b>でビッグプレーを狙う。';
-    recs.push(recCard('📌','最も読める局面 '+dl+' を突く','<b>'+dl+'</b>('+best.n+'P)は BLITZ <b>'+best.rt+'%</b>（全体 '+ov+'%）'+(best.cov?'／'+best.cov:'')+'と偏り大。'+act,'Exploit '+dl+': '+best.rt+'% vs '+ov+'% overall.'));}
+    recs.push(recCard('📌','最も読める局面 '+dl+' を突く','Exploit Tendency','<b>'+dl+'</b>('+best.n+'P)は BLITZ <b>'+best.rt+'%</b>（全体 '+ov+'%）'+(best.cov?'／'+best.cov:'')+'と偏り大。'+act,'Exploit '+dl+': '+best.rt+'% vs '+ov+'% overall.'));}
 
   // 4) 早いダウンで主導権（1st Down 戦略）
   var d1=rows.filter(function(r){return r.DN===1;});
   if(d1.length>=4){var r1=rate(d1),c1d=topcov(d1)||'不明';
     var early=r1<ov-5?'圧力が薄く、<b>'+c1d+'相手に縦/PA</b>で2nd&shortを作りやすい。先制パンチを。':r1>ov+5?'1stから圧力。<b>テンポを上げ簡潔な保護</b>で後手を防ぐ。':'標準。<b>ラン/パスのバランス</b>でダウンを進める。';
-    recs.push(recCard('🚀','1st Down で主導権を握る','1st Down は BLITZ <b>'+r1+'%</b>・主カバー <b>'+c1d+'</b>。'+early,'1st down: '+r1+'% blitz vs '+c1d+'.'));}
+    recs.push(recCard('🚀','1st Down で主導権を握る','Own 1st Down','1st Down は BLITZ <b>'+r1+'%</b>・主カバー <b>'+c1d+'</b>。'+early,'1st down: '+r1+'% blitz vs '+c1d+'.'));}
 
   // 5) スタンツ対応のOLルール（起点フロントまで特定）
   if(a.sp>=35){var sf={};rows.forEach(function(r){if(r.HS&&r['DEF FRONT'])sf[r['DEF FRONT']]=(sf[r['DEF FRONT']]||0)+1;});var tf=topN(sf,1)[0];
-    recs.push(recCard('🔄','スタンツ対応のOLルール','STUNTS <b>'+a.sp+'%</b>'+(tf?'／起点は主に <b>'+tf[0]+'</b>':'')+'。'+(tf?'<b>'+tf[0]+'</b>を見たら':'当該フロントでは')+'<b>受け渡し(パス・オフ)を声出しで統一</b>し、内側を最優先で締める。RBのスキャンルールも明確化。','Stunts '+a.sp+'%'+(tf?' from '+tf[0]:'')+' — pass off, protect inside first.'));}
+    recs.push(recCard('🔄','スタンツ対応のOLルール','Stunt Protection Rules','STUNTS <b>'+a.sp+'%</b>'+(tf?'／起点は主に <b>'+tf[0]+'</b>':'')+'。'+(tf?'<b>'+tf[0]+'</b>を見たら':'当該フロントでは')+'<b>受け渡し(パス・オフ)を声出しで統一</b>し、内側を最優先で締める。RBのスキャンルールも明確化。','Stunts '+a.sp+'%'+(tf?' from '+tf[0]:'')+' — pass off, protect inside first.'));}
 
-  if(!recs.length)recs.push(recCard('📋','データ収集の継続','傾向判断にはサンプルが不足。試合データを蓄積し精度を上げましょう。','Collect more data for reliable tendencies.'));
+  if(!recs.length)recs.push(recCard('📋','データ収集の継続','Collect More Data','傾向判断にはサンプルが不足。試合データを蓄積し精度を上げましょう。','Collect more data for reliable tendencies.'));
   return'<div class="card"><div class="sec">RECOMMENDATIONS</div><div class="rec-list">'+recs.slice(0,5).join('')+'</div></div>';
 }
 
@@ -587,7 +606,8 @@ function overviewBody(rows,z,base){
   var frontCard='<div class="card"><div class="sec">FRONT</div>'+makeBars(a.front,a.n,FRONT_COLORS)+'</div>';
   var donutC='<div class="card"><div class="sec">BLITZ / STUNTS</div><div class="donut-row">'+donut(a.bp,'var(--blue)','BLITZ RATE',a.bn+' / '+a.n,bDiff)+donut(a.sp,'var(--green)','STUNTS RATE',a.sn+' / '+a.n,sDiff)+'</div></div>';
   var covCard='<div class="card"><div class="sec">COVERAGE</div>'+makeBars(a.cov,a.n)+'</div>';
-  return'<div class="ov3">'+frontCard+donutC+covCard+'</div>'+ddCard(z||'ALL',rows,'#0055A4')+'<div class="ov2">'+insightsCard(rows,a,'#0055A4')+buildRecommendations(rows,a)+'</div>';
+  var bd3='<div class="ov3" style="margin-top:14px"><div class="card"><div class="sec">ダウン別BLITZ率 / Blitz Rate by Down</div>'+downBlitzBars(rows)+'</div><div class="card"><div class="sec">BLITZ種別 / Blitz Type</div>'+(a.blitzRaw.length?makeBars(a.blitzRaw,a.n):'<div style="color:var(--g400);font-size:12px">—</div>')+'</div><div class="card"><div class="sec">STUNTS種別 / Stunt Type</div>'+(a.stunt.length?makeBars(a.stunt,a.n):'<div style="color:var(--g400);font-size:12px">—</div>')+'</div></div>';
+  return'<div class="ov3">'+frontCard+donutC+covCard+'</div>'+ddCard(z||'ALL',rows,'#0055A4')+bd3+'<div class="ov2" style="margin-top:14px">'+insightsCard(rows,a,'#0055A4')+buildRecommendations(rows,a)+'</div>';
 }
 function buildOverview(rows){return overviewBody(rows,'ALL',null);}
 
@@ -653,45 +673,46 @@ function buildFormPanel(fg,frows,color,base){
   return'<div class="print-zone-label">'+fg+' — FORMATION</div>'+overviewBody(frows,fg,base);
 }
 
-// ===== KEY INSIGHTS (analyst-level cross-tab tendencies) =====
-function insTip(icon,title,jp,en){
-  return'<div class="ins-h">'+icon+' <b>'+title+'</b></div><div class="ins-b">'+jp+'</div><div class="ins-en">'+en+'</div>';
+// ===== KEY INSIGHTS (facts only, NFL-coach level — no recommendations) =====
+function insTip(icon,tjp,ten,fjp,fen){
+  return'<div class="ins-h">'+icon+' <b>'+tjp+'</b> <span class="ins-h-en">/ '+ten+'</span></div><div class="ins-b">'+fjp+'</div><div class="ins-en">'+fen+'</div>';
 }
 function buildInsights(rows,a,color,bare){
   var tips=[];
   var ov=a.bp;
   var rate=function(sub){return sub.length?p(sub.filter(function(r){return r.HB;}).length,sub.length):0;};
+  var stuntRate=function(sub){return sub.length?p(sub.filter(function(r){return r.HS;}).length,sub.length):0;};
   var topcov=function(sub){var c={};sub.forEach(function(r){if(r.COVERAGE)c[r.COVERAGE]=(c[r.COVERAGE]||0)+1;});var t=topN(c,1)[0];return t?t[0]:'—';};
   var isLong=function(r){return r.DIST_GRP==='LONG(7-10)'||r.DIST_GRP==='X-LONG(11+)';};
 
-  // 1) パスダウン（3rd & Long）の圧力傾向 + ビート方針
+  // 1) 3rd & Long の事実（圧力量・背後カバー・スタンツ）
   var d3l=rows.filter(function(r){return r.DN===3&&isLong(r);});
-  if(d3l.length>=3){var r3=rate(d3l),adv=r3>=ov+10?'パスダウンで圧力を上げる傾向。スクリーン/クイックでブリッツを無効化し、ホットを徹底。':r3<=ov-10?'圧力はむしろ控えめ。プロテクションに余裕があり縦も選択可。':'平均並みの圧力。テンポで的を絞らせない。';
-    tips.push(insTip('🎯','3rd & Long の狙いどころ','3rd & Long('+d3l.length+'P) は BLITZ <b style="color:'+color+'">'+r3+'%</b>／主カバー <b>'+topcov(d3l)+'</b>。'+adv,'3rd & Long: '+r3+'% blitz, mostly '+topcov(d3l)+'.'));}
+  if(d3l.length>=3){var r3=rate(d3l),s3=stuntRate(d3l),c3=topcov(d3l);
+    tips.push(insTip('🎯','3rd & Long の圧力','3rd & Long Pressure','3rd & Long('+d3l.length+'P)は BLITZ <b style="color:'+color+'">'+r3+'%</b>（全体 '+ov+'%）・背後の主カバー <b>'+c3+'</b>・STUNTS '+s3+'%。','3rd & Long: '+r3+'% blitz (avg '+ov+'%), coverage '+c3+', stunts '+s3+'%.'));}
 
-  // 2) ダウンでカバーが変わる＝コールが読める
+  // 2) ダウンによるカバー変化（tell）
   var d1=rows.filter(function(r){return r.DN===1;}),d3=rows.filter(function(r){return r.DN===3;});
-  if(d1.length>=4&&d3.length>=4){var c1=topcov(d1),c3=topcov(d3);
-    if(c1!==c3&&c1!=='—'&&c3!=='—')tips.push(insTip('🧠','ダウンでコールが変化','1st Down は <b>'+c1+'</b> 中心 → 3rd Down は <b>'+c3+'</b> へシフト。ダウンでカバーが読めるため、3rd は '+c3+' のホールを突くコンセプトを用意。','Coverage shifts '+c1+' (1st) → '+c3+' (3rd) — exploitable tell.'));}
+  if(d1.length>=4&&d3.length>=4){var c1=topcov(d1),c3b=topcov(d3);
+    if(c1!==c3b&&c1!=='—'&&c3b!=='—')tips.push(insTip('🧠','ダウンでカバーが変化','Down-Based Coverage','1st Down は <b>'+c1+'</b> 中心、3rd Down は <b>'+c3b+'</b> が最多。ダウンで主カバーが切り替わる。','Top coverage shifts '+c1+' (1st) → '+c3b+' (3rd).'));}
 
-  // 3) フィールドゾーンでの圧力エスカレーション
+  // 3) フィールドゾーンによる圧力差
   var mid=rows.filter(function(r){return r.ZONE==='GREEN';}),red=rows.filter(function(r){return r.ZONE==='RED'||r.ZONE==='WAR';});
   if(mid.length>=3&&red.length>=3){var rm=rate(mid),rr=rate(red);
-    if(Math.abs(rr-rm)>=12)tips.push(insTip('🔥','ゴール前で圧力が変化','レッドゾーン圏 BLITZ <b style="color:'+color+'">'+rr+'%</b>／中盤 '+rm+'%。'+(rr>rm?'ゴール前で圧力を強める。短い縦・ピック系で即時リリースを。':'ゴール前は保守的。時間が作れるため縦の二段で攻略。'),'Red-zone blitz '+rr+'% vs midfield '+rm+'%.'));}
+    if(Math.abs(rr-rm)>=12)tips.push(insTip('🔥','ゴール前の圧力差','Red-Zone Pressure','レッドゾーン圏 BLITZ <b style="color:'+color+'">'+rr+'%</b>、中盤(GREEN) '+rm+'%。差 '+Math.abs(rr-rm)+'pt。','Red-zone blitz '+rr+'% vs midfield '+rm+'% ('+Math.abs(rr-rm)+'pt gap).'));}
 
-  // 4) 最も傾向が偏る状況（予測されやすいセル）
+  // 4) 最も偏る局面（予測度）
   var best=null;
-  [1,2,3,4].forEach(function(dn){DO.forEach(function(dg){var sub=rows.filter(function(r){return r.DN===dn&&r.DIST_GRP===dg;});if(sub.length>=4){var rt=rate(sub),dev=Math.abs(rt-ov);if(!best||dev>best.dev)best={dn:dn,dg:dg,rt:rt,n:sub.length,dev:dev};}});});
+  [1,2,3,4].forEach(function(dn){DO.forEach(function(dg){var sub=rows.filter(function(r){return r.DN===dn&&r.DIST_GRP===dg;});if(sub.length>=4){var rt=rate(sub),dev=Math.abs(rt-ov);if(!best||dev>best.dev)best={dn:dn,dg:dg,rt:rt,n:sub.length,dev:dev,cov:topcov(sub)};}});});
   if(best&&best.dev>=20){var dl=(best.dn===1?'1st':best.dn===2?'2nd':best.dn===3?'3rd':'4th')+' & '+best.dg;
-    tips.push(insTip('📌','最も読める状況','<b>'+dl+'</b>('+best.n+'P)で BLITZ <b style="color:'+color+'">'+best.rt+'%</b>（全体 '+ov+'%）と大きく偏り。'+(best.rt>ov?'圧力前提のプロテクション/ホットを当てれば優位。':'圧力薄め、ここは縦・プレイアクションが効く。'),'Strongest tendency at '+dl+': '+best.rt+'% vs '+ov+'% overall.'));}
+    tips.push(insTip('📌','最も偏る局面','Strongest Tendency','<b>'+dl+'</b>('+best.n+'P)で BLITZ <b style="color:'+color+'">'+best.rt+'%</b>（全体 '+ov+'%）／主カバー '+best.cov+'。','At '+dl+': '+best.rt+'% blitz vs '+ov+'% overall, coverage '+best.cov+'.'));}
 
-  // 5) ディスガイズの少なさ＝的を絞れる
+  // 5) カバーの多様性（ディスガイズ）
   if(a.cov.length){var distinct=a.cov.length,top=a.cov[0],share=p(top[1],a.n);
-    if(distinct<=3||share>=45)tips.push(insTip('🪤','ディスガイズが少ない','カバーは実質 <b>'+distinct+'種</b>・最多 <b>'+top[0]+'</b> が <b>'+share+'%</b>。プリスナップの的を絞りやすく、'+top[0]+' を狙い撃つビートを準備。','Low disguise — '+top[0]+' '+share+'% across '+distinct+' coverages.'));}
+    if(distinct<=3||share>=45)tips.push(insTip('🪤','カバーの多様性が低い','Low Coverage Diversity','カバーは実質 <b>'+distinct+'種</b>、最多 <b>'+top[0]+'</b> が <b>'+share+'%</b>を占める。','Only '+distinct+' coverages; top '+top[0]+' at '+share+'%.'));}
 
   // 6) STUNTS の起点フロント
   if(a.sp>=35){var sf={};rows.forEach(function(r){if(r.HS&&r['DEF FRONT'])sf[r['DEF FRONT']]=(sf[r['DEF FRONT']]||0)+1;});var tf=topN(sf,1)[0];
-    tips.push(insTip('🔄','STUNTS の起点','STUNTS率 <b style="color:'+color+'">'+a.sp+'%</b>。'+(tf?'多くは <b>'+tf[0]+'</b> から発生。同フロント時は OL の受け渡しコールを徹底。':'OL のスタンツ対応コールを徹底。'),'Stunts '+a.sp+'%'+(tf?', mostly from '+tf[0]:'')+'.'));}
+    tips.push(insTip('🔄','STUNTS の起点','Stunt Origin','STUNTS率 <b style="color:'+color+'">'+a.sp+'%</b>'+(tf?'、最も多い起点フロントは <b>'+tf[0]+'</b>':'')+'。','Stunts '+a.sp+'%'+(tf?', most from '+tf[0]:'')+'.'));}
 
   if(!tips.length)return'';
   tips=tips.slice(0,5);
@@ -718,25 +739,49 @@ function renderCompare(scout,game){
   te.innerHTML='';be.innerHTML='';
   document.getElementById('compare-result').style.display='block';
   var sd=byZone(scout),gd=byZone(game);
-  ZO.forEach(function(z,i){
+  var zfirst=true;
+  ZO.forEach(function(z){
     var sr=sd[z],gr=gd[z]||[];
     if(!sr||!sr.length)return;
-    var color=ZCS[z];
-    var tab=mkTab(z,i===0,color,'cmp-zone-tabs','cmp-zone-body','cmp-p-');
-    te.appendChild(tab);
+    var color=ZCS[z];var active=zfirst;zfirst=false;
+    te.appendChild(mkTab(z,active,color,'cmp-zone-tabs','cmp-zone-body','cmp-p-'));
     var panel=document.createElement('div');
-    panel.className='zp'+(i===0?' vis':'');
+    panel.className='zp'+(active?' vis':'');
     panel.id='cmp-p-'+z;
     panel.innerHTML=buildCmpPanel(z,sr,gr,color);
     be.appendChild(panel);
   });
+  // フォーメーション別比較
+  var fte=document.getElementById('cmp-form-tabs'),fbe=document.getElementById('cmp-form-body');
+  fte.innerHTML='';fbe.innerHTML='';
+  var ffirst=true;
+  FO.forEach(function(fg){
+    var sr=scout.filter(function(r){return r.FG===fg;}),gr=game.filter(function(r){return r.FG===fg;});
+    if(!sr.length)return;
+    var color=FC[fg];var active=ffirst;ffirst=false;
+    fte.appendChild(mkTab(fg,active,color,'cmp-form-tabs','cmp-form-body','cmp-fp-'));
+    var panel=document.createElement('div');
+    panel.className='zp'+(active?' vis':'');
+    panel.id='cmp-fp-'+fg;
+    panel.innerHTML=buildCmpPanel(fg,sr,gr,color,true);
+    fbe.appendChild(panel);
+  });
+  // モードを FIELD ZONE に戻す
+  cmpMode('zone');
+}
+function cmpMode(m){
+  document.getElementById('cmp-mode-zone').className='tt'+(m==='zone'?' on':'');
+  document.getElementById('cmp-mode-form').className='tt'+(m==='form'?' on':'');
+  document.getElementById('cmp-zone-wrap').style.display=m==='zone'?'':'none';
+  document.getElementById('cmp-form-wrap').style.display=m==='form'?'':'none';
 }
 
 function diffColor(diff){
   if(diff===null)return'var(--g400)';
-  if(diff>=10)return'var(--red)';
-  if(diff>=-10&&diff<0)return'var(--blue)';
-  if(Math.abs(diff)>=5)return'var(--amber)';
+  if(diff>=10)return'var(--red)';       // 大きく増加
+  if(diff>=5)return'var(--amber)';      // やや増加
+  if(diff<=-10)return'#0A357E';         // 大きく減少（濃い青）
+  if(diff<=-5)return'var(--blue)';      // やや減少
   return'var(--g400)';
 }
 function diffLabel(diff,isPct){
@@ -745,7 +790,7 @@ function diffLabel(diff,isPct){
   return(diff>0?'↑ +':'↓ -')+Math.abs(diff)+u;
 }
 
-function buildCmpPanel(z,sr,gr,color){
+function buildCmpPanel(z,sr,gr,color,byForm){
   var sa=analyze(sr),ga=analyze(gr);
   var sn=sr.length,gn=gr.length;
 
@@ -776,12 +821,11 @@ function buildCmpPanel(z,sr,gr,color){
 
   function mergeKeys(a1,a2,n){var seen={},res=[];(a1||[]).forEach(function(x){if(!seen[x[0]]){seen[x[0]]=1;res.push(x[0]);}});(a2||[]).forEach(function(x){if(!seen[x[0]]){seen[x[0]]=1;res.push(x[0]);}});return res.slice(0,n||10);}
   function countKey(rows2,key,val){return rows2.filter(function(r){return r[key]===val;}).length;}
-  function countBlitz(rows2,key){var c=0;rows2.forEach(function(r){r.BP.forEach(function(e){if(e[0]+'-'+e[1]===key)c++;});});return c;}
 
   var covT=mkTable('カバー',function(){return mergeKeys(sa.cov,ga.cov,10);},function(rows2,k){return countKey(rows2,'COVERAGE',k);},sn,gn);
   var frtT=mkTable('FRONT',function(){return mergeKeys(sa.front,ga.front,8);},function(rows2,k){return countKey(rows2,'DEF FRONT',k);},sn,gn);
-  var blzT=mkTable('BLITZ種別',function(){return mergeKeys(sa.blitz,ga.blitz,8);},function(rows2,k){return countBlitz(rows2,k);},sn,gn);
-  var sttT=mkTable('STUNTS',function(){return mergeKeys(sa.stunt,ga.stunt,8);},function(rows2,k){return countKey(rows2,'STUNT',k);},sn,gn);
+  var blzT=mkTable('BLITZ種別',function(){return mergeKeys(sa.blitzRaw,ga.blitzRaw,8);},function(rows2,k){return rows2.filter(function(r){return (r.BLITZ||'').trim()===k;}).length;},sn,gn);
+  var sttT=mkTable('STUNTS種別',function(){return mergeKeys(sa.stunt,ga.stunt,8);},function(rows2,k){return countKey(rows2,'STUNT',k);},sn,gn);
 
   // BLITZ方向比較
   var sbt={BOUNDARY:0,FIELD:0,BOTH:0},gbt={BOUNDARY:0,FIELD:0,BOTH:0};
@@ -811,7 +855,7 @@ function buildCmpPanel(z,sr,gr,color){
 
   var noData=gn===0?'<div class="ins" style="background:#FEF9EC;border-color:var(--amber);color:#7A4F00;margin-bottom:12px">⚠️ 試合後データが0件です。正しいCSVか確認してください。</div>':'';
 
-  return noData+'<div class="sec">サマリー比較 / Summary Comparison</div>'+sumH+'<div class="g2"><div class="card"><div class="sec">カバー %比較 / Coverage</div>'+covT+'</div><div class="card"><div class="sec">FRONT %比較 / Front</div>'+frtT+'</div></div><div class="card" style="margin-top:12px"><div class="sec">BLITZ方向 %比較 / Blitz Direction</div>'+btT+'</div><div class="card" style="margin-top:12px"><div class="sec">ダウン別BLITZ率比較 / Down vs Blitz Rate</div>'+dnT+'</div><div class="g2" style="margin-top:12px"><div class="card"><div class="sec">BLITZ種別 %比較 / Blitz Type</div>'+blzT+'</div><div class="card"><div class="sec">STUNTS %比較 / Stunt</div>'+sttT+'</div></div>'+ '<div class="ai-section" style="margin-top:16px"><div class="ai-box"><div class="ai-hdr"><span class="ai-badge">🤖 AI</span><span>比較分析 / Comparison Analysis</span><button class="btn-ai" onclick="generateAnalysis(\''+z+'\',true)">分析を生成 / Generate</button></div><div class="ai-body" id="ai-cmp-'+z+'"><span class="ai-placeholder">事前スカウティングと試合後の差異をAIが分析します<br>Press "Generate" for AI pre/post analysis.</span></div></div></div>';
+  return noData+'<div class="sec">サマリー比較 / Summary Comparison</div>'+sumH+'<div class="g2"><div class="card"><div class="sec">カバー 比較 / Coverage</div>'+covT+'</div><div class="card"><div class="sec">FRONT 比較 / Front</div>'+frtT+'</div></div><div class="card" style="margin-top:12px"><div class="sec">BLITZ方向 比較 / Blitz Direction</div>'+btT+'</div><div class="card" style="margin-top:12px"><div class="sec">ダウン別BLITZ率比較 / Blitz Rate by Down</div>'+dnT+'</div><div class="g2" style="margin-top:12px"><div class="card"><div class="sec">BLITZ種別 比較 / Blitz Type</div>'+blzT+'</div><div class="card"><div class="sec">STUNTS種別比較 / Stunt Type</div>'+sttT+'</div></div>'+ '<div class="ai-section" style="margin-top:16px"><div class="ai-box"><div class="ai-hdr"><span class="ai-badge">🤖 AI</span><span>比較分析 / Comparison Analysis</span><button class="btn-ai" onclick="generateAnalysis(\''+z+'\',true,'+(byForm?'true':'false')+')">分析を生成 / Generate</button></div><div class="ai-body" id="ai-cmp-'+z+'"><span class="ai-placeholder">事前スカウティングと試合後の差異をAIが分析します<br>Press "Generate" for AI pre/post analysis.</span></div></div></div>';
 }
 
 // ===== CSV PARSE =====
@@ -905,7 +949,7 @@ function boot(rows,label){
       sp.classList.add('out');
       dash.classList.add('dash-enter');
       setTimeout(function(){sp.classList.remove('on','out');dash.classList.remove('dash-enter');},560);
-    },820);
+    },1320);
   }catch(e){var sp2=document.getElementById('splash');if(sp2)sp2.classList.remove('on','out');showErr('エラー: '+e.message);console.error(e);}
 }
 
@@ -915,7 +959,7 @@ function boot(rows,label){
 var __scoutDataGlobal = null;
 var __gameDataGlobal  = null;
 
-function generateAnalysis(zone, isCompare) {
+function generateAnalysis(zone, isCompare, byForm) {
   var bodyId = isCompare ? 'ai-cmp-'+zone : 'ai-'+zone;
   var body = document.getElementById(bodyId);
   if (!body) return;
@@ -948,9 +992,9 @@ function generateAnalysis(zone, isCompare) {
   // ローディング表示
   body.innerHTML = '<div class="ai-loading"><div class="ai-spinner"></div><span>AIが分析中 / Analyzing...</span></div>';
 
-  // ゾーンでフィルター
-  var zd  = byZone(scoutRows);
-  var sr  = zone === 'ALL' ? scoutRows : (zd[zone] || []);
+  // ゾーン または フォーメーションでフィルター
+  var pick = function(rows){ return byForm ? rows.filter(function(r){return r.FG===zone;}) : (zone==='ALL'?rows:(byZone(rows)[zone]||[])); };
+  var sr  = pick(scoutRows);
   var sa  = analyze(sr);
 
   var payload = { zone: zone, stats: {
@@ -963,8 +1007,7 @@ function generateAnalysis(zone, isCompare) {
   }, isCompare: isCompare };
 
   if (isCompare && gameRows) {
-    var gzd = byZone(gameRows);
-    var gr  = zone === 'ALL' ? gameRows : (gzd[zone] || []);
+    var gr  = pick(gameRows);
     var ga  = analyze(gr);
     payload.compareStats = {
       n: ga.n, bn: ga.bn, sn: ga.sn, bp: ga.bp, sp: ga.sp,
@@ -1051,21 +1094,11 @@ document.addEventListener('DOMContentLoaded',function(){
   setupDrop('drop-zone-scout','input-scout',function(rows,name){loadScout(rows,name);});
   setupDrop('drop-zone-game','input-game',function(rows,name){loadGame(rows,name);});
 
-  document.getElementById('btn-paste-scout').addEventListener('click',function(){
-    var text=document.getElementById('paste-scout').value.trim();
-    if(!text){showErr('CSVを貼り付けてください');return;}
-    try{loadScout(parseCSV(text),'貼り付けデータ（スカウティング）');}catch(e){showErr(e.message);}
-  });
-
-  document.getElementById('btn-paste-game').addEventListener('click',function(){
-    var text=document.getElementById('paste-game').value.trim();
-    if(!text){showErr('試合後CSVを貼り付けてください');return;}
-    try{loadGame(parseCSV(text),'貼り付けデータ（試合後）');}catch(e){showErr(e.message);}
-  });
-
   document.getElementById('tt-overview').addEventListener('click',function(){showTab('overview');});
   document.getElementById('tt-zone').addEventListener('click',function(){showTab('zone');});
   document.getElementById('tt-form').addEventListener('click',function(){showTab('form');});
+  document.getElementById('cmp-mode-zone').addEventListener('click',function(){cmpMode('zone');});
+  document.getElementById('cmp-mode-form').addEventListener('click',function(){cmpMode('form');});
 
   document.getElementById('btn-print').addEventListener('click',function(){window.print();});
 
