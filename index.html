@@ -307,13 +307,7 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
 <!-- DASHBOARD -->
 <div id="dashboard" style="display:none">
   <div class="info-bar">
-    <div class="i-stat"><span>プレー数 / Plays</span><b id="i-plays">—</b></div>
-    <div class="i-sep"></div>
-    <div class="i-stat"><span>BLITZ率 / Rate</span><b id="i-blitz">—</b></div>
-    <div class="i-sep"></div>
-    <div class="i-stat"><span>STUNTS率 / Rate</span><b id="i-stunt">—</b></div>
-    <div class="i-sep"></div>
-    <div class="i-stat" id="i-file" style="font-size:11px;color:var(--g400)"></div>
+    <div class="i-stat" id="i-file" style="font-size:12px;color:var(--g600);font-weight:600"></div>
     <div class="i-actions">
       <button class="btn btn-blue" id="btn-compare" style="font-size:12px;padding:7px 16px">⚡ 試合後データと比較 / Compare</button>
       <button class="btn btn-ghost" id="btn-print" style="font-size:12px;padding:7px 14px">🖨️ 印刷 / Print</button>
@@ -324,31 +318,10 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
     <div class="ttabs">
       <div class="tt on" id="tt-overview">📊 OVERVIEW</div>
       <div class="tt" id="tt-zone">📍 FIELD ZONE</div>
-      <div class="tt" id="tt-mtx">① DOWN & DISTANCE</div>
       <div class="tt" id="tt-form">📋 フォーメーション / Formation</div>
     </div>
     <div class="tp vis" id="tab-overview"><div id="overview-body"></div></div>
     <div class="tp" id="tab-zone"><div class="ztabs" id="zone-tabs"></div><div id="zone-body"></div></div>
-    <div class="tp" id="tab-mtx">
-      <div class="hleg">
-        <span style="font-weight:700;color:var(--navy)">セル背景 = BLITZ率 / Cell color = Blitz Rate:</span>
-        <span class="hl" style="background:#FEF9EC;color:#3A4252">〜30%</span>
-        <span class="hl" style="background:#FEECC6;color:#3A4252">〜45%</span>
-        <span class="hl" style="background:#FDD88A;color:#3A4252">〜60%</span>
-        <span class="hl" style="background:#F5A623;color:#fff">〜75%</span>
-        <span class="hl" style="background:#C0392B;color:#fff">76%〜</span>
-      </div>
-      <div class="hleg" style="background:var(--g50);border:1px solid var(--g100);border-radius:var(--r);padding:9px 14px">
-        <span style="font-weight:700;color:var(--navy)">セルの見方 / Cell guide:</span>
-        <span style="color:var(--g600)"><b style="color:var(--navy)">BLITZ</b> = BLITZ率（セル背景色 / cell color）</span>
-        <span class="i-sep" style="background:var(--g200)"></span>
-        <span style="color:var(--g600)"><b style="color:var(--navy)">STUNTS</b> = STUNTS率 / stunt rate</span>
-        <span class="i-sep" style="background:var(--g200)"></span>
-        <span style="color:var(--g600)"><b style="color:var(--navy)">MAIN COVER</b> = 最多カバー / top coverage</span>
-      </div>
-      <div class="ztabs" id="mtx-tabs"></div>
-      <div id="mtx-body"></div>
-    </div>
     <div class="tp" id="tab-form"><div class="ztabs" id="form-tabs"></div><div id="form-body"></div></div>
   </div>
 </div>
@@ -557,16 +530,31 @@ function buildRecommendations(rows,a){
   return'<div class="card"><div class="sec">RECOMMENDATIONS / 推奨アクション</div><div class="rec-list">'+recs.slice(0,4).join('')+'</div></div>';
 }
 
+// ===== SHARED OVERVIEW-STYLE BLOCKS =====
+var DD_LEGEND='<div class="hleg" style="margin-bottom:8px;font-size:10px">'
+  +'<span style="font-weight:700;color:var(--navy)">セル背景=BLITZ率:</span>'
+  +'<span class="hl" style="background:#FEF9EC;color:#3A4252">〜30</span>'
+  +'<span class="hl" style="background:#FEECC6;color:#3A4252">〜45</span>'
+  +'<span class="hl" style="background:#FDD88A;color:#3A4252">〜60</span>'
+  +'<span class="hl" style="background:#F5A623;color:#fff">〜75</span>'
+  +'<span class="hl" style="background:#C0392B;color:#fff">76+</span>'
+  +'<span style="color:var(--g600)">｜各セル: <b style="color:var(--navy)">BLITZ%</b> / <b style="color:var(--navy)">STUNTS%</b> / <b style="color:var(--navy)">MAIN COVER</b></span>'
+  +'</div>';
+function ddCard(z,rows,color){
+  return'<div class="card" style="margin-bottom:14px"><div class="sec">DOWN &amp; DISTANCE</div>'+DD_LEGEND+buildMtxPanel(z,rows,color)+'</div>';
+}
+function insightsCard(rows,a,color){
+  var ins=buildInsights(rows,a,color||'#0055A4',true);
+  return'<div class="card"><div class="sec">KEY INSIGHTS</div>'+(ins||'<div style="color:var(--g400);font-size:12px;padding:6px 0">十分なデータがありません / Not enough data</div>')+'</div>';
+}
+
 // ===== OVERVIEW =====
 function buildOverview(rows){
   var a=analyze(rows);
   var frontCard='<div class="card"><div class="sec">FRONT</div>'+makeBars(a.front,a.n,FRONT_COLORS)+'</div>';
   var donutC='<div class="card"><div class="sec">BLITZ / STUNTS TENDENCY / 傾向</div><div class="donut-row">'+donut(a.bp,'var(--blue)','BLITZ RATE',a.bn+' / '+a.n)+donut(a.sp,'var(--green)','STUNTS RATE',a.sn+' / '+a.n)+'</div></div>';
   var covCard='<div class="card"><div class="sec">COVERAGE OVERVIEW / カバー分布</div>'+makeBars(a.cov,a.n)+'</div>';
-  var mtxCard='<div class="card" style="margin-bottom:14px"><div class="sec">DOWN &amp; DISTANCE ANALYSIS</div>'+buildMtxPanel('ALL',rows,'#0055A4')+'</div>';
-  var ins=buildInsights(rows,a,'#0055A4',true);
-  var insCard='<div class="card"><div class="sec">KEY INSIGHTS</div>'+(ins||'<div style="color:var(--g400);font-size:12px;padding:6px 0">十分なデータがありません / Not enough data</div>')+'</div>';
-  return'<div class="ov3">'+frontCard+donutC+covCard+'</div>'+mtxCard+'<div class="ov2">'+insCard+buildRecommendations(rows,a)+'</div>';
+  return'<div class="ov3">'+frontCard+donutC+covCard+'</div>'+ddCard('ALL',rows,'#0055A4')+'<div class="ov2">'+insightsCard(rows,a,'#0055A4')+buildRecommendations(rows,a)+'</div>';
 }
 
 function mCell(rows){
@@ -595,7 +583,7 @@ function renderMCell(c){
 
 // ===== TAB / PANEL SWITCHING =====
 function showTab(id){
-  ['overview','zone','mtx','form'].forEach(function(t){
+  ['overview','zone','form'].forEach(function(t){
     document.getElementById('tab-'+t).className='tp'+(t===id?' vis':'');
     document.getElementById('tt-'+t).className='tt'+(t===id?' on':'');
   });
@@ -639,26 +627,8 @@ function vsBadge(val,base){
 }
 function buildZonePanel(z,rows,color,base){
   var a=analyze(rows);
-  var dnH='';
-  [1,2,3,4].forEach(function(dn){
-    var sub=rows.filter(function(r){return r.DN===dn;});
-    if(!sub.length)return;
-    var bn=sub.filter(function(r){return r.HB;}).length;
-    var bt={BOUNDARY:0,FIELD:0,BOTH:0};sub.forEach(function(r){if(r.BT)bt[r.BT]++;});
-    var cov={};sub.forEach(function(r){if(r.COVERAGE)cov[r.COVERAGE]=(cov[r.COVERAGE]||0)+1;});
-    var topC=topN(cov,4).map(function(x){return x[0]+'('+x[1]+'件)'}).join('  ');
-    var distH=DO.map(function(dg){
-      var ds=sub.filter(function(r){return r.DIST_GRP===dg;});if(!ds.length)return'';
-      var dbn=ds.filter(function(r){return r.HB;}).length;
-      var dbt={BOUNDARY:0,FIELD:0,BOTH:0};ds.forEach(function(r){if(r.BT)dbt[r.BT]++;});
-      var dcc={};ds.forEach(function(r){if(r.COVERAGE)dcc[r.COVERAGE]=(dcc[r.COVERAGE]||0)+1;});
-      var tdc=topN(dcc,3).map(function(x){return x[0]+'('+x[1]+')'}).join(' ');
-      return'<div class="dblock"><div class="dbtitle">'+dg+' — '+ds.length+'P　BLITZ <b>'+p(dbn,ds.length)+'%</b></div><div style="font-size:10px;color:var(--g400)">'+tdc+'</div></div>';
-    }).join('');
-    dnH+='<div style="margin-bottom:10px"><div style="font-size:12px;font-weight:700;margin-bottom:5px;color:var(--navy)">'+(dn===1?'1st':dn===2?'2nd':dn===3?'3rd':'4th')+' Down（'+sub.length+'P）　BLITZ <span style="color:'+color+'">'+p(bn,sub.length)+'%</span></div><div style="font-size:11px;color:var(--g400);margin-bottom:4px">カバー: '+topC+'</div>'+distH+'</div>';
-  });
   var cBp=z==='ALL'?null:(base?base.bp:null),cSp=z==='ALL'?null:(base?base.sp:null);
-  return'<div class="print-zone-label">'+(ZE[z]||'')+' '+z+' ZONE</div>'+buildInsights(rows,a,color)+'<div class="g3" style="margin-bottom:12px"><div class="mc"><div class="ml">総プレー / Plays</div><div class="mv">'+a.n+'</div></div><div class="mc"><div class="ml">BLITZ率 / Rate</div><div class="mv" style="color:'+vsColor(a.bp,cBp)+'">'+a.bp+'%</div><div class="ms">'+a.bn+'/'+a.n+vsBadge(a.bp,cBp)+'</div></div><div class="mc"><div class="ml">STUNTS率 / Rate</div><div class="mv" style="color:'+vsColor(a.sp,cSp)+'">'+a.sp+'%</div><div class="ms">'+a.sn+'/'+a.n+vsBadge(a.sp,cSp)+'</div></div></div>'+donutCard(a)+'<div class="g2"><div class="card"><div class="sec">カバー / Coverage</div>'+makeBars(a.cov,a.n)+'</div><div class="card"><div class="sec">FRONT</div>'+makeBars(a.front,a.n,FRONT_COLORS)+'<div style="margin-top:8px;font-size:10px;color:var(--g400)">STUNTS: '+a.stunt.slice(0,5).map(function(x){return x[0]+' ('+x[1]+'件)'}).join(' / ')+'</div></div></div>'+'<div class="sec" style="margin-top:14px">DOWN & DISTANCE</div>'+dnH+'<div class="ai-section" style="margin-top:16px"><div class="ai-box"><div class="ai-hdr"><span class="ai-badge">🤖 AI</span><span>コーチ分析 / Coach Analysis</span><button class="btn-ai" onclick="generateAnalysis(\''+z+'\',false)">分析を生成 / Generate</button></div><div class="ai-body" id="ai-'+z+'"><span class="ai-placeholder">「分析を生成」を押すとAIがこのゾーンを分析します<br>Press "Generate" for AI coaching insights.</span></div></div></div>';
+  return'<div class="print-zone-label">'+(ZE[z]||'')+' '+z+' ZONE</div>'+insightsCard(rows,a,color)+'<div class="g3" style="margin:12px 0"><div class="mc"><div class="ml">総プレー / Plays</div><div class="mv">'+a.n+'</div></div><div class="mc"><div class="ml">BLITZ率 / Rate</div><div class="mv" style="color:'+vsColor(a.bp,cBp)+'">'+a.bp+'%</div><div class="ms">'+a.bn+'/'+a.n+vsBadge(a.bp,cBp)+'</div></div><div class="mc"><div class="ml">STUNTS率 / Rate</div><div class="mv" style="color:'+vsColor(a.sp,cSp)+'">'+a.sp+'%</div><div class="ms">'+a.sn+'/'+a.n+vsBadge(a.sp,cSp)+'</div></div></div>'+donutCard(a)+ddCard(z,rows,color)+'<div class="g2"><div class="card"><div class="sec">カバー / Coverage</div>'+makeBars(a.cov,a.n)+'</div><div class="card"><div class="sec">FRONT</div>'+makeBars(a.front,a.n,FRONT_COLORS)+'<div style="margin-top:8px;font-size:10px;color:var(--g400)">STUNTS: '+a.stunt.slice(0,5).map(function(x){return x[0]+' ('+x[1]+'件)'}).join(' / ')+'</div></div></div><div style="margin-top:14px">'+buildRecommendations(rows,a)+'</div><div class="ai-section" style="margin-top:14px"><div class="ai-box"><div class="ai-hdr"><span class="ai-badge">🤖 AI</span><span>コーチ分析 / Coach Analysis</span><button class="btn-ai" onclick="generateAnalysis(\''+z+'\',false)">分析を生成 / Generate</button></div><div class="ai-body" id="ai-'+z+'"><span class="ai-placeholder">「分析を生成」を押すとAIがこのゾーンを分析します<br>Press "Generate" for AI coaching insights.</span></div></div></div>';
 }
 
 // ===== FORM PANEL =====
@@ -680,7 +650,7 @@ function buildFormPanel(fg,frows,color,allRows){
     return'<div class="dblock"><div class="dbtitle">'+(ZE[z]||'')+' '+z+' — '+s.length+'P　BLITZ '+p(bn,s.length)+'%</div><div style="font-size:10px;color:var(--g600);margin-bottom:3px">'+tc+'</div>'+dnD+'</div>';
   }).join('');
   var fba=analyze(allRows);
-  return'<div class="print-zone-label">'+fg+' — FORMATION</div><div class="g3" style="margin-bottom:12px"><div class="mc"><div class="ml">総プレー / Plays</div><div class="mv">'+a.n+'</div></div><div class="mc"><div class="ml">BLITZ率 / Rate</div><div class="mv" style="color:'+vsColor(a.bp,fba.bp)+'">'+a.bp+'%</div><div class="ms">'+a.bn+'/'+a.n+vsBadge(a.bp,fba.bp)+'</div></div><div class="mc"><div class="ml">STUNTS率 / Rate</div><div class="mv" style="color:'+vsColor(a.sp,fba.sp)+'">'+a.sp+'%</div><div class="ms">'+vsBadge(a.sp,fba.sp).replace(/^ /,'')+'</div></div></div><div class="g2"><div class="card"><div class="sec">カバー / Coverage</div>'+makeBars(a.cov,a.n)+'<div style="margin-top:8px;font-size:10px;color:var(--g400)">STUNTS: '+a.stunt.slice(0,5).map(function(x){return x[0]+' ('+x[1]+'件)'}).join(' / ')+'</div></div><div class="card"><div class="sec">FRONT</div>'+makeBars(a.front,a.n,FRONT_COLORS)+'</div></div><div class="sec" style="margin-top:12px">ゾーン別詳細</div>'+zH;
+  return'<div class="print-zone-label">'+fg+' — FORMATION</div>'+insightsCard(frows,a,color)+'<div class="g3" style="margin:12px 0"><div class="mc"><div class="ml">総プレー / Plays</div><div class="mv">'+a.n+'</div></div><div class="mc"><div class="ml">BLITZ率 / Rate</div><div class="mv" style="color:'+vsColor(a.bp,fba.bp)+'">'+a.bp+'%</div><div class="ms">'+a.bn+'/'+a.n+vsBadge(a.bp,fba.bp)+'</div></div><div class="mc"><div class="ml">STUNTS率 / Rate</div><div class="mv" style="color:'+vsColor(a.sp,fba.sp)+'">'+a.sp+'%</div><div class="ms">'+vsBadge(a.sp,fba.sp).replace(/^ /,'')+'</div></div></div>'+ddCard(fg,frows,color)+'<div class="g2"><div class="card"><div class="sec">カバー / Coverage</div>'+makeBars(a.cov,a.n)+'<div style="margin-top:8px;font-size:10px;color:var(--g400)">STUNTS: '+a.stunt.slice(0,5).map(function(x){return x[0]+' ('+x[1]+'件)'}).join(' / ')+'</div></div><div class="card"><div class="sec">FRONT</div>'+makeBars(a.front,a.n,FRONT_COLORS)+'</div></div><div style="margin-top:14px">'+buildRecommendations(frows,a)+'</div><div class="sec" style="margin-top:14px">ゾーン別詳細 / by Zone</div>'+zH;
 }
 
 // ===== KEY INSIGHTS (analyst-level cross-tab tendencies) =====
@@ -865,11 +835,7 @@ function boot(rows,label){
     var processed=processData(rows);
     var valid=processed.filter(function(r){return r.ZONE!=='UNKNOWN'&&r.ZONE!=='KNOCKOUT';});
     if(!valid.length){showErr('有効なディフェンスデータが見つかりません。\nCOVERAGE・DEF FRONT・BLITZのいずれかに値がある行が必要です。');return;}
-    var bn=valid.filter(function(r){return r.HB;}).length,sn=valid.filter(function(r){return r.HS;}).length;
-    document.getElementById('i-plays').textContent=valid.length;
-    document.getElementById('i-blitz').textContent=bn+'（'+p(bn,valid.length)+'%）';
-    document.getElementById('i-stunt').textContent=sn+'（'+p(sn,valid.length)+'%）';
-    document.getElementById('i-file').textContent='📄 '+label;
+    document.getElementById('i-file').textContent='📄 '+label+'（'+valid.length+'プレー / Plays）';
     document.getElementById('err-box').style.display='none';
     var splash=document.getElementById('splash');
     splash.classList.remove('out');splash.classList.add('on');
@@ -894,20 +860,6 @@ function boot(rows,label){
       panel.id='zone-p-'+z;
       panel.innerHTML=buildZonePanel(z,zrows,color,baseStats);
       zbe.appendChild(panel);
-    });
-
-    // Matrix tab
-    var mte=document.getElementById('mtx-tabs'),mbe=document.getElementById('mtx-body');
-    mte.innerHTML='';mbe.innerHTML='';
-    ZO.forEach(function(z,i){
-      var zrows=zd[z];if(!zrows||!zrows.length)return;
-      var color=ZCS[z];
-      mte.appendChild(mkTab(z,i===0,color,'mtx-tabs','mtx-body','mtx-p-'));
-      var panel=document.createElement('div');
-      panel.className='zp'+(i===0?' vis':'');
-      panel.id='mtx-p-'+z;
-      panel.innerHTML=buildMtxPanel(z,zrows,color);
-      mbe.appendChild(panel);
     });
 
     // Form tab
@@ -1094,7 +1046,6 @@ document.addEventListener('DOMContentLoaded',function(){
 
   document.getElementById('tt-overview').addEventListener('click',function(){showTab('overview');});
   document.getElementById('tt-zone').addEventListener('click',function(){showTab('zone');});
-  document.getElementById('tt-mtx').addEventListener('click',function(){showTab('mtx');});
   document.getElementById('tt-form').addEventListener('click',function(){showTab('form');});
 
   document.getElementById('btn-print').addEventListener('click',function(){window.print();});
