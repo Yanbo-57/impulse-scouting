@@ -330,7 +330,7 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
   <div class="main">
     <div class="ttabs">
       <div class="tt on" id="tt-overview">📊 OVERVIEW</div>
-      <div class="tt" id="tt-overview2">🗒️ OVERVIEW2</div>
+      <div class="tt" id="tt-overview2">🗒️ CALL SHEET</div>
       <div class="tt" id="tt-zone">📍 FIELD ZONE</div>
       <div class="tt" id="tt-form">📋 Formation</div>
     </div>
@@ -388,10 +388,11 @@ var BP={W:1,F:1,C:1}, FP={M:1,S:1};
 // FIELD ZONE（コールシート準拠）: GREEN / ORANGE(31-50) / HIGH RED(21-30) / MIDDLE RED(11-20) / LOW RED(1-10) / KNOCKOUT(-1〜-5) / YELLOW(-6〜-20)
 var ZCS={ALL:'#002B5C',GREEN:'#059669',ORANGE:'#EA580C',HRED:'#E0564B',MRED:'#C0392B',LRED:'#8B1E14',KNOCK:'#374151',YELLOW:'#D97706'};
 var ZE={ALL:'📊',GREEN:'🟢',ORANGE:'🟠',HRED:'🔴',MRED:'🔴',LRED:'🔴',KNOCK:'🏁',YELLOW:'🟡'};
-var ZN={ALL:'ALL',GREEN:'GREEN ZONE',ORANGE:'ORANGE ZONE',HRED:'HIGH RED ZONE',MRED:'MIDDLE RED ZONE',LRED:'LOW RED ZONE',KNOCK:'KNOCKOUT ZONE',YELLOW:'YELLOW ZONE'};
-var ZR={ALL:'',GREEN:'',ORANGE:'31-50y',HRED:'21-30y',MRED:'11-20y',LRED:'1-10y',KNOCK:'-1〜-5y',YELLOW:'-6〜-20y'};
+var ZN={ALL:'ALL',GREEN:'GREEN ZONE / ORANGE ZONE',ORANGE:'ORANGE ZONE',HRED:'HIGH RED ZONE',MRED:'MIDDLE RED ZONE',LRED:'LOW RED ZONE',KNOCK:'KNOCKOUT ZONE',YELLOW:'YELLOW ZONE'};
+var ZR={ALL:'',GREEN:'-20〜20y',ORANGE:'31-50y',HRED:'21-30y',MRED:'11-20y',LRED:'1-10y',KNOCK:'-1〜-5y',YELLOW:'-6〜-20y'};
 var DO=['SHORT(1-3)','MID(4-6)','LONG(7-10)','X-LONG(11+)'];
-var ZO=['ALL','GREEN','ORANGE','HRED','MRED','LRED','KNOCK','YELLOW'];
+// FIELD ZONE タブ順: 自陣ゴール(-1)→敵陣ゴール(1) の順
+var ZO=['ALL','KNOCK','YELLOW','GREEN','ORANGE','HRED','MRED','LRED'];
 // FORMATION（コールシート準拠）
 var FO=['DOUBLE','WEAK','WING','WEAPON','SUPER/TPER/XPER','STRONG','FIB BUNDLE'];
 var FC={'DOUBLE':'#059669','WEAK':'#0891B2','WING':'#7C3AED','WEAPON':'#DB2777','SUPER/TPER/XPER':'#EA580C','STRONG':'#C0392B','FIB BUNDLE':'#6366F1'};
@@ -493,7 +494,7 @@ function analyze(rows){
     var bRaw=(r.BLITZ||'').trim();if(bRaw)blitzRaw[bRaw]=(blitzRaw[bRaw]||0)+1; // 生のBLITZコール（分割しない）
     r.BP.forEach(function(e){var k=e[0]+'-'+e[1];blitz[k]=(blitz[k]||0)+1;});
   });
-  return{n:n,bn:bn,sn:sn,bt:bt,cov:topN(cov,8),front:topN(front,6),stunt:topN(stunt,8),blitz:topN(blitz,8),blitzRaw:topN(blitzRaw,8),bp:p(bn,n),sp:p(sn,n)};
+  return{n:n,bn:bn,sn:sn,bt:bt,cov:topN(cov,8),front:topN(front,6),stunt:topN(stunt,8),blitz:topN(blitz,8),blitzRaw:topN(blitzRaw,8),bp:Math.round(p(bn,n)),sp:Math.round(p(sn,n))};
 }
 function byZone(rows){
   var z={ALL:[],GREEN:[],ORANGE:[],HRED:[],MRED:[],LRED:[],KNOCK:[],YELLOW:[]};
@@ -528,7 +529,7 @@ function makeBars(arr,total,colors){
 function downBlitzBars(rows){
   var h='';[1,2,3,4].forEach(function(dn){
     var s=rows.filter(function(r){return r.DN===dn;});if(!s.length)return;
-    var bp=p(s.filter(function(r){return r.HB;}).length,s.length);
+    var bp=Math.round(p(s.filter(function(r){return r.HB;}).length,s.length));
     h+=barRow((dn===1?'1st':dn===2?'2nd':dn===3?'3rd':'4th')+' Down',bp,'var(--blue)',bp+'% ('+s.length+'P)',true);
   });
   return h||'<div style="color:var(--g400);font-size:12px">—</div>';
@@ -564,8 +565,8 @@ function recCard(icon,tjp,ten,desc,en){
 function buildRecommendations(rows,a){
   var recs=[];
   var ov=a.bp;
-  var rate=function(sub){return sub.length?p(sub.filter(function(r){return r.HB;}).length,sub.length):0;};
-  var stuntRate=function(sub){return sub.length?p(sub.filter(function(r){return r.HS;}).length,sub.length):0;};
+  var rate=function(sub){return sub.length?Math.round(p(sub.filter(function(r){return r.HB;}).length,sub.length)):0;};
+  var stuntRate=function(sub){return sub.length?Math.round(p(sub.filter(function(r){return r.HS;}).length,sub.length)):0;};
   var topcov=function(sub){var c={};sub.forEach(function(r){if(r.COVERAGE)c[r.COVERAGE]=(c[r.COVERAGE]||0)+1;});var t=topN(c,1)[0];return t?t[0]:null;};
   var isLong=function(r){return r.DIST_GRP==='LONG(7-10)'||r.DIST_GRP==='X-LONG(11+)';};
 
@@ -664,7 +665,7 @@ function mCell(rows){
     if(r.COVERAGE)cc[r.COVERAGE]=(cc[r.COVERAGE]||0)+1;
   });
   var tc=topN(cc,2).map(function(x){return x[0]}).join('/');
-  return{n:n,bn:bn,sn:sn,bp:p(bn,n),sp:p(sn,n),bt:bt,tc:tc};
+  return{n:n,bn:bn,sn:sn,bp:Math.round(p(bn,n)),sp:Math.round(p(sn,n)),bt:bt,tc:tc};
 }
 function renderMCell(c){
   if(!c||!c.n)return'<td class="h0"><span style="color:var(--g200)">—</span></td>';
@@ -727,8 +728,8 @@ function insTip(icon,tjp,ten,fjp,fen){
 function buildInsights(rows,a,color,bare){
   var tips=[];
   var ov=a.bp;
-  var rate=function(sub){return sub.length?p(sub.filter(function(r){return r.HB;}).length,sub.length):0;};
-  var stuntRate=function(sub){return sub.length?p(sub.filter(function(r){return r.HS;}).length,sub.length):0;};
+  var rate=function(sub){return sub.length?Math.round(p(sub.filter(function(r){return r.HB;}).length,sub.length)):0;};
+  var stuntRate=function(sub){return sub.length?Math.round(p(sub.filter(function(r){return r.HS;}).length,sub.length)):0;};
   var topcov=function(sub){var c={};sub.forEach(function(r){if(r.COVERAGE)c[r.COVERAGE]=(c[r.COVERAGE]||0)+1;});var t=topN(c,1)[0];return t?t[0]:'—';};
   var isLong=function(r){return r.DIST_GRP==='LONG(7-10)'||r.DIST_GRP==='X-LONG(11+)';};
 
@@ -892,8 +893,8 @@ function buildCmpPanel(z,sr,gr,color,byForm){
   [1,2,3,4].forEach(function(dn){
     var ss=sr.filter(function(r){return r.DN===dn;}),gs=gr.filter(function(r){return r.DN===dn;});
     if(!ss.length&&!gs.length)return;
-    var sbp=p(ss.filter(function(r){return r.HB;}).length,ss.length);
-    var gbp=gs.length?p(gs.filter(function(r){return r.HB;}).length,gs.length):null;
+    var sbp=Math.round(p(ss.filter(function(r){return r.HB;}).length,ss.length));
+    var gbp=gs.length?Math.round(p(gs.filter(function(r){return r.HB;}).length,gs.length)):null;
     var diff=gbp!==null?Math.round((gbp-sbp)*10)/10:null;
     var dc=diffColor(diff);
     dnT+='<tr><td style="font-weight:700;color:var(--navy)">'+(dn===1?'1st':dn===2?'2nd':dn===3?'3rd':'4th')+' Down</td><td style="text-align:center">'+sbp+'% <span style="color:var(--g400);font-size:10px">('+ss.length+'P)</span></td><td style="text-align:center">'+(gbp!==null?gbp+'% <span style="color:var(--g400);font-size:10px">('+gs.length+'P)</span>':'—')+'</td><td style="text-align:center;font-weight:700;color:'+dc+'">'+(diff!==null?diffLabel(diff,true):'—')+'</td></tr>';
