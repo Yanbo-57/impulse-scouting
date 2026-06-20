@@ -125,6 +125,9 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
 
 /* DONUT */
 .donut-row{display:flex;justify-content:space-around;align-items:center;gap:12px;padding:6px 0 2px}
+.donut-clk{flex:1;max-width:170px;cursor:pointer;border-radius:var(--r);transition:background .15s}
+.donut-clk:hover{background:var(--g50)}
+.sec-hint{font-weight:600;color:var(--g400);font-size:9px;text-transform:none;letter-spacing:0;margin-left:6px}
 .donut{text-align:center;flex:1;max-width:170px}
 .donut-svg{width:100%;max-width:150px;height:auto;display:block;margin:0 auto}
 .donut-title{font-size:11px;font-weight:700;color:var(--g600);letter-spacing:.06em;margin-top:6px}
@@ -156,8 +159,7 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
 .zt .mcnt{font-size:10px;opacity:.7;font-weight:600}
 
 /* DOWN&DISTANCE ALL row/col */
-.mtx .allh{background:var(--navy)!important;color:#fff!important;font-weight:800}
-.mtx td.mall{box-shadow:inset 0 0 0 2px rgba(0,43,92,.45)}
+.mtx .allh{font-weight:800}
 
 /* CELL DETAIL MODAL */
 .cm-overlay{position:fixed;inset:0;z-index:300;background:rgba(8,18,35,.5);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;padding:20px}
@@ -702,11 +704,14 @@ function sampleNote(n){
 function overviewBody(rows,z,base){
   var a=analyze(rows);
   var bDiff=base?diffBadge(a.bp,base.bp):'',sDiff=base?diffBadge(a.sp,base.sp):'';
+  var dk='d'+(++__mtxSeq);__MTX[dk]=rows; // ドーナツのクリック用に行データを登録
   var frontCard='<div class="card"><div class="sec">FRONT</div>'+makeBars(a.front,a.n,FRONT_COLORS)+'</div>';
-  var donutC='<div class="card"><div class="sec">BLITZ / STUNTS</div><div class="donut-row">'+donut(a.bp,'var(--blue)','BLITZ RATE',a.bn+' / '+a.n,bDiff)+donut(a.sp,'var(--green)','STUNTS RATE',a.sn+' / '+a.n,sDiff)+'</div></div>';
+  var donutC='<div class="card"><div class="sec">BLITZ / STUNTS <span class="sec-hint">クリックで種別 / tap for type</span></div><div class="donut-row">'
+    +'<div class="donut-clk" onclick="showTypeModal(\''+dk+'\',\'blitz\')">'+donut(a.bp,'var(--blue)','BLITZ RATE',a.bn+' / '+a.n,bDiff)+'</div>'
+    +'<div class="donut-clk" onclick="showTypeModal(\''+dk+'\',\'stunts\')">'+donut(a.sp,'var(--green)','STUNTS RATE',a.sn+' / '+a.n,sDiff)+'</div>'
+    +'</div></div>';
   var covCard='<div class="card"><div class="sec">COVERAGE</div>'+makeBars(a.cov,a.n)+'</div>';
-  var bd3='<div class="ov2" style="margin-top:14px"><div class="card"><div class="sec">BLITZ種別 / Blitz Type</div>'+(a.blitzRaw.length?makeBars(a.blitzRaw,a.n):'<div style="color:var(--g400);font-size:12px">—</div>')+'</div><div class="card"><div class="sec">STUNTS種別 / Stunt Type</div>'+(a.stunt.length?makeBars(a.stunt,a.n):'<div style="color:var(--g400);font-size:12px">—</div>')+'</div></div>';
-  return sampleNote(a.n)+'<div class="ov3">'+frontCard+donutC+covCard+'</div>'+ddCard(z||'ALL',rows,'#0055A4')+bd3+'<div class="ov2" style="margin-top:14px">'+insightsCard(rows,a,'#0055A4')+buildRecommendations(rows,a)+'</div>';
+  return sampleNote(a.n)+'<div class="ov3">'+frontCard+donutC+covCard+'</div>'+ddCard(z||'ALL',rows,'#0055A4')+'<div class="ov2" style="margin-top:14px">'+insightsCard(rows,a,'#0055A4')+buildRecommendations(rows,a)+'</div>';
 }
 // ===== OVERVIEW top sections (identity / priorities / special / next steps) =====
 function ovRate(sub){return sub.length?Math.round(p(sub.filter(function(r){return r.HB;}).length,sub.length)):0;}
@@ -789,15 +794,11 @@ function renderMCell(c,key,dn,dg,isAll){
   var main=vd?'color:#fff':'color:#0A1F3C';
   var sub=vd?'color:rgba(255,255,255,.92)':'color:#1E2F4A';
   var lbl=vd?'color:rgba(255,255,255,.78)':'color:#4A5870';
-  var args="'"+key+"','"+dn+"','"+dg+"'";
-  var clk=key?' onclick="showCell('+args+')" style="cursor:pointer"':'';
-  var cB=key?' onclick="event.stopPropagation();showCell('+args+",'blitz')\""+' style="cursor:pointer"':'';
-  var cS=key?' onclick="event.stopPropagation();showCell('+args+",'stunts')\""+' style="cursor:pointer"':'';
-  var cC=key?' onclick="event.stopPropagation();showCell('+args+",'cover')\""+' style="cursor:pointer"':'';
+  var clk=key?' onclick="showCell(\''+key+'\',\''+dn+'\',\''+dg+'\')" style="cursor:pointer"':'';
   return'<td class="'+heatClass(c.bp)+allc+'"'+clk+'><div class="mcell" style="align-items:stretch;gap:3px;text-align:left;padding:1px 3px'+(low?';opacity:.55':'')+'">'
-    +'<div class="mline"'+cB+'><span class="mlbl" style="'+lbl+'">BLITZ</span><span class="mval" style="'+main+';font-weight:800">'+c.bp+'%</span></div>'
-    +'<div class="mline"'+cS+'><span class="mlbl" style="'+lbl+'">STUNTS</span><span class="mval" style="'+sub+'">'+c.sp+'%</span></div>'
-    +'<div class="mline"'+cC+'><span class="mlbl" style="'+lbl+'">MAIN COVER</span><span class="mval" style="'+sub+'">'+(c.tc||'—')+'</span></div>'
+    +'<div class="mline"><span class="mlbl" style="'+lbl+'">BLITZ</span><span class="mval" style="'+main+';font-weight:800">'+c.bp+'%</span></div>'
+    +'<div class="mline"><span class="mlbl" style="'+lbl+'">STUNTS</span><span class="mval" style="'+sub+'">'+c.sp+'%</span></div>'
+    +'<div class="mline"><span class="mlbl" style="'+lbl+'">MAIN COVER</span><span class="mval" style="'+sub+'">'+(c.tc||'—')+'</span></div>'
     +'<div class="mline"><span class="mlbl" style="'+lbl+'">N</span><span class="mval" style="'+lbl+';font-weight:700">'+c.n+(low?' ⚠':'')+'</span></div>'
     +'</div></td>';
 }
@@ -946,6 +947,17 @@ function showCell(key,dn,dg,focus){
   document.getElementById('cell-modal').classList.add('on');
 }
 function closeCell(){document.getElementById('cell-modal').classList.remove('on');}
+// ドーナツ（BLITZ/STUNTS RATE）クリックで種別を表示
+function showTypeModal(key,kind){
+  var rows=(__MTX&&__MTX[key])||[];if(!rows.length)return;
+  var a=analyze(rows);
+  var isB=kind==='blitz';
+  var title=isB?'BLITZ TYPE / BLITZ種別':'STUNTS TYPE / STUNTS種別';
+  var data=isB?a.blitzRaw:a.stunt;
+  document.getElementById('cm-body').innerHTML='<div class="cm-head"><div><b>'+title+'</b><div class="cm-sub">'+rows.length+' Play ・ '+(isB?'BLITZ '+a.bp:'STUNTS '+a.sp)+'%</div></div><button class="cm-x" onclick="closeCell()">✕</button></div>'
+    +'<div class="cm-sec">'+(isB?'BLITZ TYPE':'STUNTS TYPE')+'</div>'+(data.length?makeBars(data,a.n):'<div class="cm-no">—</div>');
+  document.getElementById('cell-modal').classList.add('on');
+}
 
 // ===== COMPARE PANEL =====
 function renderCompare(scout,game){
