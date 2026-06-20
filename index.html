@@ -160,15 +160,16 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
 /* FIELD ZONE yard-line field bar */
 .fieldbar{flex:1 1 100%;margin-bottom:4px}
 .fb-ends{display:flex;justify-content:space-between;font-size:9px;font-weight:800;color:var(--g400);letter-spacing:.08em;margin-bottom:4px}
-.fb-track{position:relative;height:46px;border-radius:8px;overflow:hidden;background:repeating-linear-gradient(90deg,#0E7C44 0,#0E7C44 9.5%,#0B6E3C 9.5%,#0B6E3C 10%),linear-gradient(180deg,#13864B,#0C6B3A);box-shadow:inset 0 0 0 1px rgba(0,0,0,.15),inset 0 8px 14px rgba(255,255,255,.08);user-select:none;touch-action:none}
-.fb-bands{position:absolute;inset:0;opacity:.32}
+.fb-track{position:relative;height:50px;border-radius:10px;overflow:hidden;background:repeating-linear-gradient(90deg,#2E9E5B 0,#2E9E5B 10%,#268C50 10%,#268C50 20%);box-shadow:inset 0 0 0 1px rgba(0,0,0,.12),inset 0 10px 16px rgba(255,255,255,.12),inset 0 -8px 12px rgba(0,0,0,.12);user-select:none;touch-action:none}
+.fb-bands{position:absolute;inset:0;opacity:.55}
 .fb-band{position:absolute;top:0;bottom:0}
-.fb-tick{position:absolute;top:0;bottom:14px;width:2px;background:rgba(255,255,255,.5);transform:translateX(-1px)}
-.fb-num{position:absolute;bottom:2px;transform:translateX(-50%);font-size:8px;color:rgba(255,255,255,.92);font-weight:800;font-variant-numeric:tabular-nums}
-.fb-sel{position:absolute;top:0;bottom:0;background:rgba(255,255,255,.3);border-left:2px solid #fff;border-right:2px solid #fff}
-.fb-h{position:absolute;top:50%;width:15px;height:34px;transform:translate(-50%,-50%);background:#fff;border:2px solid var(--navy);border-radius:5px;cursor:ew-resize;box-shadow:0 2px 6px rgba(0,0,0,.35);z-index:2}
-.fb-h::after{content:'';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:2px;height:14px;background:var(--g400);box-shadow:-3px 0 0 var(--g400),3px 0 0 var(--g400)}
+.fb-tick{position:absolute;top:0;bottom:13px;width:2px;background:rgba(255,255,255,.6);transform:translateX(-1px)}
+.fb-num{position:absolute;bottom:2px;transform:translateX(-50%);font-size:8px;color:#fff;font-weight:800;font-variant-numeric:tabular-nums;text-shadow:0 1px 2px rgba(0,0,0,.45)}
+.fb-sel{position:absolute;top:0;bottom:0;background:rgba(255,255,255,.2);border-left:3px solid #FFD24A;border-right:3px solid #FFD24A;box-shadow:0 0 0 1px rgba(0,0,0,.2)}
+.fb-h{position:absolute;top:50%;width:30px;height:30px;transform:translate(-50%,-50%);display:flex;align-items:center;justify-content:center;font-size:18px;background:#fff;border:2px solid var(--navy);border-radius:50%;cursor:ew-resize;box-shadow:0 2px 7px rgba(0,0,0,.4);z-index:2}
+.fb-h::after{content:'🏈';line-height:1}
 .fb-read{text-align:center;font-size:12px;font-weight:800;color:var(--navy);margin-top:5px;font-variant-numeric:tabular-nums}
+.zt-yd{font-size:9px;font-weight:700;opacity:.7}
 .msel-btn:hover{border-color:var(--blue);color:var(--blue)}
 .zt .mck{font-size:13px;margin-right:1px}
 .zt .mcnt{font-size:10px;opacity:.7;font-weight:600}
@@ -442,7 +443,7 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
   <div class="main">
     <div class="ttabs">
       <div class="tt on" id="tt-overview">📊 OVERVIEW</div>
-      <div class="tt" id="tt-overview2">🗒️ CALL SHEET</div>
+      <div class="tt" id="tt-overview2">🗒️ SUMMARY</div>
       <div class="tt" id="tt-zone">📍 FIELD ZONE</div>
       <div class="tt" id="tt-form">📋 FORMATION</div>
     </div>
@@ -750,7 +751,7 @@ function sampleNote(n){
 }
 
 // ===== OVERVIEW (shared body: FRONT/TENDENCY/COVERAGE → heatmap → INSIGHTS/RECS) =====
-function overviewBody(rows,z,base){
+function overviewBody(rows,z,base,afterMtx){
   var a=analyze(rows);
   var bDiff=base?diffBadge(a.bp,base.bp):'',sDiff=base?diffBadge(a.sp,base.sp):'';
   var dk='d'+(++__mtxSeq);__MTX[dk]=rows; // ドーナツのクリック用に行データを登録
@@ -760,7 +761,7 @@ function overviewBody(rows,z,base){
     +'<div class="donut-clk" onclick="showTypeModal(\''+dk+'\',\'stunts\')">'+donut(a.sp,'var(--green)','STUNTS RATE',a.sn+' / '+a.n,sDiff)+'</div>'
     +'</div></div>';
   var covCard='<div class="card"><div class="sec">COVERAGE</div>'+makeBars(a.cov,a.n)+'</div>';
-  return sampleNote(a.n)+'<div class="ov3">'+frontCard+donutC+covCard+'</div>'+ddCard(z||'ALL',rows,'#0055A4')+'<div class="ov2" style="margin-top:14px">'+insightsCard(rows,a,'#0055A4')+buildRecommendations(rows,a)+'</div>';
+  return sampleNote(a.n)+'<div class="ov3">'+frontCard+donutC+covCard+'</div>'+ddCard(z||'ALL',rows,'#0055A4')+(afterMtx||'')+'<div class="ov2" style="margin-top:14px">'+insightsCard(rows,a,'#0055A4')+buildRecommendations(rows,a)+'</div>';
 }
 // ===== OVERVIEW top sections (identity / priorities / special / next steps) =====
 function ovRate(sub){return sub.length?Math.round(p(sub.filter(function(r){return r.HB;}).length,sub.length)):0;}
@@ -803,25 +804,35 @@ function buildNextSteps(rows,a){
 }
 function buildOverview(rows){
   var a=analyze(rows);
-  return buildIdentity(rows,a)+overviewBody(rows,'ALL',null)+buildSpecial(rows)+buildNextSteps(rows,a);
+  return buildIdentity(rows,a)+overviewBody(rows,'ALL',null,buildSpecial(rows))+buildNextSteps(rows,a);
 }
 
 // ===== OVERVIEW2 (call-sheet style: BLITZ RATE / STUNTS RATE / COVERAGE per item) =====
 function ov2Item(name,color,sub){
   var a=analyze(sub);
   var cov=a.cov.length?a.cov.slice(0,2).map(function(x){return x[0];}).join(' / '):'—';
-  return'<div class="cs-card"'+(a.n===0?' style="opacity:.5"':'')+'><div class="cs-name" style="border-top-color:'+color+'">'+name+'<span class="cs-n">'+a.n+'P</span></div>'
-    +'<div class="cs-row"><span>BLITZ RATE</span><b style="color:var(--blue)">'+a.bp+'%</b></div>'
-    +'<div class="cs-row"><span>STUNTS RATE</span><b style="color:var(--green)">'+a.sp+'%</b></div>'
-    +'<div class="cs-row cov"><span>COVERAGE</span><b>'+cov+'</b></div>'
+  var fr=a.front.length?a.front.slice(0,2).map(function(x){return x[0];}).join(' / '):'—';
+  return'<div class="cs-card"'+(a.n===0?' style="opacity:.5"':'')+'><div class="cs-name" style="border-top-color:'+color+'">'+name+'</div>'
+    +'<div class="cs-row cov"><span>MAIN COVER</span><b>'+cov+'</b></div>'
+    +'<div class="cs-row cov"><span>MAIN FRONT</span><b>'+fr+'</b></div>'
+    +'<div class="cs-row"><span>BLITZ</span><b style="color:var(--blue)">'+a.bp+'%</b></div>'
+    +'<div class="cs-row"><span>STUNTS</span><b style="color:var(--green)">'+a.sp+'%</b></div>'
+    +'<div class="cs-row"><span>N</span><b>'+a.n+'</b></div>'
     +'</div>';
 }
+var CS_FCOL=['#C0392B','#0055A4','#059669','#7C3AED','#EA580C','#0891B2','#DB2777','#475569'];
 function buildOverview2(rows){
+  var all=ov2Item('ALL / 全体','#002B5C',rows);
   var byF=FO.map(function(fg){return ov2Item(fg,FC[fg],rows.filter(function(r){return r.FG===fg;}));}).join('');
   var zd=byZone(rows);
   var byZ=ZO.filter(function(z){return z!=='ALL';}).map(function(z){return ov2Item(ZN[z]||z,ZCS[z],zd[z]||[]);}).join('');
-  return'<div class="sec">FORMATION 別 / by Formation</div><div class="cs-grid">'+byF+'</div>'
-    +'<div class="sec" style="margin-top:18px">FIELD ZONE 別 / by Field Zone</div><div class="cs-grid">'+byZ+'</div>';
+  var fc={};rows.forEach(function(r){if(r['DEF FRONT'])fc[r['DEF FRONT']]=(fc[r['DEF FRONT']]||0)+1;});
+  var byFr=topN(fc,8).map(function(x,i){return ov2Item(x[0],CS_FCOL[i%CS_FCOL.length],rows.filter(function(r){return r['DEF FRONT']===x[0];}));}).join('')||'<div style="color:var(--g400);font-size:12px">—</div>';
+  return'<div class="sec">ALL / 全体</div><div class="cs-grid">'+all+'</div>'
+    +'<div class="sec" style="margin-top:18px">FORMATION 別 / by Formation</div><div class="cs-grid">'+byF+'</div>'
+    +'<div class="sec" style="margin-top:18px">FIELD ZONE 別 / by Field Zone</div><div class="cs-grid">'+byZ+'</div>'
+    +'<div class="sec" style="margin-top:18px">FRONT 別 / by Front</div><div class="cs-grid">'+byFr+'</div>'
+    +buildSpecial(rows);
 }
 
 function mCell(rows){
@@ -944,7 +955,7 @@ function setupZoneYard(tabsId,bodyId,rows,base){
   hLo.addEventListener('mousedown',drag('lo'));hHi.addEventListener('mousedown',drag('hi'));
   hLo.addEventListener('touchstart',drag('lo'),{passive:false});hHi.addEventListener('touchstart',drag('hi'),{passive:false});
   document.getElementById(tabsId+'-all').onclick=function(){lo=0;hi=100;paintZ(null);paintBar();render();};
-  zones.forEach(function(z){var t=document.createElement('div');t.className='zt';t.dataset.z=z;t.textContent=(ZE[z]||'')+' '+(ZN[z]||z);t.onclick=function(){var r=ZYARD[z];if(r){lo=r[0];hi=r[1];paintZ(z);paintBar();render();}};te.appendChild(t);});
+  zones.forEach(function(z){var t=document.createElement('div');t.className='zt';t.dataset.z=z;t.innerHTML=(ZE[z]||'')+' '+(ZN[z]||z)+(ZR[z]?' <span class="zt-yd">'+ZR[z]+'</span>':'');t.onclick=function(){var r=ZYARD[z];if(r){lo=r[0];hi=r[1];paintZ(z);paintBar();render();}};te.appendChild(t);});
   paintBar();render();
 }
 
