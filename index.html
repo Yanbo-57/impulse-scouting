@@ -154,6 +154,8 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
 .msel-ctl{flex:1 1 100%;display:flex;align-items:center;gap:8px;margin-bottom:2px}
 .msel-hint{font-size:11px;color:var(--g400);font-weight:600;margin-right:auto}
 .msel-btn{font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px;border:1px solid var(--g200);background:var(--white);color:var(--g600);cursor:pointer}
+.yl-in{width:58px;font-size:12px;font-weight:700;padding:4px 8px;border:1px solid var(--g200);border-radius:8px;text-align:center;color:var(--navy);font-variant-numeric:tabular-nums}
+.yl-in:focus{outline:none;border-color:var(--blue)}
 .msel-btn:hover{border-color:var(--blue);color:var(--blue)}
 .zt .mck{font-size:13px;margin-right:1px}
 .zt .mcnt{font-size:10px;opacity:.7;font-weight:600}
@@ -172,6 +174,27 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
 .cm-x:hover{background:var(--g200)}
 .cm-sec{font-size:11px;font-weight:800;color:var(--g600);text-transform:uppercase;letter-spacing:.06em;margin:13px 0 5px;border-left:3px solid var(--blue);padding-left:7px}
 .cm-no{color:var(--g400);font-size:12px;padding:3px 0}
+.cm-row2{display:flex;gap:10px;margin-top:8px}
+.cm-stat{flex:1;background:var(--g50);border:1px solid var(--g100);border-radius:var(--r);padding:8px 12px;display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--g600);font-weight:700}
+.cm-stat b{font-size:18px;font-variant-numeric:tabular-nums}
+
+/* MATRIX FILTER CHIPS */
+.mfilter{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin-bottom:8px;font-size:11px}
+.mfl{font-weight:800;color:var(--g600);margin-left:4px}
+.mfl:first-child{margin-left:0}
+.mfc{padding:3px 11px;border-radius:20px;border:1px solid var(--g200);background:var(--white);color:var(--g600);font-weight:700;cursor:pointer;transition:all .15s}
+.mfc:hover{border-color:var(--blue);color:var(--blue)}
+.mfc.on{background:var(--navy);color:#fff;border-color:transparent}
+.mfc.mfall{background:var(--g100);color:var(--g600);font-weight:800}
+.mfsep{width:1px;height:18px;background:var(--g200);margin:0 4px}
+
+/* DOWN&DISTANCE ALL divider */
+.mtx td.allcol,.mtx th.allcol{border-left:3px solid var(--g400)}
+.mtx td.allrow{border-top:3px solid var(--g400)}
+
+/* clickable FRONT bar */
+.fbar{cursor:pointer;border-radius:5px;transition:background .15s}
+.fbar:hover{background:var(--g50)}
 
 /* DEFENSIVE IDENTITY */
 .identity{position:relative;overflow:hidden;margin-bottom:14px;background:linear-gradient(135deg,#0E2347,#0A1A33);border:none;color:#fff}
@@ -472,11 +495,13 @@ var ZR={ALL:'',GREEN:'-20〜20y',ORANGE:'31-50y',HRED:'21-30y',MRED:'11-20y',LRE
 var DO=['SHORT(1-3)','MID(4-6)','LONG(7-10)','X-LONG(11+)'];
 // FIELD ZONE タブ順: 自陣ゴール(-1)→敵陣ゴール(1) の順
 var ZO=['ALL','KNOCK','YELLOW','GREEN','ORANGE','HRED','MRED','LRED'];
+// FIELD ZONE プリセットの YARD LINE 範囲（自陣=マイナス）。タブ押下で入力欄に反映
+var ZYARD={KNOCK:[-5,-1],YELLOW:[-20,-6],GREEN:[-20,20],ORANGE:[31,50],HRED:[21,30],MRED:[11,20],LRED:[1,10]};
 // FORMATION（コールシート準拠）
 var FO=['DOUBLE','SUPER/TPER/XPER','STRONG','WEAK','WING','WEAPON','FIB BUNDLE'];
 var FC={'DOUBLE':'#059669','WEAK':'#0891B2','WING':'#7C3AED','WEAPON':'#DB2777','SUPER/TPER/XPER':'#EA580C','STRONG':'#C0392B','FIB BUNDLE':'#6366F1'};
 
-var p=function(n,t){return t?Math.round(n/t*1000)/10:0};
+var p=function(n,t){return t?Math.round(n/t*100):0};
 var topN=function(obj,k){return Object.entries(obj).sort(function(a,b){return b[1]-a[1]}).slice(0,k||8)};
 
 // ===== LOGO =====
@@ -528,16 +553,27 @@ function bType(entries,front){
   entries.forEach(function(e){var s=bSide(e[0],e[1]);if(s==='B')hasB=true;else hasF=true;});
   if(hasB&&hasF) return 'BOTH'; return hasB?'BOUNDARY':'FIELD';
 }
+var FO_KNOWN=['DOUBLE','SUPER/TPER/XPER','STRONG','WEAK','WING','WEAPON','FIB BUNDLE'];
 function formGroup(f){
-  if(!f) return 'OTHER'; f=f.toUpperCase();
-  if(f.indexOf('BUNDLE')>=0) return 'FIB BUNDLE';
-  if(f.indexOf('DOUBLE')>=0) return 'DOUBLE';
-  if(f.indexOf('WING')>=0) return 'WING';
-  if(f.indexOf('WEAPON')>=0||f.indexOf('WEPON')>=0) return 'WEAPON';
-  if(f.indexOf('SUPER')>=0||f.indexOf('TPER')>=0||f.indexOf('XPER')>=0) return 'SUPER/TPER/XPER';
-  if(f.indexOf('STRONG')>=0) return 'STRONG';
-  if(f.indexOf('WEAK')>=0) return 'WEAK';
-  return 'OTHER';
+  if(!f) return 'OTHER'; var u=f.toUpperCase();
+  if(u.indexOf('BUNDLE')>=0) return 'FIB BUNDLE';
+  if(u.indexOf('DOUBLE')>=0) return 'DOUBLE';
+  if(u.indexOf('WING')>=0) return 'WING';
+  if(u.indexOf('WEAPON')>=0||u.indexOf('WEPON')>=0) return 'WEAPON';
+  if(u.indexOf('SUPER')>=0||u.indexOf('TPER')>=0||u.indexOf('XPER')>=0) return 'SUPER/TPER/XPER';
+  if(u.indexOf('STRONG')>=0) return 'STRONG';
+  if(u.indexOf('WEAK')>=0) return 'WEAK';
+  return u.trim(); // 未知のフォーメーションは独立タブにする
+}
+// データから実際に存在するフォーメーション群を順序付きで取得（既知→未知は頻度順）
+var FC_EXTRA=['#0EA5A4','#9333EA','#E11D48','#2563EB','#CA8A04','#15803D','#BE185D','#475569'];
+function getFOrder(rows){
+  var cnt={};rows.forEach(function(r){var g=r.FG;if(g&&g!=='OTHER')cnt[g]=(cnt[g]||0)+1;});
+  var known=FO_KNOWN.filter(function(k){return cnt[k];});
+  var extra=Object.keys(cnt).filter(function(k){return FO_KNOWN.indexOf(k)<0;}).sort(function(a,b){return cnt[b]-cnt[a];});
+  var list=known.concat(extra);
+  list.forEach(function(g,i){if(!FC[g])FC[g]=FC_EXTRA[i%FC_EXTRA.length];});
+  return list;
 }
 function processData(rows){
   var result=[];
@@ -685,7 +721,7 @@ var DD_LEGEND='<div class="hleg" style="margin-bottom:8px;font-size:10px">'
   +'<span class="hl" style="background:#FDD88A;color:#3A4252">〜60</span>'
   +'<span class="hl" style="background:#F5A623;color:#fff">〜75</span>'
   +'<span class="hl" style="background:#C0392B;color:#fff">76+</span>'
-  +'<span style="color:var(--g600)">｜各セル: <b style="color:var(--navy)">BLITZ%</b> / <b style="color:var(--navy)">STUNTS%</b> / <b style="color:var(--navy)">MAIN COVER</b></span>'
+  +'<span style="color:var(--g600)">｜各セル(上から): <b style="color:var(--navy)">MAIN COVER / MAIN FRONT / BLITZ% / STUNTS% / N</b>　クリックで詳細</span>'
   +'</div>';
 function ddCard(z,rows,color){
   return'<div class="card" style="margin-bottom:14px"><div class="sec">DOWN &amp; DISTANCE</div>'+DD_LEGEND+buildMtxPanel(z,rows,color)+'</div>';
@@ -705,7 +741,7 @@ function overviewBody(rows,z,base){
   var a=analyze(rows);
   var bDiff=base?diffBadge(a.bp,base.bp):'',sDiff=base?diffBadge(a.sp,base.sp):'';
   var dk='d'+(++__mtxSeq);__MTX[dk]=rows; // ドーナツのクリック用に行データを登録
-  var frontCard='<div class="card"><div class="sec">FRONT</div>'+makeBars(a.front,a.n,FRONT_COLORS)+'</div>';
+  var frontCard='<div class="card"><div class="sec">FRONT <span class="sec-hint">クリックで詳細 / tap</span></div>'+frontBars(a,dk)+'</div>';
   var donutC='<div class="card"><div class="sec">BLITZ / STUNTS <span class="sec-hint">クリックで種別 / tap for type</span></div><div class="donut-row">'
     +'<div class="donut-clk" onclick="showTypeModal(\''+dk+'\',\'blitz\')">'+donut(a.bp,'var(--blue)','BLITZ RATE',a.bn+' / '+a.n,bDiff)+'</div>'
     +'<div class="donut-clk" onclick="showTypeModal(\''+dk+'\',\'stunts\')">'+donut(a.sp,'var(--green)','STUNTS RATE',a.sn+' / '+a.n,sDiff)+'</div>'
@@ -734,10 +770,10 @@ function ssCard(icon,name,color,sub,total){
 }
 function buildSpecial(rows){
   var total=rows.length;
-  var twoMin=rows.filter(function(r){return r.DIST_GRP==='X-LONG(11+)';});
+  var twoMin=rows.filter(function(r){return (''+(r['2 MIN']||'')).trim().toUpperCase()==='Y';}); // 2 MIN 列=Y を参照
   var half=Math.ceil(rows.length/2);
   var firstOpen=rows.slice(0,Math.min(12,half)),secondOpen=rows.slice(half,half+12);
-  return'<div class="sec" style="margin-top:18px">SPECIAL SITUATIONS</div><div style="font-size:10px;color:var(--g400);margin-bottom:8px">※ 2分/オープナー専用列が無いため参考値（2-MIN=X-LONG, OPENERS=各ハーフ序盤）/ proxy pending dedicated tags</div>'
+  return'<div class="sec" style="margin-top:18px">SPECIAL SITUATIONS</div><div style="font-size:10px;color:var(--g400);margin-bottom:8px">※ 2-MINUTE は「2 MIN」列=Y の行を集計。OPENERS は専用列が無いため各ハーフ序盤の参考値 / openers are a proxy</div>'
     +ssCard('⏱','2-MINUTE','#7C3AED',twoMin,total)
     +ssCard('🎯','1ST HALF OPENERS','#0055A4',firstOpen,total)
     +ssCard('🏃','2ND HALF OPENERS','#059669',secondOpen,total);
@@ -777,28 +813,31 @@ function buildOverview2(rows){
 
 function mCell(rows){
   if(!rows||!rows.length)return null;
-  var n=rows.length,bn=0,sn=0,bt={B:0,F:0,BOTH:0},cc={};
+  var n=rows.length,bn=0,sn=0,bt={B:0,F:0,BOTH:0},cc={},fc={};
   rows.forEach(function(r){
     if(r.HB)bn++;if(r.HS)sn++;
     if(r.BT==='BOUNDARY')bt.B++;else if(r.BT==='FIELD')bt.F++;else if(r.BT==='BOTH')bt.BOTH++;
     if(r.COVERAGE)cc[r.COVERAGE]=(cc[r.COVERAGE]||0)+1;
+    if(r['DEF FRONT'])fc[r['DEF FRONT']]=(fc[r['DEF FRONT']]||0)+1;
   });
   var tc=topN(cc,2).map(function(x){return x[0]}).join('/');
-  return{n:n,bn:bn,sn:sn,bp:Math.round(p(bn,n)),sp:Math.round(p(sn,n)),bt:bt,tc:tc};
+  var tf=topN(fc,2).map(function(x){return x[0]}).join('/');
+  return{n:n,bn:bn,sn:sn,bp:p(bn,n),sp:p(sn,n),bt:bt,tc:tc,tf:tf};
 }
-function renderMCell(c,key,dn,dg,isAll){
-  var allc=isAll?' mall':'';
-  if(!c||!c.n)return'<td class="h0'+allc+'"><span style="color:var(--g200)">—</span></td>';
+function renderMCell(c,key,dn,dg,allType){
+  var ac=allType==='col'?' allcol':allType==='row'?' allrow':allType==='both'?' allcol allrow':'';
+  if(!c||!c.n)return'<td class="h0'+ac+'"><span style="color:var(--g200)">—</span></td>';
   var vd=c.bp>75;
   var low=c.n<3;
   var main=vd?'color:#fff':'color:#0A1F3C';
   var sub=vd?'color:rgba(255,255,255,.92)':'color:#1E2F4A';
   var lbl=vd?'color:rgba(255,255,255,.78)':'color:#4A5870';
   var clk=key?' onclick="showCell(\''+key+'\',\''+dn+'\',\''+dg+'\')" style="cursor:pointer"':'';
-  return'<td class="'+heatClass(c.bp)+allc+'"'+clk+'><div class="mcell" style="align-items:stretch;gap:3px;text-align:left;padding:1px 3px'+(low?';opacity:.55':'')+'">'
+  return'<td class="'+heatClass(c.bp)+ac+'"'+clk+'><div class="mcell" style="align-items:stretch;gap:3px;text-align:left;padding:1px 3px'+(low?';opacity:.55':'')+'">'
+    +'<div class="mline"><span class="mlbl" style="'+lbl+'">MAIN COVER</span><span class="mval" style="'+sub+'">'+(c.tc||'—')+'</span></div>'
+    +'<div class="mline"><span class="mlbl" style="'+lbl+'">MAIN FRONT</span><span class="mval" style="'+sub+'">'+(c.tf||'—')+'</span></div>'
     +'<div class="mline"><span class="mlbl" style="'+lbl+'">BLITZ</span><span class="mval" style="'+main+';font-weight:800">'+c.bp+'%</span></div>'
     +'<div class="mline"><span class="mlbl" style="'+lbl+'">STUNTS</span><span class="mval" style="'+sub+'">'+c.sp+'%</span></div>'
-    +'<div class="mline"><span class="mlbl" style="'+lbl+'">MAIN COVER</span><span class="mval" style="'+sub+'">'+(c.tc||'—')+'</span></div>'
     +'<div class="mline"><span class="mlbl" style="'+lbl+'">N</span><span class="mval" style="'+lbl+';font-weight:700">'+c.n+(low?' ⚠':'')+'</span></div>'
     +'</div></td>';
 }
@@ -863,6 +902,35 @@ function setupMultiTabs(tabsId,bodyId,items,getRows,colorOf,labelOf,base){
   });
   paint();render();
 }
+// FIELD ZONE: YARD LINE 任意指定 + ゾーンプリセットタブ（押すと範囲が入力に反映）（#8）
+function setupZoneYard(tabsId,bodyId,rows,base){
+  var te=document.getElementById(tabsId),be=document.getElementById(bodyId);
+  te.innerHTML='';
+  var lo=-50,hi=50;
+  var zones=ZO.filter(function(z){return z!=='ALL';});
+  function render(){
+    var sub=rows.filter(function(r){var y=parseFloat(r['YARD LN']);return !isNaN(y)&&y>=lo&&y<=hi;});
+    be.innerHTML='<div class="msel-note">YARD LINE: <b>'+lo+'〜'+hi+'</b> / '+sub.length+' Play（自陣=マイナス, ALL=-50〜50）</div>'+overviewBody(sub,'YARD',base);
+  }
+  function paintZ(active){Array.prototype.forEach.call(te.querySelectorAll('.zt[data-z]'),function(pz){var z=pz.dataset.z,on=z===active;pz.className='zt'+(on?' on':'');pz.style.background=on?ZCS[z]:'';pz.style.color=on?'#fff':'';pz.style.borderColor=on?'transparent':'';});}
+  var ctl=document.createElement('div');ctl.className='msel-ctl';
+  ctl.innerHTML='<span class="msel-hint">YARD LINEで抽出（自陣=マイナス）。ゾーンタブで自動セット / set range, or tap a zone</span>';
+  var iLo=document.createElement('input');iLo.type='number';iLo.className='yl-in';iLo.value=lo;
+  var iHi=document.createElement('input');iHi.type='number';iHi.className='yl-in';iHi.value=hi;
+  var sep=document.createElement('span');sep.textContent='〜';sep.style.fontWeight='800';sep.style.color='var(--g600)';
+  iLo.oninput=function(){var v=parseFloat(iLo.value);lo=isNaN(v)?-50:v;paintZ(null);render();};
+  iHi.oninput=function(){var v=parseFloat(iHi.value);hi=isNaN(v)?50:v;paintZ(null);render();};
+  var bAll=document.createElement('button');bAll.className='msel-btn';bAll.textContent='ALL';
+  bAll.onclick=function(){lo=-50;hi=50;iLo.value=lo;iHi.value=hi;paintZ(null);render();};
+  ctl.appendChild(iLo);ctl.appendChild(sep);ctl.appendChild(iHi);ctl.appendChild(bAll);te.appendChild(ctl);
+  zones.forEach(function(z){
+    var t=document.createElement('div');t.className='zt';t.dataset.z=z;
+    t.textContent=(ZE[z]||'')+' '+(ZN[z]||z)+(ZR[z]?'（'+ZR[z]+'）':'');
+    t.onclick=function(){var r=ZYARD[z];if(r){lo=r[0];hi=r[1];iLo.value=lo;iHi.value=hi;paintZ(z);render();}};
+    te.appendChild(t);
+  });
+  render();
+}
 
 
 // ===== KEY INSIGHTS (facts only, NFL-coach level — no recommendations) =====
@@ -914,37 +982,74 @@ function buildInsights(rows,a,color,bare){
 }
 
 // ===== MATRIX PANEL =====
-var __MTX={},__mtxSeq=0;
-function buildMtxPanel(z,rows,color){
-  var key='m'+(++__mtxSeq);__MTX[key]=rows;
-  var tb='<div class="print-zone-label">'+(ZE[z]||'')+' '+((typeof ZN!=='undefined'&&ZN[z])?ZN[z]:z)+' — DOWN & DISTANCE</div><div class="mtx-wrap"><table class="mtx mtx-all"><tr><th class="lh">DOWN ＼ DISTANCE</th>'+DO.map(function(d){return'<th>'+d+'</th>';}).join('')+'<th class="allh">ALL</th></tr>';
-  [1,2,3,4].forEach(function(dn){
-    tb+='<tr><td class="rh">'+(dn===1?'1st':dn===2?'2nd':dn===3?'3rd':'4th')+' Down</td>';
-    DO.forEach(function(dg){tb+=renderMCell(mCell(rows.filter(function(r){return r.DN===dn&&r.DIST_GRP===dg;})),key,String(dn),dg,false);});
-    tb+=renderMCell(mCell(rows.filter(function(r){return r.DN===dn;})),key,String(dn),'ALL',true);  // 右端: そのダウンの全DIST合算
+var __MTX={},__MTXSEL={},__mtxSeq=0;
+function dnLbl(dn){return dn===1?'1st':dn===2?'2nd':dn===3?'3rd':'4th';}
+function mtxTable(key){
+  var rows=__MTX[key],s=__MTXSEL[key],dns=s.dn,dgs=s.dg;
+  var tb='<table class="mtx mtx-all"><tr><th class="lh">DOWN ＼ DISTANCE</th>'+dgs.map(function(d){return'<th>'+d+'</th>';}).join('')+'<th class="allh allcol">ALL</th></tr>';
+  dns.forEach(function(dn){
+    tb+='<tr><td class="rh">'+dnLbl(dn)+' Down</td>';
+    dgs.forEach(function(dg){tb+=renderMCell(mCell(rows.filter(function(r){return r.DN===dn&&r.DIST_GRP===dg;})),key,String(dn),dg,'');});
+    tb+=renderMCell(mCell(rows.filter(function(r){return r.DN===dn&&dgs.indexOf(r.DIST_GRP)>=0;})),key,String(dn),'ALL','col');
     tb+='</tr>';
   });
-  // 下段: ALL 行（各DISTを全ダウン合算 + 総合計）
-  tb+='<tr><td class="rh allh">ALL</td>';
-  DO.forEach(function(dg){tb+=renderMCell(mCell(rows.filter(function(r){return r.DIST_GRP===dg;})),key,'ALL',dg,true);});
-  tb+=renderMCell(mCell(rows),key,'ALL','ALL',true);
-  tb+='</tr></table></div>';
-  return tb;
+  tb+='<tr><td class="rh allh allrow">ALL</td>';
+  dgs.forEach(function(dg){tb+=renderMCell(mCell(rows.filter(function(r){return dns.indexOf(r.DN)>=0&&r.DIST_GRP===dg;})),key,'ALL',dg,'row');});
+  tb+=renderMCell(mCell(rows.filter(function(r){return dns.indexOf(r.DN)>=0&&dgs.indexOf(r.DIST_GRP)>=0;})),key,'ALL','ALL','both');
+  return tb+'</tr></table>';
 }
-// セルクリックで COVERAGE / BLITZ TYPE / STUNTS TYPE をモーダル表示
+function mtxChips(key){
+  var s=__MTXSEL[key];
+  var dn=[1,2,3,4].map(function(d){return'<span class="mfc'+(s.dn.indexOf(d)>=0?' on':'')+'" onclick="mtxToggle(\''+key+'\',\'dn\','+d+')">'+dnLbl(d)+'</span>';}).join('');
+  var dg=DO.map(function(d){return'<span class="mfc'+(s.dg.indexOf(d)>=0?' on':'')+'" onclick="mtxToggle(\''+key+'\',\'dg\',\''+d+'\')">'+d+'</span>';}).join('');
+  return'<div class="mfilter"><span class="mfl">DOWN</span><span class="mfc mfall" onclick="mtxAll(\''+key+'\',\'dn\')">ALL</span>'+dn+'<span class="mfsep"></span><span class="mfl">DIST</span><span class="mfc mfall" onclick="mtxAll(\''+key+'\',\'dg\')">ALL</span>'+dg+'</div>';
+}
+function mtxInner(key){return mtxChips(key)+'<div class="mtx-wrap">'+mtxTable(key)+'</div>';}
+function buildMtxPanel(z,rows,color){
+  var key='m'+(++__mtxSeq);__MTX[key]=rows;__MTXSEL[key]={dn:[1,2,3,4],dg:DO.slice()};
+  return'<div class="print-zone-label">'+(ZE[z]||'')+' '+((typeof ZN!=='undefined'&&ZN[z])?ZN[z]:z)+' — DOWN & DISTANCE</div><div id="mtxbox-'+key+'">'+mtxInner(key)+'</div>';
+}
+function mtxToggle(key,axis,val){var arr=__MTXSEL[key][axis],i=arr.indexOf(val);if(i>=0)arr.splice(i,1);else arr.push(val);if(!arr.length)arr.push(val);__MTXSEL[key].dn=[1,2,3,4].filter(function(d){return __MTXSEL[key].dn.indexOf(d)>=0;});__MTXSEL[key].dg=DO.filter(function(d){return __MTXSEL[key].dg.indexOf(d)>=0;});document.getElementById('mtxbox-'+key).innerHTML=mtxInner(key);}
+function mtxAll(key,axis){__MTXSEL[key][axis]=axis==='dn'?[1,2,3,4]:DO.slice();document.getElementById('mtxbox-'+key).innerHTML=mtxInner(key);}
+// セルクリックで MAIN COVER / FRONT / BLITZ TYPE / STUNTS TYPE をモーダル表示
 function showCell(key,dn,dg,focus){
-  var rows=(__MTX&&__MTX[key])||[];
-  var sub=rows.filter(function(r){return (dn==='ALL'||r.DN===+dn)&&(dg==='ALL'||r.DIST_GRP===dg);});
+  var rows=(__MTX&&__MTX[key])||[],sel=__MTXSEL[key]||{dn:[1,2,3,4],dg:DO.slice()};
+  var dns=dn==='ALL'?sel.dn:[+dn],dgs=dg==='ALL'?sel.dg:[dg];
+  var sub=rows.filter(function(r){return dns.indexOf(r.DN)>=0&&dgs.indexOf(r.DIST_GRP)>=0;});
   if(!sub.length)return;
   var a=analyze(sub);
-  var dnT=dn==='ALL'?'ALL DOWN':((dn==='1'?'1st':dn==='2'?'2nd':dn==='3'?'3rd':'4th')+' Down');
+  var dnT=dn==='ALL'?'ALL DOWN':(dnLbl(+dn)+' Down');
   var dgT=dg==='ALL'?'ALL DIST':dg;
   var secs='';
-  if(!focus||focus==='cover')secs+='<div class="cm-sec">COVERAGE</div>'+(a.cov.length?makeBars(a.cov,a.n):'<div class="cm-no">—</div>');
+  if(!focus||focus==='cover'){
+    secs+='<div class="cm-sec">MAIN COVER</div>'+(a.cov.length?makeBars(a.cov,a.n):'<div class="cm-no">—</div>');
+    secs+='<div class="cm-sec">FRONT</div>'+(a.front.length?makeBars(a.front,a.n,FRONT_COLORS):'<div class="cm-no">—</div>');
+  }
   if(!focus||focus==='blitz')secs+='<div class="cm-sec">BLITZ TYPE</div>'+(a.blitzRaw.length?makeBars(a.blitzRaw,a.n):'<div class="cm-no">—</div>');
   if(!focus||focus==='stunts')secs+='<div class="cm-sec">STUNTS TYPE</div>'+(a.stunt.length?makeBars(a.stunt,a.n):'<div class="cm-no">—</div>');
   document.getElementById('cm-body').innerHTML='<div class="cm-head"><div><b>'+dnT+' × '+dgT+'</b><div class="cm-sub">'+sub.length+' Play ・ BLITZ '+a.bp+'% / STUNTS '+a.sp+'%</div></div><button class="cm-x" onclick="closeCell()">✕</button></div>'+secs;
   document.getElementById('cell-modal').classList.add('on');
+}
+// FRONT バーのクリックで そのフロントの詳細を表示（#6）
+function showFrontModal(key,fr){
+  var rows=(__MTX&&__MTX[key])||[];
+  var sub=rows.filter(function(r){return (r['DEF FRONT']||'')===fr;});
+  if(!sub.length)return;
+  var a=analyze(sub);
+  document.getElementById('cm-body').innerHTML='<div class="cm-head"><div><b>FRONT: '+fr+'</b><div class="cm-sub">'+sub.length+' Play</div></div><button class="cm-x" onclick="closeCell()">✕</button></div>'
+    +'<div class="cm-sec">MAIN COVER</div>'+(a.cov.length?makeBars(a.cov,a.n):'<div class="cm-no">—</div>')
+    +'<div class="cm-row2"><div class="cm-stat"><span>BLITZ RATE</span><b style="color:var(--blue)">'+a.bp+'%</b></div><div class="cm-stat"><span>STUNTS RATE</span><b style="color:var(--green)">'+a.sp+'%</b></div></div>'
+    +'<div class="cm-sec">BLITZ TYPE</div>'+(a.blitzRaw.length?makeBars(a.blitzRaw,a.n):'<div class="cm-no">—</div>')
+    +'<div class="cm-sec">STUNTS TYPE</div>'+(a.stunt.length?makeBars(a.stunt,a.n):'<div class="cm-no">—</div>');
+  document.getElementById('cell-modal').classList.add('on');
+}
+// クリック可能な FRONT バー
+function frontBars(a,key){
+  if(!a.front.length)return'<div style="color:var(--g400);font-size:12px">—</div>';
+  return a.front.slice(0,6).map(function(item,i){
+    var k=item[0],v=item[1],w=p(v,a.n),hl=w>=25;
+    return'<div class="fbar" onclick="showFrontModal(\''+key+'\',\''+(''+k).replace(/[\\\\\']/g,'')+'\')">'+barRow(k,w,hl?FRONT_COLORS[i%FRONT_COLORS.length]:BAR_GREY,w+'% ('+v+'件)',hl)+'</div>';
+  }).join('');
 }
 function closeCell(){document.getElementById('cell-modal').classList.remove('on');}
 // ドーナツ（BLITZ/STUNTS RATE）クリックで種別を表示
@@ -1130,6 +1235,7 @@ function boot(rows,label){
     document.getElementById('dashboard').style.display='block';
 
     var zd=byZone(valid);
+    FO=getFOrder(valid); // 実データのフォーメーション群（新規は新タブ）
     var ovA=analyze(zd.ALL),base={bp:ovA.bp,sp:ovA.sp}; // OVERVIEW(ALL)基準
 
     // Overview tab
@@ -1137,12 +1243,8 @@ function boot(rows,label){
     // Overview2 (call sheet)
     document.getElementById('overview2-body').innerHTML=buildOverview2(valid);
 
-    // Zone tab（複数選択可）
-    setupMultiTabs('zone-tabs','zone-body',ZO.filter(function(z){return z!=='ALL';}),
-      function(z){return zd[z]||[];},
-      function(z){return ZCS[z];},
-      function(z){return (ZE[z]||'')+' '+(ZN[z]||z)+(ZR[z]?'（'+ZR[z]+'）':'');},
-      base);
+    // Zone tab（YARD LINE 任意指定 + ゾーンプリセット）
+    setupZoneYard('zone-tabs','zone-body',valid,base);
 
     // Form tab（複数選択可）
     setupMultiTabs('form-tabs','form-body',FO,
