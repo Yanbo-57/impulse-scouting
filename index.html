@@ -156,6 +156,19 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
 .msel-btn{font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px;border:1px solid var(--g200);background:var(--white);color:var(--g600);cursor:pointer}
 .yl-in{width:58px;font-size:12px;font-weight:700;padding:4px 8px;border:1px solid var(--g200);border-radius:8px;text-align:center;color:var(--navy);font-variant-numeric:tabular-nums}
 .yl-in:focus{outline:none;border-color:var(--blue)}
+
+/* FIELD ZONE yard-line field bar */
+.fieldbar{flex:1 1 100%;margin-bottom:4px}
+.fb-ends{display:flex;justify-content:space-between;font-size:9px;font-weight:800;color:var(--g400);letter-spacing:.08em;margin-bottom:4px}
+.fb-track{position:relative;height:46px;border-radius:8px;overflow:hidden;background:repeating-linear-gradient(90deg,#0E7C44 0,#0E7C44 9.5%,#0B6E3C 9.5%,#0B6E3C 10%),linear-gradient(180deg,#13864B,#0C6B3A);box-shadow:inset 0 0 0 1px rgba(0,0,0,.15),inset 0 8px 14px rgba(255,255,255,.08);user-select:none;touch-action:none}
+.fb-bands{position:absolute;inset:0;opacity:.32}
+.fb-band{position:absolute;top:0;bottom:0}
+.fb-tick{position:absolute;top:0;bottom:14px;width:2px;background:rgba(255,255,255,.5);transform:translateX(-1px)}
+.fb-num{position:absolute;bottom:2px;transform:translateX(-50%);font-size:8px;color:rgba(255,255,255,.92);font-weight:800;font-variant-numeric:tabular-nums}
+.fb-sel{position:absolute;top:0;bottom:0;background:rgba(255,255,255,.3);border-left:2px solid #fff;border-right:2px solid #fff}
+.fb-h{position:absolute;top:50%;width:15px;height:34px;transform:translate(-50%,-50%);background:#fff;border:2px solid var(--navy);border-radius:5px;cursor:ew-resize;box-shadow:0 2px 6px rgba(0,0,0,.35);z-index:2}
+.fb-h::after{content:'';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:2px;height:14px;background:var(--g400);box-shadow:-3px 0 0 var(--g400),3px 0 0 var(--g400)}
+.fb-read{text-align:center;font-size:12px;font-weight:800;color:var(--navy);margin-top:5px;font-variant-numeric:tabular-nums}
 .msel-btn:hover{border-color:var(--blue);color:var(--blue)}
 .zt .mck{font-size:13px;margin-right:1px}
 .zt .mcnt{font-size:10px;opacity:.7;font-weight:600}
@@ -495,8 +508,8 @@ var ZR={ALL:'',GREEN:'-20〜20y',ORANGE:'31-50y',HRED:'21-30y',MRED:'11-20y',LRE
 var DO=['SHORT(1-3)','MID(4-6)','LONG(7-10)','X-LONG(11+)'];
 // FIELD ZONE タブ順: 自陣ゴール(-1)→敵陣ゴール(1) の順
 var ZO=['ALL','KNOCK','YELLOW','GREEN','ORANGE','HRED','MRED','LRED'];
-// FIELD ZONE プリセットの YARD LINE 範囲（自陣=マイナス）。タブ押下で入力欄に反映
-var ZYARD={KNOCK:[-5,-1],YELLOW:[-20,-6],GREEN:[-20,20],ORANGE:[31,50],HRED:[21,30],MRED:[11,20],LRED:[1,10]};
+// FIELD ZONE プリセット（フィールド位置 0=自陣ゴール 〜 100=敵陣ゴール, 50=ミッド）
+var ZYARD={KNOCK:[0,5],YELLOW:[6,20],GREEN:[20,80],ORANGE:[50,69],HRED:[70,79],MRED:[80,89],LRED:[90,100]};
 // FORMATION（コールシート準拠）
 var FO=['DOUBLE','SUPER/TPER/XPER','STRONG','WEAK','WING','WEAPON','FIB BUNDLE'];
 var FC={'DOUBLE':'#059669','WEAK':'#0891B2','WING':'#7C3AED','WEAPON':'#DB2777','SUPER/TPER/XPER':'#EA580C','STRONG':'#C0392B','FIB BUNDLE':'#6366F1'};
@@ -903,33 +916,36 @@ function setupMultiTabs(tabsId,bodyId,items,getRows,colorOf,labelOf,base){
   paint();render();
 }
 // FIELD ZONE: YARD LINE 任意指定 + ゾーンプリセットタブ（押すと範囲が入力に反映）（#8）
+// フィールド位置: 0=自陣ゴール … 50=ミッド … 100=敵陣ゴール（自陣=負, 敵陣=正のYARD LNを連続化）
+function fpos(y){y=parseFloat(y);return isNaN(y)?NaN:(y<=0?-y:100-y);}
+function fpLbl(fp){return fp<=50?('自'+fp):('敵'+(100-fp));}
 function setupZoneYard(tabsId,bodyId,rows,base){
   var te=document.getElementById(tabsId),be=document.getElementById(bodyId);
   te.innerHTML='';
-  var lo=-50,hi=50;
+  var lo=0,hi=100;
   var zones=ZO.filter(function(z){return z!=='ALL';});
-  function render(){
-    var sub=rows.filter(function(r){var y=parseFloat(r['YARD LN']);return !isNaN(y)&&y>=lo&&y<=hi;});
-    be.innerHTML='<div class="msel-note">YARD LINE: <b>'+lo+'〜'+hi+'</b> / '+sub.length+' Play（自陣=マイナス, ALL=-50〜50）</div>'+overviewBody(sub,'YARD',base);
-  }
+  var ticks='';for(var fp=0;fp<=100;fp+=10){ticks+='<div class="fb-tick" style="left:'+fp+'%"></div><div class="fb-num" style="left:'+fp+'%">'+(fp<=50?fp:100-fp)+'</div>';}
+  var bands=zones.filter(function(z){return z!=='GREEN';}).map(function(z){var r=ZYARD[z];if(!r)return'';return'<div class="fb-band" title="'+(ZN[z]||z)+'" style="left:'+r[0]+'%;width:'+(r[1]-r[0])+'%;background:'+ZCS[z]+'"></div>';}).join('');
+  te.innerHTML='<div class="fieldbar">'
+    +'<div class="fb-ends"><span>◀ OWN GOAL 自陣</span><span>MID 50</span><span>敵陣 OPP GOAL ▶</span></div>'
+    +'<div class="fb-track" id="'+tabsId+'-trk"><div class="fb-bands">'+bands+'</div>'+ticks
+      +'<div class="fb-sel" id="'+tabsId+'-sel"></div><div class="fb-h" id="'+tabsId+'-hlo"></div><div class="fb-h" id="'+tabsId+'-hhi"></div></div>'
+    +'<div class="fb-read" id="'+tabsId+'-rd"></div></div>'
+    +'<div class="msel-ctl"><span class="msel-hint">ハンドルをドラッグ、またはゾーンをタップ / drag handles or tap a zone</span><button class="msel-btn" id="'+tabsId+'-all">ALL</button></div>';
+  var trk=document.getElementById(tabsId+'-trk'),sel=document.getElementById(tabsId+'-sel'),hLo=document.getElementById(tabsId+'-hlo'),hHi=document.getElementById(tabsId+'-hhi'),rd=document.getElementById(tabsId+'-rd');
   function paintZ(active){Array.prototype.forEach.call(te.querySelectorAll('.zt[data-z]'),function(pz){var z=pz.dataset.z,on=z===active;pz.className='zt'+(on?' on':'');pz.style.background=on?ZCS[z]:'';pz.style.color=on?'#fff':'';pz.style.borderColor=on?'transparent':'';});}
-  var ctl=document.createElement('div');ctl.className='msel-ctl';
-  ctl.innerHTML='<span class="msel-hint">YARD LINEで抽出（自陣=マイナス）。ゾーンタブで自動セット / set range, or tap a zone</span>';
-  var iLo=document.createElement('input');iLo.type='number';iLo.className='yl-in';iLo.value=lo;
-  var iHi=document.createElement('input');iHi.type='number';iHi.className='yl-in';iHi.value=hi;
-  var sep=document.createElement('span');sep.textContent='〜';sep.style.fontWeight='800';sep.style.color='var(--g600)';
-  iLo.oninput=function(){var v=parseFloat(iLo.value);lo=isNaN(v)?-50:v;paintZ(null);render();};
-  iHi.oninput=function(){var v=parseFloat(iHi.value);hi=isNaN(v)?50:v;paintZ(null);render();};
-  var bAll=document.createElement('button');bAll.className='msel-btn';bAll.textContent='ALL';
-  bAll.onclick=function(){lo=-50;hi=50;iLo.value=lo;iHi.value=hi;paintZ(null);render();};
-  ctl.appendChild(iLo);ctl.appendChild(sep);ctl.appendChild(iHi);ctl.appendChild(bAll);te.appendChild(ctl);
-  zones.forEach(function(z){
-    var t=document.createElement('div');t.className='zt';t.dataset.z=z;
-    t.textContent=(ZE[z]||'')+' '+(ZN[z]||z)+(ZR[z]?'（'+ZR[z]+'）':'');
-    t.onclick=function(){var r=ZYARD[z];if(r){lo=r[0];hi=r[1];iLo.value=lo;iHi.value=hi;paintZ(z);render();}};
-    te.appendChild(t);
-  });
-  render();
+  function paintBar(){sel.style.left=lo+'%';sel.style.width=(hi-lo)+'%';hLo.style.left=lo+'%';hHi.style.left=hi+'%';rd.innerHTML='範囲 <b>'+fpLbl(lo)+'</b> 〜 <b>'+fpLbl(hi)+'</b>'+((lo===0&&hi===100)?' (ALL)':'');}
+  function render(){var sub=rows.filter(function(r){var fp=fpos(r['YARD LN']);return !isNaN(fp)&&fp>=lo&&fp<=hi;});be.innerHTML='<div class="msel-note">フィールド位置 <b>'+fpLbl(lo)+'〜'+fpLbl(hi)+'</b> / '+sub.length+' Play</div>'+overviewBody(sub,'YARD',base);}
+  function fpFromX(cx){var rc=trk.getBoundingClientRect();return Math.max(0,Math.min(100,Math.round((cx-rc.left)/rc.width*100)));}
+  function drag(which){return function(ev){ev.preventDefault();
+    function mv(e){var cx=(e.touches&&e.touches[0])?e.touches[0].clientX:e.clientX;var fp=fpFromX(cx);if(which==='lo')lo=Math.min(fp,hi);else hi=Math.max(fp,lo);paintZ(null);paintBar();}
+    function up(){document.removeEventListener('mousemove',mv);document.removeEventListener('mouseup',up);document.removeEventListener('touchmove',mv);document.removeEventListener('touchend',up);render();}
+    document.addEventListener('mousemove',mv);document.addEventListener('mouseup',up);document.addEventListener('touchmove',mv,{passive:false});document.addEventListener('touchend',up);};}
+  hLo.addEventListener('mousedown',drag('lo'));hHi.addEventListener('mousedown',drag('hi'));
+  hLo.addEventListener('touchstart',drag('lo'),{passive:false});hHi.addEventListener('touchstart',drag('hi'),{passive:false});
+  document.getElementById(tabsId+'-all').onclick=function(){lo=0;hi=100;paintZ(null);paintBar();render();};
+  zones.forEach(function(z){var t=document.createElement('div');t.className='zt';t.dataset.z=z;t.textContent=(ZE[z]||'')+' '+(ZN[z]||z);t.onclick=function(){var r=ZYARD[z];if(r){lo=r[0];hi=r[1];paintZ(z);paintBar();render();}};te.appendChild(t);});
+  paintBar();render();
 }
 
 
