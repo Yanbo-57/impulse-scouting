@@ -147,6 +147,30 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
 /* MULTI-SELECT COMBINED NOTE */
 .msel-note{background:var(--blue-pale);border:1px solid var(--g200);border-left:4px solid var(--blue);border-radius:var(--r);padding:8px 14px;margin-bottom:14px;font-size:12px;font-weight:700;color:var(--navy)}
 
+/* MULTI-SELECT CONTROLS */
+.msel-ctl{flex:1 1 100%;display:flex;align-items:center;gap:8px;margin-bottom:2px}
+.msel-hint{font-size:11px;color:var(--g400);font-weight:600;margin-right:auto}
+.msel-btn{font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px;border:1px solid var(--g200);background:var(--white);color:var(--g600);cursor:pointer}
+.msel-btn:hover{border-color:var(--blue);color:var(--blue)}
+.zt .mck{font-size:13px;margin-right:1px}
+.zt .mcnt{font-size:10px;opacity:.7;font-weight:600}
+
+/* DOWN&DISTANCE ALL row/col */
+.mtx .allh{background:var(--navy)!important;color:#fff!important;font-weight:800}
+.mtx td.mall{box-shadow:inset 0 0 0 2px rgba(0,43,92,.45)}
+
+/* CELL DETAIL MODAL */
+.cm-overlay{position:fixed;inset:0;z-index:300;background:rgba(8,18,35,.5);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;padding:20px}
+.cm-overlay.on{display:flex;animation:fadeUp .2s ease both}
+.cm-box{background:#fff;border-radius:var(--rl);box-shadow:var(--sh2);max-width:460px;width:100%;max-height:84vh;overflow:auto;padding:16px 18px}
+.cm-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;border-bottom:2px solid var(--g100);padding-bottom:10px;margin-bottom:4px}
+.cm-head b{font-size:15px;color:var(--navy)}
+.cm-sub{font-size:11px;color:var(--g400);margin-top:2px;font-weight:600;font-variant-numeric:tabular-nums}
+.cm-x{background:var(--g100);border:none;border-radius:8px;width:30px;height:30px;font-size:13px;cursor:pointer;color:var(--g600);flex-shrink:0}
+.cm-x:hover{background:var(--g200)}
+.cm-sec{font-size:11px;font-weight:800;color:var(--g600);text-transform:uppercase;letter-spacing:.06em;margin:13px 0 5px;border-left:3px solid var(--blue);padding-left:7px}
+.cm-no{color:var(--g400);font-size:12px;padding:3px 0}
+
 /* DEFENSIVE IDENTITY */
 .identity{position:relative;overflow:hidden;margin-bottom:14px;background:linear-gradient(135deg,#0E2347,#0A1A33);border:none;color:#fff}
 .idt-watermark{position:absolute;right:-6px;top:-14px;font-size:120px;opacity:.06;pointer-events:none}
@@ -432,6 +456,9 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
   </div>
 </div>
 
+<!-- CELL DETAIL MODAL -->
+<div id="cell-modal" class="cm-overlay" onclick="if(event.target===this)closeCell()"><div class="cm-box"><div id="cm-body"></div></div></div>
+
 <script>
 // ===== CONSTANTS =====
 var BP={W:1,F:1,C:1}, FP={M:1,S:1};
@@ -575,15 +602,6 @@ function makeBars(arr,total,colors){
   });
   return h;
 }
-// ダウン別BLITZ率の横棒
-function downBlitzBars(rows){
-  var h='';[1,2,3,4].forEach(function(dn){
-    var s=rows.filter(function(r){return r.DN===dn;});if(!s.length)return;
-    var bp=Math.round(p(s.filter(function(r){return r.HB;}).length,s.length));
-    h+=barRow((dn===1?'1st':dn===2?'2nd':dn===3?'3rd':'4th')+' Down',bp,'var(--blue)',bp+'% ('+s.length+'P)',true);
-  });
-  return h||'<div style="color:var(--g400);font-size:12px">—</div>';
-}
 function heatClass(bp){
   if(!bp)return'h0';if(bp<=30)return'h1';if(bp<=45)return'h2';if(bp<=60)return'h3';if(bp<=75)return'h4';return'h5';
 }
@@ -687,7 +705,7 @@ function overviewBody(rows,z,base){
   var frontCard='<div class="card"><div class="sec">FRONT</div>'+makeBars(a.front,a.n,FRONT_COLORS)+'</div>';
   var donutC='<div class="card"><div class="sec">BLITZ / STUNTS</div><div class="donut-row">'+donut(a.bp,'var(--blue)','BLITZ RATE',a.bn+' / '+a.n,bDiff)+donut(a.sp,'var(--green)','STUNTS RATE',a.sn+' / '+a.n,sDiff)+'</div></div>';
   var covCard='<div class="card"><div class="sec">COVERAGE</div>'+makeBars(a.cov,a.n)+'</div>';
-  var bd3='<div class="ov3" style="margin-top:14px"><div class="card"><div class="sec">ダウン別BLITZ率 / Blitz Rate by Down</div>'+downBlitzBars(rows)+'</div><div class="card"><div class="sec">BLITZ種別 / Blitz Type</div>'+(a.blitzRaw.length?makeBars(a.blitzRaw,a.n):'<div style="color:var(--g400);font-size:12px">—</div>')+'</div><div class="card"><div class="sec">STUNTS種別 / Stunt Type</div>'+(a.stunt.length?makeBars(a.stunt,a.n):'<div style="color:var(--g400);font-size:12px">—</div>')+'</div></div>';
+  var bd3='<div class="ov2" style="margin-top:14px"><div class="card"><div class="sec">BLITZ種別 / Blitz Type</div>'+(a.blitzRaw.length?makeBars(a.blitzRaw,a.n):'<div style="color:var(--g400);font-size:12px">—</div>')+'</div><div class="card"><div class="sec">STUNTS種別 / Stunt Type</div>'+(a.stunt.length?makeBars(a.stunt,a.n):'<div style="color:var(--g400);font-size:12px">—</div>')+'</div></div>';
   return sampleNote(a.n)+'<div class="ov3">'+frontCard+donutC+covCard+'</div>'+ddCard(z||'ALL',rows,'#0055A4')+bd3+'<div class="ov2" style="margin-top:14px">'+insightsCard(rows,a,'#0055A4')+buildRecommendations(rows,a)+'</div>';
 }
 // ===== OVERVIEW top sections (identity / priorities / special / next steps) =====
@@ -763,17 +781,23 @@ function mCell(rows){
   var tc=topN(cc,2).map(function(x){return x[0]}).join('/');
   return{n:n,bn:bn,sn:sn,bp:Math.round(p(bn,n)),sp:Math.round(p(sn,n)),bt:bt,tc:tc};
 }
-function renderMCell(c){
-  if(!c||!c.n)return'<td class="h0"><span style="color:var(--g200)">—</span></td>';
+function renderMCell(c,key,dn,dg,isAll){
+  var allc=isAll?' mall':'';
+  if(!c||!c.n)return'<td class="h0'+allc+'"><span style="color:var(--g200)">—</span></td>';
   var vd=c.bp>75;
   var low=c.n<3;
   var main=vd?'color:#fff':'color:#0A1F3C';
   var sub=vd?'color:rgba(255,255,255,.92)':'color:#1E2F4A';
   var lbl=vd?'color:rgba(255,255,255,.78)':'color:#4A5870';
-  return'<td class="'+heatClass(c.bp)+'"><div class="mcell" style="align-items:stretch;gap:3px;text-align:left;padding:1px 3px'+(low?';opacity:.55':'')+'">'
-    +'<div class="mline"><span class="mlbl" style="'+lbl+'">BLITZ</span><span class="mval" style="'+main+';font-weight:800">'+c.bp+'%</span></div>'
-    +'<div class="mline"><span class="mlbl" style="'+lbl+'">STUNTS</span><span class="mval" style="'+sub+'">'+c.sp+'%</span></div>'
-    +'<div class="mline"><span class="mlbl" style="'+lbl+'">MAIN COVER</span><span class="mval" style="'+sub+'">'+(c.tc||'—')+'</span></div>'
+  var args="'"+key+"','"+dn+"','"+dg+"'";
+  var clk=key?' onclick="showCell('+args+')" style="cursor:pointer"':'';
+  var cB=key?' onclick="event.stopPropagation();showCell('+args+",'blitz')\""+' style="cursor:pointer"':'';
+  var cS=key?' onclick="event.stopPropagation();showCell('+args+",'stunts')\""+' style="cursor:pointer"':'';
+  var cC=key?' onclick="event.stopPropagation();showCell('+args+",'cover')\""+' style="cursor:pointer"':'';
+  return'<td class="'+heatClass(c.bp)+allc+'"'+clk+'><div class="mcell" style="align-items:stretch;gap:3px;text-align:left;padding:1px 3px'+(low?';opacity:.55':'')+'">'
+    +'<div class="mline"'+cB+'><span class="mlbl" style="'+lbl+'">BLITZ</span><span class="mval" style="'+main+';font-weight:800">'+c.bp+'%</span></div>'
+    +'<div class="mline"'+cS+'><span class="mlbl" style="'+lbl+'">STUNTS</span><span class="mval" style="'+sub+'">'+c.sp+'%</span></div>'
+    +'<div class="mline"'+cC+'><span class="mlbl" style="'+lbl+'">MAIN COVER</span><span class="mval" style="'+sub+'">'+(c.tc||'—')+'</span></div>'
     +'<div class="mline"><span class="mlbl" style="'+lbl+'">N</span><span class="mval" style="'+lbl+';font-weight:700">'+c.n+(low?' ⚠':'')+'</span></div>'
     +'</div></td>';
 }
@@ -813,16 +837,26 @@ function setupMultiTabs(tabsId,bodyId,items,getRows,colorOf,labelOf,base){
   var sel={},firstKey=null;
   items.forEach(function(k){if(firstKey===null&&getRows(k).length)firstKey=k;});
   if(firstKey)sel[firstKey]=true;
-  function paint(){Array.prototype.forEach.call(te.children,function(pill){var k=pill.dataset.k,on=!!sel[k];pill.className='zt'+(on?' on':'');pill.style.background=on?colorOf(k):'';pill.style.color=on?'#fff':'';pill.style.borderColor=on?'transparent':'';});}
+  function paint(){Array.prototype.forEach.call(te.querySelectorAll('.zt[data-k]'),function(pill){var k=pill.dataset.k,on=!!sel[k];pill.className='zt msel'+(on?' on':'');pill.style.background=on?colorOf(k):'';pill.style.color=on?'#fff':'';pill.style.borderColor=on?'transparent':'';var ck=pill.querySelector('.mck');if(ck)ck.textContent=on?'☑':'☐';});}
   function render(){
     var keys=items.filter(function(k){return sel[k];});
     var union=[];keys.forEach(function(k){union=union.concat(getRows(k));});
     var note=keys.length>1?'<div class="msel-note">🔀 '+keys.length+'区分を合算 / '+keys.length+' groups combined: '+keys.map(function(k){return labelOf(k);}).join('  +  ')+'</div>':'';
     be.innerHTML=note+overviewBody(union,keys.length===1?keys[0]:'MULTI',base);
   }
+  // 操作バー（複数選択ヒント + 全選択 / クリア）
+  var ctl=document.createElement('div');ctl.className='msel-ctl';
+  ctl.innerHTML='<span class="msel-hint">☑ 複数選択できます（クリックで追加/解除）/ tap to multi-select</span>';
+  var bAll=document.createElement('button');bAll.className='msel-btn';bAll.textContent='全選択 All';
+  bAll.onclick=function(){items.forEach(function(k){if(getRows(k).length)sel[k]=true;});paint();render();};
+  var bClr=document.createElement('button');bClr.className='msel-btn';bClr.textContent='クリア Clear';
+  bClr.onclick=function(){items.forEach(function(k){sel[k]=false;});if(firstKey)sel[firstKey]=true;paint();render();};
+  ctl.appendChild(bAll);ctl.appendChild(bClr);te.appendChild(ctl);
+  // 選択ピル
   items.forEach(function(k){
-    var t=document.createElement('div');t.className='zt';t.dataset.k=k;
-    var rows=getRows(k);t.textContent=labelOf(k)+(rows.length?'':' (0)');
+    var rows=getRows(k);
+    var t=document.createElement('div');t.className='zt msel';t.dataset.k=k;
+    t.innerHTML='<span class="mck">☐</span> '+labelOf(k)+' <span class="mcnt">('+rows.length+')</span>';
     t.onclick=function(){sel[k]=!sel[k];if(!items.some(function(x){return sel[x];}))sel[k]=true;paint();render();};
     te.appendChild(t);
   });
@@ -879,16 +913,39 @@ function buildInsights(rows,a,color,bare){
 }
 
 // ===== MATRIX PANEL =====
+var __MTX={},__mtxSeq=0;
 function buildMtxPanel(z,rows,color){
-  var tb='<div class="print-zone-label">'+(ZE[z]||'')+' '+((typeof ZN!=='undefined'&&ZN[z])?ZN[z]:z)+' — DOWN & DISTANCE</div><div class="mtx-wrap"><table class="mtx"><tr><th class="lh">DOWN ＼ DISTANCE</th>'+DO.map(function(d){return'<th>'+d+'</th>';}).join('')+'</tr>';
+  var key='m'+(++__mtxSeq);__MTX[key]=rows;
+  var tb='<div class="print-zone-label">'+(ZE[z]||'')+' '+((typeof ZN!=='undefined'&&ZN[z])?ZN[z]:z)+' — DOWN & DISTANCE</div><div class="mtx-wrap"><table class="mtx mtx-all"><tr><th class="lh">DOWN ＼ DISTANCE</th>'+DO.map(function(d){return'<th>'+d+'</th>';}).join('')+'<th class="allh">ALL</th></tr>';
   [1,2,3,4].forEach(function(dn){
     tb+='<tr><td class="rh">'+(dn===1?'1st':dn===2?'2nd':dn===3?'3rd':'4th')+' Down</td>';
-    DO.forEach(function(dg){tb+=renderMCell(mCell(rows.filter(function(r){return r.DN===dn&&r.DIST_GRP===dg;})));});
+    DO.forEach(function(dg){tb+=renderMCell(mCell(rows.filter(function(r){return r.DN===dn&&r.DIST_GRP===dg;})),key,String(dn),dg,false);});
+    tb+=renderMCell(mCell(rows.filter(function(r){return r.DN===dn;})),key,String(dn),'ALL',true);  // 右端: そのダウンの全DIST合算
     tb+='</tr>';
   });
-  tb+='</table></div>';
+  // 下段: ALL 行（各DISTを全ダウン合算 + 総合計）
+  tb+='<tr><td class="rh allh">ALL</td>';
+  DO.forEach(function(dg){tb+=renderMCell(mCell(rows.filter(function(r){return r.DIST_GRP===dg;})),key,'ALL',dg,true);});
+  tb+=renderMCell(mCell(rows),key,'ALL','ALL',true);
+  tb+='</tr></table></div>';
   return tb;
 }
+// セルクリックで COVERAGE / BLITZ TYPE / STUNTS TYPE をモーダル表示
+function showCell(key,dn,dg,focus){
+  var rows=(__MTX&&__MTX[key])||[];
+  var sub=rows.filter(function(r){return (dn==='ALL'||r.DN===+dn)&&(dg==='ALL'||r.DIST_GRP===dg);});
+  if(!sub.length)return;
+  var a=analyze(sub);
+  var dnT=dn==='ALL'?'ALL DOWN':((dn==='1'?'1st':dn==='2'?'2nd':dn==='3'?'3rd':'4th')+' Down');
+  var dgT=dg==='ALL'?'ALL DIST':dg;
+  var secs='';
+  if(!focus||focus==='cover')secs+='<div class="cm-sec">COVERAGE</div>'+(a.cov.length?makeBars(a.cov,a.n):'<div class="cm-no">—</div>');
+  if(!focus||focus==='blitz')secs+='<div class="cm-sec">BLITZ TYPE</div>'+(a.blitzRaw.length?makeBars(a.blitzRaw,a.n):'<div class="cm-no">—</div>');
+  if(!focus||focus==='stunts')secs+='<div class="cm-sec">STUNTS TYPE</div>'+(a.stunt.length?makeBars(a.stunt,a.n):'<div class="cm-no">—</div>');
+  document.getElementById('cm-body').innerHTML='<div class="cm-head"><div><b>'+dnT+' × '+dgT+'</b><div class="cm-sub">'+sub.length+' Play ・ BLITZ '+a.bp+'% / STUNTS '+a.sp+'%</div></div><button class="cm-x" onclick="closeCell()">✕</button></div>'+secs;
+  document.getElementById('cell-modal').classList.add('on');
+}
+function closeCell(){document.getElementById('cell-modal').classList.remove('on');}
 
 // ===== COMPARE PANEL =====
 function renderCompare(scout,game){
