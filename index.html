@@ -144,6 +144,56 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
 /* SMALL SAMPLE WARNING */
 .samp{background:#FEF6E7;border:1px solid #F4D9A0;border-left:4px solid var(--amber);border-radius:var(--r);padding:8px 14px;margin-bottom:14px;font-size:12px;font-weight:600;color:#7A4F00}
 
+/* MULTI-SELECT COMBINED NOTE */
+.msel-note{background:var(--blue-pale);border:1px solid var(--g200);border-left:4px solid var(--blue);border-radius:var(--r);padding:8px 14px;margin-bottom:14px;font-size:12px;font-weight:700;color:var(--navy)}
+
+/* DEFENSIVE IDENTITY */
+.identity{position:relative;overflow:hidden;margin-bottom:14px;background:linear-gradient(135deg,#0E2347,#0A1A33);border:none;color:#fff}
+.idt-watermark{position:absolute;right:-6px;top:-14px;font-size:120px;opacity:.06;pointer-events:none}
+.idt-head{display:flex;align-items:center;gap:12px;position:relative}
+.idt-ico{font-size:26px}
+.idt-label{font-size:10px;font-weight:800;letter-spacing:.14em;color:#7FB0F0}
+.idt-name{font-size:20px;font-weight:800;letter-spacing:.01em;margin-top:2px}
+.idt-list{list-style:none;margin:12px 0 0;padding:0;position:relative}
+.idt-list li{position:relative;padding:5px 0 5px 18px;font-size:12.5px;line-height:1.6;color:#E6EEFA}
+.idt-list li::before{content:'•';position:absolute;left:2px;color:#5FB0FF;font-weight:800}
+.idt-en{color:#8FA7C8;font-size:11px}
+
+/* GAME PLAN PRIORITIES */
+.prio{display:flex;align-items:center;gap:14px;padding:12px 6px;border-top:1px solid var(--g100)}
+.prio:first-of-type{border-top:none}
+.prio-num{flex:0 0 38px;width:38px;height:38px;border-radius:9px;color:#fff;font-weight:800;font-size:15px;display:flex;align-items:center;justify-content:center;box-shadow:var(--sh)}
+.prio-body{flex:1;min-width:0}
+.prio-t{font-size:13px;font-weight:800;margin-bottom:2px}
+.prio-d{font-size:11.5px;color:var(--g600);line-height:1.6}
+.prio-key{flex:0 0 auto;text-align:center;min-width:120px}
+.prio-kl{font-size:9px;font-weight:700;color:var(--g400);letter-spacing:.08em;margin-bottom:4px}
+.prio-kb{font-size:11px;font-weight:800;color:var(--navy);border:1px solid var(--g200);border-radius:20px;padding:6px 12px;background:var(--g50);white-space:nowrap}
+
+/* SPECIAL SITUATIONS */
+.ss-card{margin-bottom:12px}
+.ss-head{display:flex;align-items:center;gap:8px;margin-bottom:10px;border-bottom:1px solid var(--g100);padding-bottom:8px}
+.ss-ico{font-size:18px}
+.ss-name{font-size:14px;font-weight:800;flex:1}
+.ss-use{font-size:11px;color:var(--g400)}
+.ss-grid{display:grid;grid-template-columns:200px 1fr;gap:18px}
+@media(max-width:720px){.ss-grid{grid-template-columns:1fr}}
+.ss-row{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--g600);padding:5px 0;border-bottom:1px dashed var(--g100)}
+.ss-row b{font-size:15px;color:var(--navy);font-variant-numeric:tabular-nums}
+.ss-ct{font-size:10px;font-weight:700;color:var(--g400);letter-spacing:.06em;margin-bottom:6px}
+.ss-call{display:flex;align-items:center;gap:8px;margin:5px 0}
+.ss-rank{flex:0 0 18px;width:18px;height:18px;border-radius:50%;color:#fff;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.ss-cn{flex:0 0 110px;width:110px;font-size:11px;font-weight:700;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ss-cbar{flex:1;height:8px;background:var(--g100);border-radius:4px;overflow:hidden}
+.ss-cbar>span{display:block;height:100%;border-radius:4px}
+.ss-cp{flex:0 0 44px;width:44px;text-align:right;font-size:11px;font-weight:800;color:var(--g600);font-variant-numeric:tabular-nums}
+
+/* NEXT STEPS */
+.nextsteps{margin-top:14px}
+.ns-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px 18px}
+@media(max-width:720px){.ns-grid{grid-template-columns:1fr}}
+.ns-item{font-size:12px;color:var(--g600);padding:4px 0}
+
 /* OVERVIEW GRID */
 .ov3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;align-items:stretch}
 .ov2{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:stretch}
@@ -332,7 +382,7 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
       <div class="tt on" id="tt-overview">📊 OVERVIEW</div>
       <div class="tt" id="tt-overview2">🗒️ CALL SHEET</div>
       <div class="tt" id="tt-zone">📍 FIELD ZONE</div>
-      <div class="tt" id="tt-form">📋 Formation</div>
+      <div class="tt" id="tt-form">📋 FORMATION</div>
     </div>
     <div class="tp vis" id="tab-overview"><div id="overview-body"></div></div>
     <div class="tp" id="tab-overview2"><div id="overview2-body"></div></div>
@@ -368,7 +418,7 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
       </div>
       <div class="ttabs" id="cmp-mode" style="max-width:360px;margin-bottom:14px">
         <div class="tt on" id="cmp-mode-zone">📍 FIELD ZONE</div>
-        <div class="tt" id="cmp-mode-form">📋 Formation</div>
+        <div class="tt" id="cmp-mode-form">📋 FORMATION</div>
       </div>
       <div id="cmp-zone-wrap">
         <div class="ztabs" id="cmp-zone-tabs"></div>
@@ -574,32 +624,36 @@ function buildRecommendations(rows,a){
   var d3l=rows.filter(function(r){return r.DN===3&&isLong(r);});
   if(d3l.length>=3){var r3=rate(d3l),c3=topcov(d3l)||'不明',s3=stuntRate(d3l);
     var plan=r3>=55?'<b>マックスプロテクト＋単独ホット</b>を基本に、ブリッツ側へ<b>スクリーン/スワング</b>で即時リリース。':r3>=ov?'<b>6メン保護＋ホット確認</b>を徹底し、'+c3+'のソフトスポットへ素早く投げ切る。':'圧力は薄め。<b>5メン保護で縦2段</b>を取り、'+c3+'のディープを突く。';
-    if(s3>=40)plan+=' STUNTSも'+s3+'%と多く、<b>内側ガード/センターの受け渡し</b>を最優先。';
-    recs.push(recCard('🛡️','3rd & Long のプロテクション設計','3rd & Long Protection','3rd & Long('+d3l.length+'P) は BLITZ <b>'+r3+'%</b>・背後 <b>'+c3+'</b>・STUNTS '+s3+'%。'+plan,'3rd&Long: '+r3+'% blitz, '+c3+' behind, stunts '+s3+'%.'));}
+    var planEn=r3>=55?'Base out of <b>max protection plus a single hot</b> and release the ball immediately to the blitz side with <b>screens / swing routes</b>.':r3>=ov?'Stay in <b>6-man protection and confirm the hot</b>, then get the ball out quickly into the soft spot of '+c3+'.':'Pressure is light here — keep <b>5-man protection and attack vertically with a 2-level concept</b>, hitting the deep zones of '+c3+'.';
+    if(s3>=40){plan+=' STUNTSも'+s3+'%と多く、<b>内側ガード/センターの受け渡し</b>を最優先。';planEn+=' Stunts are also high ('+s3+'%), so make the <b>guard / center pass-off</b> the top priority.';}
+    recs.push(recCard('🛡️','3rd & Long のプロテクション設計','3rd & Long Protection','3rd & Long('+d3l.length+'P) は BLITZ <b>'+r3+'%</b>・背後 <b>'+c3+'</b>・STUNTS '+s3+'%。'+plan,'On 3rd & Long ('+d3l.length+' plays) they blitz <b>'+r3+'%</b> with <b>'+c3+'</b> behind it and stunt on '+s3+'%. '+planEn));}
 
   // 2) 最多カバーを割る具体コンセプト
   if(a.cov[0]){var c1=a.cov[0][0],c1s=p(a.cov[0][1],a.n),c2=a.cov[1]?a.cov[1][0]:null;
     var depend=c1s>=45?'<b>'+c1+'偏重('+c1s+'%)で的を絞れる</b>。プリスナップで確認し、':'';
-    recs.push(recCard('🎯','最多カバー '+c1+' のビート手順','Beat Top Coverage',depend+'<b>フォーメーション/モーションで'+c1+'を誘発→想定どおりか確認→水平+垂直のストレッチ</b>でDBに二択を強いる。'+(c2?'チェック先の <b>'+c2+'</b> 用コールも1つ用意。':''),'Beat '+c1+' ('+c1s+'%)'+(c2?', check vs '+c2:'')+' with H/V stretch.'));}
+    var dependEn=c1s>=45?'<b>'+c1+' is heavily favored ('+c1s+'%), so you can key on it.</b> Confirm it pre-snap, then ':'';
+    recs.push(recCard('🎯','最多カバー '+c1+' のビート手順','Beat Top Coverage',depend+'<b>フォーメーション/モーションで'+c1+'を誘発→想定どおりか確認→水平+垂直のストレッチ</b>でDBに二択を強いる。'+(c2?'チェック先の <b>'+c2+'</b> 用コールも1つ用意。':''),dependEn+'<b>force '+c1+' with formation and motion, confirm it shows, then attack it with horizontal and vertical stretches</b> to put the DBs in conflict.'+(c2?' Also prepare one call against the check coverage <b>'+c2+'</b>.':'')));}
 
   // 3) 傾向ブレイカー：最も読める局面を逆手に
   var best=null;
   [1,2,3,4].forEach(function(dn){DO.forEach(function(dg){var sub=rows.filter(function(r){return r.DN===dn&&r.DIST_GRP===dg;});if(sub.length>=4){var rt=rate(sub),dev=Math.abs(rt-ov);if(!best||dev>best.dev)best={dn:dn,dg:dg,rt:rt,n:sub.length,dev:dev,cov:topcov(sub)};}});});
   if(best&&best.dev>=18){var dl=(best.dn===1?'1st':best.dn===2?'2nd':best.dn===3?'3rd':'4th')+' & '+best.dg;
     var act=best.rt>ov?'圧力前提で<b>クイック/ドロー/RPO</b>を常備し、テンポで的を絞らせない。':'圧力が薄い局面。<b>プレイアクション＋縦</b>でビッグプレーを狙う。';
-    recs.push(recCard('📌','最も読める局面 '+dl+' を突く','Exploit Tendency','<b>'+dl+'</b>('+best.n+'P)は BLITZ <b>'+best.rt+'%</b>（全体 '+ov+'%）'+(best.cov?'／'+best.cov:'')+'と偏り大。'+act,'Exploit '+dl+': '+best.rt+'% vs '+ov+'% overall.'));}
+    var actEn=best.rt>ov?'Expect pressure here, so keep <b>quick game, draw, and RPO</b> ready and play fast so they cannot tee off.':'Pressure is light here — take a shot with <b>play-action and vertical routes</b> for an explosive play.';
+    recs.push(recCard('📌','最も読める局面 '+dl+' を突く','Exploit Tendency','<b>'+dl+'</b>('+best.n+'P)は BLITZ <b>'+best.rt+'%</b>（全体 '+ov+'%）'+(best.cov?'／'+best.cov:'')+'と偏り大。'+act,'<b>'+dl+'</b> ('+best.n+' plays) shows BLITZ <b>'+best.rt+'%</b> versus '+ov+'% overall'+(best.cov?', coverage '+best.cov:'')+' — a strong, readable tendency. '+actEn));}
 
   // 4) 早いダウンで主導権（1st Down 戦略）
   var d1=rows.filter(function(r){return r.DN===1;});
   if(d1.length>=4){var r1=rate(d1),c1d=topcov(d1)||'不明';
     var early=r1<ov-5?'圧力が薄く、<b>'+c1d+'相手に縦/PA</b>で2nd&shortを作りやすい。先制パンチを。':r1>ov+5?'1stから圧力。<b>テンポを上げ簡潔な保護</b>で後手を防ぐ。':'標準。<b>ラン/パスのバランス</b>でダウンを進める。';
-    recs.push(recCard('🚀','1st Down で主導権を握る','Own 1st Down','1st Down は BLITZ <b>'+r1+'%</b>・主カバー <b>'+c1d+'</b>。'+early,'1st down: '+r1+'% blitz vs '+c1d+'.'));}
+    var earlyEn=r1<ov-5?'Pressure is light, so against <b>'+c1d+'</b> you can hit <b>vertical and play-action shots</b> to set up 2nd & short. Land the first punch.':r1>ov+5?'They pressure from 1st down, so <b>push the tempo with simple protections</b> to stay ahead of the chains.':'A standard look — <b>stay balanced between run and pass</b> to move the chains.';
+    recs.push(recCard('🚀','1st Down で主導権を握る','Own 1st Down','1st Down は BLITZ <b>'+r1+'%</b>・主カバー <b>'+c1d+'</b>。'+early,'On 1st Down they blitz <b>'+r1+'%</b> with top coverage <b>'+c1d+'</b>. '+earlyEn));}
 
   // 5) スタンツ対応のOLルール（起点フロントまで特定）
   if(a.sp>=35){var sf={};rows.forEach(function(r){if(r.HS&&r['DEF FRONT'])sf[r['DEF FRONT']]=(sf[r['DEF FRONT']]||0)+1;});var tf=topN(sf,1)[0];
-    recs.push(recCard('🔄','スタンツ対応のOLルール','Stunt Protection Rules','STUNTS <b>'+a.sp+'%</b>'+(tf?'／起点は主に <b>'+tf[0]+'</b>':'')+'。'+(tf?'<b>'+tf[0]+'</b>を見たら':'当該フロントでは')+'<b>受け渡し(パス・オフ)を声出しで統一</b>し、内側を最優先で締める。RBのスキャンルールも明確化。','Stunts '+a.sp+'%'+(tf?' from '+tf[0]:'')+' — pass off, protect inside first.'));}
+    recs.push(recCard('🔄','スタンツ対応のOLルール','Stunt Protection Rules','STUNTS <b>'+a.sp+'%</b>'+(tf?'／起点は主に <b>'+tf[0]+'</b>':'')+'。'+(tf?'<b>'+tf[0]+'</b>を見たら':'当該フロントでは')+'<b>受け渡し(パス・オフ)を声出しで統一</b>し、内側を最優先で締める。RBのスキャンルールも明確化。','Stunts occur on <b>'+a.sp+'%</b> of plays'+(tf?', most often originating from the <b>'+tf[0]+'</b> front':'')+'. '+(tf?'When you see <b>'+tf[0]+'</b>, ':'On that front, ')+'<b>unify your pass-off ("you / me") calls out loud</b> and protect the inside gaps first, and define the running back\'s scan rule clearly.'));}
 
-  if(!recs.length)recs.push(recCard('📋','データ収集の継続','Collect More Data','傾向判断にはサンプルが不足。試合データを蓄積し精度を上げましょう。','Collect more data for reliable tendencies.'));
+  if(!recs.length)recs.push(recCard('📋','データ収集の継続','Collect More Data','傾向判断にはサンプルが不足。試合データを蓄積し精度を上げましょう。','The sample size is too small to read tendencies reliably. Keep logging game data to improve accuracy.'));
   return'<div class="card"><div class="sec">RECOMMENDATIONS</div><div class="rec-list">'+recs.slice(0,5).join('')+'</div></div>';
 }
 
@@ -636,7 +690,61 @@ function overviewBody(rows,z,base){
   var bd3='<div class="ov3" style="margin-top:14px"><div class="card"><div class="sec">ダウン別BLITZ率 / Blitz Rate by Down</div>'+downBlitzBars(rows)+'</div><div class="card"><div class="sec">BLITZ種別 / Blitz Type</div>'+(a.blitzRaw.length?makeBars(a.blitzRaw,a.n):'<div style="color:var(--g400);font-size:12px">—</div>')+'</div><div class="card"><div class="sec">STUNTS種別 / Stunt Type</div>'+(a.stunt.length?makeBars(a.stunt,a.n):'<div style="color:var(--g400);font-size:12px">—</div>')+'</div></div>';
   return sampleNote(a.n)+'<div class="ov3">'+frontCard+donutC+covCard+'</div>'+ddCard(z||'ALL',rows,'#0055A4')+bd3+'<div class="ov2" style="margin-top:14px">'+insightsCard(rows,a,'#0055A4')+buildRecommendations(rows,a)+'</div>';
 }
-function buildOverview(rows){return overviewBody(rows,'ALL',null);}
+// ===== OVERVIEW top sections (identity / priorities / special / next steps) =====
+function ovRate(sub){return sub.length?Math.round(p(sub.filter(function(r){return r.HB;}).length,sub.length)):0;}
+function buildIdentity(rows,a){
+  var d3=rows.filter(function(r){return r.DN===3;}),d3b=ovRate(d3);
+  var red=rows.filter(function(r){return r.ZONE==='HRED'||r.ZONE==='MRED'||r.ZONE==='LRED';}),redb=ovRate(red);
+  var topc=a.cov[0]?a.cov[0][0]:'—';
+  var name=(a.bp>=45?'Pressure-Oriented':a.bp>=30?'Balanced-Pressure':'Coverage-Oriented')+' '+topc+'-Based Defense';
+  var b=[];
+  b.push('高い BLITZ率('+a.bp+'%)・STUNTS率('+a.sp+'%) でプレッシャーを創出 <span class="idt-en">/ High blitz &amp; stunt pressure</span>');
+  b.push('<b>'+topc+'</b> をベースに、状況に応じてカバーを変化 <span class="idt-en">/ '+topc+'-based, varies coverage by situation</span>');
+  if(d3.length>=3&&d3b>a.bp)b.push('3rd Down でプレッシャーが増加（'+d3b+'%）<span class="idt-en">/ Pressure increases on 3rd down</span>');
+  if(red.length>=3&&redb>a.bp)b.push('Red Zone で攻撃性が上昇（'+redb+'%）<span class="idt-en">/ More aggressive in the red zone</span>');
+  return'<div class="card identity"><div class="idt-watermark">🏈</div><div class="idt-head"><span class="idt-ico">🎯</span><div><div class="idt-label">DEFENSIVE IDENTITY</div><div class="idt-name">'+name+'</div></div></div><ul class="idt-list">'+b.map(function(x){return'<li>'+x+'</li>';}).join('')+'</ul></div>';
+}
+function buildPriorities(rows,a){
+  var items=[];
+  var d3=rows.filter(function(r){return r.DN===3;}),d3b=ovRate(d3);
+  if(d3.length>=3)items.push({c:'#0055A4',t:'3rd DOWN 対策 / 3rd Down',d:'3rd DownのBLITZ率が<b>'+d3b+'%</b>。クイック/エンプティで高いプレッシャーを回避する。',k:'QUICK / EMPTY'});
+  var red=rows.filter(function(r){return r.ZONE==='HRED'||r.ZONE==='MRED'||r.ZONE==='LRED';}),redb=ovRate(red);
+  if(red.length>=3)items.push({c:'#059669',t:'RED ZONE 対策 / Red Zone',d:'Red ZoneのBLITZ率が<b>'+redb+'%</b>。BOUNDARY側のISOLATIONとPLAY-ACTIONで攻める。',k:'BOUNDARY ISO'});
+  if(a.cov[0])items.push({c:'#7C3AED',t:'最多カバー対策 / Top Coverage',d:'最多カバー<b>'+a.cov[0][0]+'</b>('+p(a.cov[0][1],a.n)+'%)。誘発→確認→水平/垂直ストレッチで崩す。',k:'STRETCH '+a.cov[0][0]});
+  if(a.sp>=35)items.push({c:'#EA580C',t:'STUNTS 対応 / Stunts',d:'STUNTS率が<b>'+a.sp+'%</b>。OLの受け渡しコールを徹底し内側を優先で締める。',k:'PASS-OFF'});
+  items=items.slice(0,3);
+  var html=items.map(function(it,i){return'<div class="prio"><div class="prio-num" style="background:'+it.c+'">'+('0'+(i+1)).slice(-2)+'</div><div class="prio-body"><div class="prio-t" style="color:'+it.c+'">'+it.t+'</div><div class="prio-d">'+it.d+'</div></div><div class="prio-key"><div class="prio-kl">KEY ACTION</div><div class="prio-kb">'+it.k+'</div></div></div>';}).join('');
+  return'<div class="card"><div class="sec">GAME PLAN PRIORITIES</div>'+(html||'<div style="color:var(--g400);font-size:12px">—</div>')+'</div>';
+}
+function ssCard(icon,name,color,sub,total){
+  var a=analyze(sub);
+  var calls=a.cov.slice(0,3).map(function(x,i){return'<div class="ss-call"><span class="ss-rank" style="background:'+color+'">'+(i+1)+'</span><span class="ss-cn">'+x[0]+'</span><span class="ss-cbar"><span style="width:'+p(x[1],a.n)+'%;background:'+color+'"></span></span><span class="ss-cp">'+p(x[1],a.n)+'%</span></div>';}).join('')||'<div style="color:var(--g400);font-size:11px">—</div>';
+  return'<div class="card ss-card"><div class="ss-head"><span class="ss-ico" style="color:'+color+'">'+icon+'</span><span class="ss-name" style="color:'+color+'">'+name+'</span><span class="ss-use">使用率(全体比) <b style="color:'+color+'">'+p(a.n,total)+'%</b></span></div><div class="ss-grid"><div class="ss-stats"><div class="ss-row"><span>BLITZ率</span><b>'+a.bp+'%</b></div><div class="ss-row"><span>主カバー</span><b>'+(a.cov[0]?a.cov[0][0]:'—')+'</b></div></div><div class="ss-calls"><div class="ss-ct">TOP CALLS</div>'+calls+'</div></div></div>';
+}
+function buildSpecial(rows){
+  var total=rows.length;
+  var twoMin=rows.filter(function(r){return r.DIST_GRP==='X-LONG(11+)';});
+  var half=Math.ceil(rows.length/2);
+  var firstOpen=rows.slice(0,Math.min(12,half)),secondOpen=rows.slice(half,half+12);
+  return'<div class="sec" style="margin-top:18px">SPECIAL SITUATIONS</div><div style="font-size:10px;color:var(--g400);margin-bottom:8px">※ 2分/オープナー専用列が無いため参考値（2-MIN=X-LONG, OPENERS=各ハーフ序盤）/ proxy pending dedicated tags</div>'
+    +ssCard('⏱','2-MINUTE','#7C3AED',twoMin,total)
+    +ssCard('🎯','1ST HALF OPENERS','#0055A4',firstOpen,total)
+    +ssCard('🏃','2ND HALF OPENERS','#059669',secondOpen,total);
+}
+function buildNextSteps(rows,a){
+  var steps=[];
+  var d3=rows.filter(function(r){return r.DN===3;});
+  if(d3.length>=3)steps.push('QUICK GAME / EMPTY の準備');
+  steps.push('BOUNDARY ISOLATION の活用');
+  if(a.cov[0])steps.push(a.cov[0][0]+' へのビートコンセプト確認');
+  steps.push('PLAY-ACTION のバリエーション準備');
+  if(a.sp>=35)steps.push('スタンツ対応（受け渡し）の徹底');
+  return'<div class="card nextsteps"><div class="sec">NEXT STEPS</div><div class="ns-grid">'+steps.map(function(s){return'<div class="ns-item">✔ '+s+'</div>';}).join('')+'</div></div>';
+}
+function buildOverview(rows){
+  var a=analyze(rows);
+  return buildIdentity(rows,a)+buildPriorities(rows,a)+overviewBody(rows,'ALL',null)+buildSpecial(rows)+buildNextSteps(rows,a);
+}
 
 // ===== OVERVIEW2 (call-sheet style: BLITZ RATE / STUNTS RATE / COVERAGE per item) =====
 function ov2Item(name,color,sub){
@@ -671,9 +779,9 @@ function renderMCell(c){
   if(!c||!c.n)return'<td class="h0"><span style="color:var(--g200)">—</span></td>';
   var vd=c.bp>75;
   var low=c.n<3;
-  var main=vd?'color:#fff':'color:var(--navy)';
-  var sub=vd?'color:rgba(255,255,255,.88)':'color:var(--g600)';
-  var lbl=vd?'color:rgba(255,255,255,.65)':'color:var(--g400)';
+  var main=vd?'color:#fff':'color:#0A1F3C';
+  var sub=vd?'color:rgba(255,255,255,.92)':'color:#1E2F4A';
+  var lbl=vd?'color:rgba(255,255,255,.78)':'color:#4A5870';
   return'<td class="'+heatClass(c.bp)+'"><div class="mcell" style="align-items:stretch;gap:3px;text-align:left;padding:1px 3px'+(low?';opacity:.55':'')+'">'
     +'<div class="mline"><span class="mlbl" style="'+lbl+'">BLITZ</span><span class="mval" style="'+main+';font-weight:800">'+c.bp+'%</span></div>'
     +'<div class="mline"><span class="mlbl" style="'+lbl+'">STUNTS</span><span class="mval" style="'+sub+'">'+c.sp+'%</span></div>'
@@ -710,16 +818,29 @@ function mkTab(label,active,color,tabsId,bodyId,prefix){
   t.onclick=function(){showZP(label,color,prefix,tabsId,bodyId);};
   return t;
 }
-
-// ===== ZONE PANEL =====
-function buildZonePanel(z,rows,color,base){
-  return'<div class="print-zone-label">'+(ZE[z]||'')+' '+((typeof ZN!=='undefined'&&ZN[z])?ZN[z]:z)+'</div>'+overviewBody(rows,z,base)+'<div class="ai-section" style="margin-top:14px"><div class="ai-box"><div class="ai-hdr"><span class="ai-badge">🤖 AI</span><span>コーチ分析 / Coach Analysis</span><button class="btn-ai" onclick="generateAnalysis(\''+z+'\',false)">分析を生成 / Generate</button></div><div class="ai-body" id="ai-'+z+'"><span class="ai-placeholder">「分析を生成」を押すとAIがこのゾーンを分析します<br>Press "Generate" for AI coaching insights.</span></div></div></div>';
+// 複数選択タブ：選択した区分を合算して overviewBody を再描画
+function setupMultiTabs(tabsId,bodyId,items,getRows,colorOf,labelOf,base){
+  var te=document.getElementById(tabsId),be=document.getElementById(bodyId);
+  te.innerHTML='';
+  var sel={},firstKey=null;
+  items.forEach(function(k){if(firstKey===null&&getRows(k).length)firstKey=k;});
+  if(firstKey)sel[firstKey]=true;
+  function paint(){Array.prototype.forEach.call(te.children,function(pill){var k=pill.dataset.k,on=!!sel[k];pill.className='zt'+(on?' on':'');pill.style.background=on?colorOf(k):'';pill.style.color=on?'#fff':'';pill.style.borderColor=on?'transparent':'';});}
+  function render(){
+    var keys=items.filter(function(k){return sel[k];});
+    var union=[];keys.forEach(function(k){union=union.concat(getRows(k));});
+    var note=keys.length>1?'<div class="msel-note">🔀 '+keys.length+'区分を合算 / '+keys.length+' groups combined: '+keys.map(function(k){return labelOf(k);}).join('  +  ')+'</div>':'';
+    be.innerHTML=note+overviewBody(union,keys.length===1?keys[0]:'MULTI',base);
+  }
+  items.forEach(function(k){
+    var t=document.createElement('div');t.className='zt';t.dataset.k=k;
+    var rows=getRows(k);t.textContent=labelOf(k)+(rows.length?'':' (0)');
+    t.onclick=function(){sel[k]=!sel[k];if(!items.some(function(x){return sel[x];}))sel[k]=true;paint();render();};
+    te.appendChild(t);
+  });
+  paint();render();
 }
 
-// ===== FORM PANEL =====
-function buildFormPanel(fg,frows,color,base){
-  return'<div class="print-zone-label">'+fg+' — FORMATION</div>'+overviewBody(frows,fg,base);
-}
 
 // ===== KEY INSIGHTS (facts only, NFL-coach level — no recommendations) =====
 function insTip(icon,tjp,ten,fjp,fen){
@@ -959,35 +1080,19 @@ function boot(rows,label){
     // Overview2 (call sheet)
     document.getElementById('overview2-body').innerHTML=buildOverview2(valid);
 
-    // Zone tab
-    var zte=document.getElementById('zone-tabs'),zbe=document.getElementById('zone-body');
-    zte.innerHTML='';zbe.innerHTML='';
-    var zoneFirst=true;
-    ZO.forEach(function(z){
-      if(z==='ALL')return; // ALL は OVERVIEW と重複するため FIELD ZONE では非表示
-      var zrows=zd[z];if(!zrows||!zrows.length)return;
-      var color=ZCS[z];var active=zoneFirst;zoneFirst=false;
-      zte.appendChild(mkTab(z,active,color,'zone-tabs','zone-body','zone-p-'));
-      var panel=document.createElement('div');
-      panel.className='zp'+(active?' vis':'');
-      panel.id='zone-p-'+z;
-      panel.innerHTML=buildZonePanel(z,zrows,color,base);
-      zbe.appendChild(panel);
-    });
+    // Zone tab（複数選択可）
+    setupMultiTabs('zone-tabs','zone-body',ZO.filter(function(z){return z!=='ALL';}),
+      function(z){return zd[z]||[];},
+      function(z){return ZCS[z];},
+      function(z){return (ZE[z]||'')+' '+(ZN[z]||z)+(ZR[z]?'（'+ZR[z]+'）':'');},
+      base);
 
-    // Form tab
-    var fte=document.getElementById('form-tabs'),fbe=document.getElementById('form-body');
-    fte.innerHTML='';fbe.innerHTML='';
-    FO.forEach(function(fg,i){
-      var frows=valid.filter(function(r){return r.FG===fg;});if(!frows.length)return;
-      var color=FC[fg];
-      fte.appendChild(mkTab(fg,i===0,color,'form-tabs','form-body','form-p-'));
-      var panel=document.createElement('div');
-      panel.className='zp'+(i===0?' vis':'');
-      panel.id='form-p-'+fg;
-      panel.innerHTML=buildFormPanel(fg,frows,color,base);
-      fbe.appendChild(panel);
-    });
+    // Form tab（複数選択可）
+    setupMultiTabs('form-tabs','form-body',FO,
+      function(fg){return valid.filter(function(r){return r.FG===fg;});},
+      function(fg){return FC[fg];},
+      function(fg){return fg;},
+      base);
 
     window.__scoutData=valid;
 
