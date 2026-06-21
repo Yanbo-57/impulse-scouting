@@ -138,6 +138,8 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
 .cs-card{background:var(--white);border:1px solid var(--g200);border-radius:var(--rl);box-shadow:var(--sh);overflow:hidden;transition:box-shadow .2s,transform .15s}
 .cs-card:hover{box-shadow:var(--sh2);transform:translateY(-2px)}
 .cs-name{font-size:13px;font-weight:800;color:var(--navy);padding:9px 12px;border-top:3px solid var(--g200);background:var(--g50);display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--g100);gap:6px}
+.cs-go{font-size:9px;font-weight:700;color:var(--g400);flex-shrink:0;letter-spacing:.03em;transition:color .15s}
+.cs-card:hover .cs-go{color:var(--blue)}
 .cs-n{font-size:10px;font-weight:700;color:var(--g400);flex-shrink:0}
 .cs-row{display:flex;justify-content:space-between;align-items:center;padding:6px 12px;font-size:11px;color:var(--g600);border-bottom:1px dashed var(--g100)}
 .cs-row:last-child{border-bottom:none}
@@ -157,18 +159,24 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
 .yl-in{width:58px;font-size:12px;font-weight:700;padding:4px 8px;border:1px solid var(--g200);border-radius:8px;text-align:center;color:var(--navy);font-variant-numeric:tabular-nums}
 .yl-in:focus{outline:none;border-color:var(--blue)}
 
-/* FIELD ZONE yard-line field bar */
+/* FIELD ZONE yard-line field bar — football-field look */
 .fieldbar{flex:1 1 100%;margin-bottom:4px}
-.fb-ends{display:flex;justify-content:space-between;font-size:9px;font-weight:800;color:var(--g400);letter-spacing:.08em;margin-bottom:4px}
-.fb-track{position:relative;height:50px;border-radius:10px;overflow:hidden;background:repeating-linear-gradient(90deg,#2E9E5B 0,#2E9E5B 10%,#268C50 10%,#268C50 20%);box-shadow:inset 0 0 0 1px rgba(0,0,0,.12),inset 0 10px 16px rgba(255,255,255,.12),inset 0 -8px 12px rgba(0,0,0,.12);user-select:none;touch-action:none}
-.fb-bands{position:absolute;inset:0;opacity:.55}
+.fb-ends{display:flex;justify-content:space-between;font-size:9px;font-weight:800;color:var(--g400);letter-spacing:.08em;margin-bottom:5px}
+.fb-field{display:flex;align-items:stretch;border-radius:9px;overflow:hidden;border:3px solid #fff;box-shadow:0 3px 14px rgba(8,30,16,.26)}
+.fb-ez{flex:0 0 30px;display:flex;align-items:center;justify-content:center;background:#1F6B3A;color:rgba(255,255,255,.92);font-size:8px;font-weight:800;letter-spacing:.12em;writing-mode:vertical-rl;text-orientation:mixed;white-space:nowrap}
+.fb-ez.l{transform:rotate(180deg)}
+.fb-track{position:relative;flex:1;height:104px;user-select:none;touch-action:none}
+.fb-turf{position:absolute;inset:0;overflow:hidden;background:repeating-linear-gradient(90deg,#2C8B4C 0,#2C8B4C 10%,#2F9150 10%,#2F9150 20%);border-left:2px solid rgba(255,255,255,.95);border-right:2px solid rgba(255,255,255,.95)}
+.fb-bands{position:absolute;inset:0;opacity:.2;mix-blend-mode:multiply}
 .fb-band{position:absolute;top:0;bottom:0}
-.fb-tick{position:absolute;top:0;bottom:13px;width:2px;background:rgba(255,255,255,.6);transform:translateX(-1px)}
-.fb-num{position:absolute;bottom:2px;transform:translateX(-50%);font-size:8px;color:#fff;font-weight:800;font-variant-numeric:tabular-nums;text-shadow:0 1px 2px rgba(0,0,0,.45)}
-.fb-sel{position:absolute;top:0;bottom:0;background:rgba(255,255,255,.2);border-left:3px solid #FFD24A;border-right:3px solid #FFD24A;box-shadow:0 0 0 1px rgba(0,0,0,.2)}
-.fb-h{position:absolute;top:50%;width:30px;height:30px;transform:translate(-50%,-50%);display:flex;align-items:center;justify-content:center;font-size:18px;background:#fff;border:2px solid var(--navy);border-radius:50%;cursor:ew-resize;box-shadow:0 2px 7px rgba(0,0,0,.4);z-index:2}
+.fb-yl{position:absolute;top:0;bottom:0;width:2px;background:rgba(255,255,255,.82);transform:translateX(-1px)}
+.fb-hash{position:absolute;left:0;right:0;height:8px;background:repeating-linear-gradient(90deg,rgba(255,255,255,.6) 0 1.5px,transparent 1.5px,transparent 2%)}
+.fb-num{position:absolute;bottom:6px;transform:translateX(-50%);font-size:11px;color:#fff;font-weight:800;font-variant-numeric:tabular-nums;text-shadow:0 1px 2px rgba(0,0,0,.45)}
+.fb-num.t{top:6px;bottom:auto;transform:translateX(-50%) rotate(180deg)}
+.fb-sel{position:absolute;top:0;bottom:0;background:rgba(255,255,255,.16);border-left:3px solid #FFD24A;border-right:3px solid #FFD24A;box-shadow:0 0 0 1px rgba(0,0,0,.25);pointer-events:none}
+.fb-h{position:absolute;top:50%;width:30px;height:30px;transform:translate(-50%,-50%);display:flex;align-items:center;justify-content:center;font-size:18px;background:#fff;border:2px solid var(--navy);border-radius:50%;cursor:ew-resize;box-shadow:0 2px 7px rgba(0,0,0,.4);z-index:4}
 .fb-h::after{content:'🏈';line-height:1}
-.fb-read{text-align:center;font-size:12px;font-weight:800;color:var(--navy);margin-top:5px;font-variant-numeric:tabular-nums}
+.fb-read{text-align:center;font-size:12px;font-weight:800;color:var(--navy);margin-top:6px;font-variant-numeric:tabular-nums}
 .zt-yd{font-size:9px;font-weight:700;opacity:.7}
 .msel-btn:hover{border-color:var(--blue);color:var(--blue)}
 .zt .mck{font-size:13px;margin-right:1px}
@@ -250,6 +258,10 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
 .ss-cbar{flex:1;height:8px;background:var(--g100);border-radius:4px;overflow:hidden}
 .ss-cbar>span{display:block;height:100%;border-radius:4px}
 .ss-cp{flex:0 0 44px;width:44px;text-align:right;font-size:11px;font-weight:800;color:var(--g600);font-variant-numeric:tabular-nums}
+.ss-row3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.ss-row3 .ss-card{margin-bottom:0;background:var(--white);border:1px solid var(--g200);border-radius:var(--rl);padding:14px 16px;box-shadow:var(--sh)}
+.ss-row3 .ss-grid{grid-template-columns:1fr;gap:12px}
+@media(max-width:900px){.ss-row3{grid-template-columns:1fr}}
 
 /* NEXT STEPS */
 .nextsteps{margin-top:14px}
@@ -312,6 +324,8 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
 .mtx td{padding:9px 5px;text-align:center;vertical-align:middle;border-radius:8px;transition:transform .12s ease,box-shadow .15s ease}
 .mtx td:not(.rh):not(.h0):hover{transform:scale(1.05);box-shadow:var(--sh2);position:relative;z-index:2}
 .mtx td.rh{text-align:left;font-weight:700;background:var(--g50);font-size:11px;padding:9px 10px;border-radius:4px;color:var(--navy);width:86px;overflow:hidden;text-overflow:ellipsis}
+.mtx-hint{font-size:10px;color:var(--g600);margin:0 0 7px;display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.mtx-hint b{color:var(--navy)}
 .mcell{display:flex;flex-direction:column;align-items:center;gap:2px}
 .mline{display:flex;align-items:baseline;justify-content:space-between;gap:6px;line-height:1.25}
 .mlbl{font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;flex-shrink:0}
@@ -449,7 +463,7 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
     </div>
     <div class="tp vis" id="tab-overview"><div id="overview-body"></div></div>
     <div class="tp" id="tab-overview2"><div id="overview2-body"></div></div>
-    <div class="tp" id="tab-zone"><div class="ztabs" id="zone-tabs"></div><div id="zone-body"></div></div>
+    <div class="tp" id="tab-zone"><div id="zone-fieldbar"></div><div class="ztabs" id="zone-tabs"></div><div id="zone-body"></div></div>
     <div class="tp" id="tab-form"><div class="ztabs" id="form-tabs"></div><div id="form-body"></div></div>
   </div>
 </div>
@@ -479,11 +493,19 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
         <span><span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:#0A357E;margin-right:4px"></span>-10%pt〜 大きく減少 / Down</span>
         <span style="color:var(--g400);font-size:11px">※ 割合(%pt)で比較 / by % not count</span>
       </div>
-      <div class="ttabs" id="cmp-mode" style="max-width:360px;margin-bottom:14px">
-        <div class="tt on" id="cmp-mode-zone">📍 FIELD ZONE</div>
+      <div class="ttabs" id="cmp-mode" style="max-width:620px;margin-bottom:14px">
+        <div class="tt on" id="cmp-mode-overview">📊 OVERVIEW</div>
+        <div class="tt" id="cmp-mode-summary">🗒️ SUMMARY</div>
+        <div class="tt" id="cmp-mode-zone">📍 FIELD ZONE</div>
         <div class="tt" id="cmp-mode-form">📋 FORMATION</div>
       </div>
-      <div id="cmp-zone-wrap">
+      <div id="cmp-overview-wrap">
+        <div id="cmp-overview-body"></div>
+      </div>
+      <div id="cmp-summary-wrap" style="display:none">
+        <div id="cmp-summary-body"></div>
+      </div>
+      <div id="cmp-zone-wrap" style="display:none">
         <div class="ztabs" id="cmp-zone-tabs"></div>
         <div id="cmp-zone-body"></div>
       </div>
@@ -735,7 +757,7 @@ var DD_LEGEND='<div class="hleg" style="margin-bottom:8px;font-size:10px">'
   +'<span class="hl" style="background:#FDD88A;color:#3A4252">〜60</span>'
   +'<span class="hl" style="background:#F5A623;color:#fff">〜75</span>'
   +'<span class="hl" style="background:#C0392B;color:#fff">76+</span>'
-  +'<span style="color:var(--g600)">｜各セル(上から): <b style="color:var(--navy)">MAIN COVER / MAIN FRONT / BLITZ% / STUNTS% / N</b>　クリックで詳細</span>'
+  +'<span style="color:var(--g600)">｜各セル(上から): <b style="color:var(--navy)">COVERAGE / MAIN FRONT / BLITZ% / STUNTS% / N</b>　クリックで詳細</span>'
   +'</div>';
 function ddCard(z,rows,color){
   return'<div class="card" style="margin-bottom:14px"><div class="sec">DOWN &amp; DISTANCE</div>'+DD_LEGEND+buildMtxPanel(z,rows,color)+'</div>';
@@ -788,9 +810,22 @@ function buildSpecial(rows){
   var half=Math.ceil(rows.length/2);
   var firstOpen=rows.slice(0,Math.min(12,half)),secondOpen=rows.slice(half,half+12);
   return'<div class="sec" style="margin-top:18px">SPECIAL SITUATIONS</div><div style="font-size:10px;color:var(--g400);margin-bottom:8px">※ 2-MINUTE は「2 MIN」列=Y の行を集計。OPENERS は専用列が無いため各ハーフ序盤の参考値 / openers are a proxy</div>'
+    +'<div class="ss-row3">'
     +ssCard('⏱','2-MINUTE','#7C3AED',twoMin,total)
     +ssCard('🎯','1ST HALF OPENERS','#0055A4',firstOpen,total)
-    +ssCard('🏃','2ND HALF OPENERS','#059669',secondOpen,total);
+    +ssCard('🏃','2ND HALF OPENERS','#059669',secondOpen,total)
+    +'</div>';
+}
+// SUMMARY 用：他セクションと同じ call-sheet カード（ov2Item）で揃える
+function buildSpecial2(rows){
+  var twoMin=rows.filter(function(r){return (''+(r['2 MIN']||'')).trim().toUpperCase()==='Y';}); // 2 MIN 列=Y を参照
+  var half=Math.ceil(rows.length/2);
+  var firstOpen=rows.slice(0,Math.min(12,half)),secondOpen=rows.slice(half,half+12);
+  return'<div class="sec" style="margin-top:18px">SPECIAL SITUATIONS</div><div style="font-size:10px;color:var(--g400);margin-bottom:8px">※ 2-MINUTE は「2 MIN」列=Y の行を集計。OPENERS は専用列が無いため各ハーフ序盤の参考値 / openers are a proxy</div><div class="cs-grid">'
+    +ov2Item('2-MINUTE','#7C3AED',twoMin)
+    +ov2Item('1ST HALF OPENERS','#0055A4',firstOpen)
+    +ov2Item('2ND HALF OPENERS','#059669',secondOpen)
+    +'</div>';
 }
 function buildNextSteps(rows,a){
   var steps=[];
@@ -808,17 +843,36 @@ function buildOverview(rows){
 }
 
 // ===== OVERVIEW2 (call-sheet style: BLITZ RATE / STUNTS RATE / COVERAGE per item) =====
+var __SEG={},__segSeq=0;
 function ov2Item(name,color,sub){
   var a=analyze(sub);
   var cov=a.cov.length?a.cov.slice(0,2).map(function(x){return x[0];}).join(' / '):'—';
   var fr=a.front.length?a.front.slice(0,2).map(function(x){return x[0];}).join(' / '):'—';
-  return'<div class="cs-card"'+(a.n===0?' style="opacity:.5"':'')+'><div class="cs-name" style="border-top-color:'+color+'">'+name+'</div>'
+  var sk='s'+(++__segSeq);__SEG[sk]={rows:sub,name:name,color:color};
+  var clk=a.n>0?' onclick="showSegment(\''+sk+'\')" style="cursor:pointer"':' style="opacity:.5"';
+  return'<div class="cs-card"'+clk+'><div class="cs-name" style="border-top-color:'+color+'">'+name+(a.n>0?'<span class="cs-go">詳細 ▸</span>':'')+'</div>'
     +'<div class="cs-row cov"><span>MAIN COVER</span><b>'+cov+'</b></div>'
     +'<div class="cs-row cov"><span>MAIN FRONT</span><b>'+fr+'</b></div>'
     +'<div class="cs-row"><span>BLITZ</span><b style="color:var(--blue)">'+a.bp+'%</b></div>'
     +'<div class="cs-row"><span>STUNTS</span><b style="color:var(--green)">'+a.sp+'%</b></div>'
     +'<div class="cs-row"><span>N</span><b>'+a.n+'</b></div>'
     +'</div>';
+}
+// SUMMARY カードのクリックで、そのセグメントの詳細（ダッシュボードと同じ表現）をモーダル表示
+function showSegment(sk){
+  var seg=__SEG[sk];if(!seg||!seg.rows.length)return;
+  var a=analyze(seg.rows);
+  var donutRow='<div class="donut-row" style="margin:4px 0 6px">'
+    +donut(a.bp,'var(--blue)','BLITZ RATE',a.bn+' / '+a.n)
+    +donut(a.sp,'var(--green)','STUNTS RATE',a.sn+' / '+a.n)+'</div>';
+  document.getElementById('cm-body').innerHTML=
+    '<div class="cm-head"><div><b>'+seg.name+'</b><div class="cm-sub">'+a.n+' Play ・ BLITZ '+a.bp+'% / STUNTS '+a.sp+'%</div></div><button class="cm-x" onclick="closeCell()">✕</button></div>'
+    +donutRow
+    +'<div class="cm-sec">COVERAGE</div>'+(a.cov.length?makeBars(a.cov,a.n):'<div class="cm-no">—</div>')
+    +'<div class="cm-sec">FRONT</div>'+(a.front.length?makeBars(a.front,a.n,FRONT_COLORS):'<div class="cm-no">—</div>')
+    +'<div class="cm-sec">BLITZ TYPE</div>'+(a.blitzRaw.length?makeBars(a.blitzRaw,a.n):'<div class="cm-no">—</div>')
+    +'<div class="cm-sec">STUNTS TYPE</div>'+(a.stunt.length?makeBars(a.stunt,a.n):'<div class="cm-no">—</div>');
+  document.getElementById('cell-modal').classList.add('on');
 }
 var CS_FCOL=['#C0392B','#0055A4','#059669','#7C3AED','#EA580C','#0891B2','#DB2777','#475569'];
 function buildOverview2(rows){
@@ -832,7 +886,7 @@ function buildOverview2(rows){
     +'<div class="sec" style="margin-top:18px">FORMATION 別 / by Formation</div><div class="cs-grid">'+byF+'</div>'
     +'<div class="sec" style="margin-top:18px">FIELD ZONE 別 / by Field Zone</div><div class="cs-grid">'+byZ+'</div>'
     +'<div class="sec" style="margin-top:18px">FRONT 別 / by Front</div><div class="cs-grid">'+byFr+'</div>'
-    +buildSpecial(rows);
+    +buildSpecial2(rows);
 }
 
 function mCell(rows){
@@ -858,7 +912,7 @@ function renderMCell(c,key,dn,dg,allType){
   var lbl=vd?'color:rgba(255,255,255,.78)':'color:#4A5870';
   var clk=key?' onclick="showCell(\''+key+'\',\''+dn+'\',\''+dg+'\')" style="cursor:pointer"':'';
   return'<td class="'+heatClass(c.bp)+ac+'"'+clk+'><div class="mcell" style="align-items:stretch;gap:3px;text-align:left;padding:1px 3px'+(low?';opacity:.55':'')+'">'
-    +'<div class="mline"><span class="mlbl" style="'+lbl+'">MAIN COVER</span><span class="mval" style="'+sub+'">'+(c.tc||'—')+'</span></div>'
+    +'<div class="mline"><span class="mlbl" style="'+lbl+'">COVERAGE</span><span class="mval" style="'+sub+'">'+(c.tc||'—')+'</span></div>'
     +'<div class="mline"><span class="mlbl" style="'+lbl+'">MAIN FRONT</span><span class="mval" style="'+sub+'">'+(c.tf||'—')+'</span></div>'
     +'<div class="mline"><span class="mlbl" style="'+lbl+'">BLITZ</span><span class="mval" style="'+main+';font-weight:800">'+c.bp+'%</span></div>'
     +'<div class="mline"><span class="mlbl" style="'+lbl+'">STUNTS</span><span class="mval" style="'+sub+'">'+c.sp+'%</span></div>'
@@ -930,17 +984,28 @@ function setupMultiTabs(tabsId,bodyId,items,getRows,colorOf,labelOf,base){
 // フィールド位置: 0=自陣ゴール … 50=ミッド … 100=敵陣ゴール（自陣=負, 敵陣=正のYARD LNを連続化）
 function fpos(y){y=parseFloat(y);return isNaN(y)?NaN:(y<=0?-y:100-y);}
 function fpLbl(fp){return fp<=50?('自'+fp):('敵'+(100-fp));}
-function setupZoneYard(tabsId,bodyId,rows,base){
-  var te=document.getElementById(tabsId),be=document.getElementById(bodyId);
-  te.innerHTML='';
+function setupZoneYard(tabsId,bodyId,rows,base,fbId){
+  var te=document.getElementById(tabsId),be=document.getElementById(bodyId),fe=document.getElementById(fbId||tabsId);
+  te.innerHTML='';fe.innerHTML='';
   var lo=0,hi=100;
   var zones=ZO.filter(function(z){return z!=='ALL';});
-  var ticks='';for(var fp=0;fp<=100;fp+=10){ticks+='<div class="fb-tick" style="left:'+fp+'%"></div><div class="fb-num" style="left:'+fp+'%">'+(fp<=50?fp:100-fp)+'</div>';}
+  var lines='',nums='';
+  for(var fp=0;fp<=100;fp+=10){
+    lines+='<div class="fb-yl" style="left:'+fp+'%"></div>';
+    if(fp>0&&fp<100){var lbl=(fp<=50?fp:100-fp);nums+='<div class="fb-num t" style="left:'+fp+'%">'+lbl+'</div><div class="fb-num" style="left:'+fp+'%">'+lbl+'</div>';}
+  }
+  var hashes='<div class="fb-hash" style="top:4px"></div><div class="fb-hash" style="top:36px"></div><div class="fb-hash" style="top:64px"></div><div class="fb-hash" style="bottom:4px"></div>';
   var bands=zones.filter(function(z){return z!=='GREEN';}).map(function(z){var r=ZYARD[z];if(!r)return'';return'<div class="fb-band" title="'+(ZN[z]||z)+'" style="left:'+r[0]+'%;width:'+(r[1]-r[0])+'%;background:'+ZCS[z]+'"></div>';}).join('');
-  te.innerHTML='<div class="fieldbar">'
-    +'<div class="fb-ends"><span>◀ OWN GOAL 自陣</span><span>MID 50</span><span>敵陣 OPP GOAL ▶</span></div>'
-    +'<div class="fb-track" id="'+tabsId+'-trk"><div class="fb-bands">'+bands+'</div>'+ticks
-      +'<div class="fb-sel" id="'+tabsId+'-sel"></div><div class="fb-h" id="'+tabsId+'-hlo"></div><div class="fb-h" id="'+tabsId+'-hhi"></div></div>'
+  fe.innerHTML='<div class="fieldbar">'
+    +'<div class="fb-ends"><span>◀ 自陣 OWN</span><span>MID 50</span><span>OPP 敵陣 ▶</span></div>'
+    +'<div class="fb-field">'
+      +'<div class="fb-ez l">END ZONE</div>'
+      +'<div class="fb-track" id="'+tabsId+'-trk">'
+        +'<div class="fb-turf"><div class="fb-bands">'+bands+'</div>'+lines+hashes+nums+'</div>'
+        +'<div class="fb-sel" id="'+tabsId+'-sel"></div><div class="fb-h" id="'+tabsId+'-hlo"></div><div class="fb-h" id="'+tabsId+'-hhi"></div>'
+      +'</div>'
+      +'<div class="fb-ez r">END ZONE</div>'
+    +'</div>'
     +'<div class="fb-read" id="'+tabsId+'-rd"></div></div>'
     +'<div class="msel-ctl"><span class="msel-hint">ハンドルをドラッグ、またはゾーンをタップ / drag handles or tap a zone</span><button class="msel-btn" id="'+tabsId+'-all">ALL</button></div>';
   var trk=document.getElementById(tabsId+'-trk'),sel=document.getElementById(tabsId+'-sel'),hLo=document.getElementById(tabsId+'-hlo'),hHi=document.getElementById(tabsId+'-hhi'),rd=document.getElementById(tabsId+'-rd');
@@ -1029,9 +1094,10 @@ function mtxChips(key){
   var s=__MTXSEL[key];
   var dn=[1,2,3,4].map(function(d){return'<span class="mfc'+(s.dn.indexOf(d)>=0?' on':'')+'" onclick="mtxToggle(\''+key+'\',\'dn\','+d+')">'+dnLbl(d)+'</span>';}).join('');
   var dg=DO.map(function(d){return'<span class="mfc'+(s.dg.indexOf(d)>=0?' on':'')+'" onclick="mtxToggle(\''+key+'\',\'dg\',\''+d+'\')">'+d+'</span>';}).join('');
-  return'<div class="mfilter"><span class="mfl">DOWN</span><span class="mfc mfall" onclick="mtxAll(\''+key+'\',\'dn\')">ALL</span>'+dn+'<span class="mfsep"></span><span class="mfl">DIST</span><span class="mfc mfall" onclick="mtxAll(\''+key+'\',\'dg\')">ALL</span>'+dg+'</div>';
+  return'<div class="mfilter"><span class="mfl">表示 / SHOW —</span><span class="mfl">DOWN</span><span class="mfc mfall" onclick="mtxAll(\''+key+'\',\'dn\')">ALL</span>'+dn+'<span class="mfsep"></span><span class="mfl">DIST</span><span class="mfc mfall" onclick="mtxAll(\''+key+'\',\'dg\')">ALL</span>'+dg+'</div>';
 }
-function mtxInner(key){return mtxChips(key)+'<div class="mtx-wrap">'+mtxTable(key)+'</div>';}
+var MTX_HINT='<div class="mtx-hint">👆 <b>セルをタップ</b>で詳細を表示 <span style="color:var(--g400)">/ tap a cell for detail</span></div>';
+function mtxInner(key){return mtxChips(key)+MTX_HINT+'<div class="mtx-wrap">'+mtxTable(key)+'</div>';}
 function buildMtxPanel(z,rows,color){
   var key='m'+(++__mtxSeq);__MTX[key]=rows;__MTXSEL[key]={dn:[1,2,3,4],dg:DO.slice()};
   return'<div class="print-zone-label">'+(ZE[z]||'')+' '+((typeof ZN!=='undefined'&&ZN[z])?ZN[z]:z)+' — DOWN & DISTANCE</div><div id="mtxbox-'+key+'">'+mtxInner(key)+'</div>';
@@ -1098,7 +1164,7 @@ function renderCompare(scout,game){
   document.getElementById('compare-result').style.display='block';
   var sd=byZone(scout),gd=byZone(game);
   var zfirst=true;
-  ZO.forEach(function(z){
+  ZO.filter(function(z){return z!=='ALL';}).forEach(function(z){ // ALL は OVERVIEW タブで表示
     var sr=sd[z],gr=gd[z]||[];
     if(!sr||!sr.length)return;
     var color=ZCS[z];var active=zfirst;zfirst=false;
@@ -1124,14 +1190,17 @@ function renderCompare(scout,game){
     panel.innerHTML=buildCmpPanel(fg,sr,gr,color,true);
     fbe.appendChild(panel);
   });
-  // モードを FIELD ZONE に戻す
-  cmpMode('zone');
+  // OVERVIEW（全体 ALL の事前→試合後）と SUMMARY（区分別カード）
+  document.getElementById('cmp-overview-body').innerHTML=buildCmpPanel('ALL',scout,game,ZCS.ALL);
+  document.getElementById('cmp-summary-body').innerHTML=buildCmpSummary(scout,game);
+  // 既定モードは OVERVIEW
+  cmpMode('overview');
 }
 function cmpMode(m){
-  document.getElementById('cmp-mode-zone').className='tt'+(m==='zone'?' on':'');
-  document.getElementById('cmp-mode-form').className='tt'+(m==='form'?' on':'');
-  document.getElementById('cmp-zone-wrap').style.display=m==='zone'?'':'none';
-  document.getElementById('cmp-form-wrap').style.display=m==='form'?'':'none';
+  ['overview','summary','zone','form'].forEach(function(x){
+    document.getElementById('cmp-mode-'+x).className='tt'+(x===m?' on':'');
+    document.getElementById('cmp-'+x+'-wrap').style.display=x===m?'':'none';
+  });
 }
 
 function diffColor(diff){
@@ -1148,72 +1217,115 @@ function diffLabel(diff,isPct){
   return(diff>0?'↑ +':'↓ -')+Math.abs(diff)+u;
 }
 
+// ===== COMPARE helpers (dashboard-style: donuts + bars + ↑/↓ diff vs PRE) =====
+function mergeKeys(a1,a2,n){var seen={},res=[];(a1||[]).forEach(function(x){if(!seen[x[0]]){seen[x[0]]=1;res.push(x[0]);}});(a2||[]).forEach(function(x){if(!seen[x[0]]){seen[x[0]]=1;res.push(x[0]);}});return res.slice(0,n||10);}
+function cmpArrow(diff){return diff===null?'':' <span style="font-weight:800;color:'+diffColor(diff)+'">'+(diff>0?'↑+':diff<0?'↓-':'±')+Math.abs(diff)+'</span>';}
+function cmpDiffBadge(post,pre){
+  if(pre===null||pre===undefined||isNaN(pre))return'';
+  var d=Math.round((post-pre)*10)/10;
+  if(Math.abs(d)<1)return'<div class="donut-diff" style="color:var(--g400)">≈ PRE</div>';
+  return'<div class="donut-diff" style="color:'+diffColor(d)+'">'+(d>0?'↑ +':'↓ -')+Math.abs(d)+'pt <span style="color:var(--g400);font-weight:600">vs PRE</span></div>';
+}
+function cmpDonut(title,col,pre,post,hasPost){
+  return donut(hasPost?post:pre,col,title,'PRE '+pre+'%',hasPost?cmpDiffBadge(post,pre):'');
+}
+// dashboard 風バー：POST 分布を表示し、各行に PRE との差(↑/↓ %pt)を併記
+function cmpBars(preArr,postArr,preN,postN,colors){
+  colors=colors||BAR_COLORS;
+  var preMap={};(preArr||[]).forEach(function(x){preMap[x[0]]=x[1];});
+  var postMap={};(postArr||[]).forEach(function(x){postMap[x[0]]=x[1];});
+  var hasPost=postN>0;
+  var keys=mergeKeys(hasPost?postArr:preArr,hasPost?preArr:postArr,6);
+  if(!keys.length)return'<div style="color:var(--g400);font-size:12px">—</div>';
+  return keys.map(function(k,i){
+    var pp=p(preMap[k]||0,preN),gp=hasPost?p(postMap[k]||0,postN):null;
+    var w=gp!==null?gp:pp,hl=w>=25,diff=gp!==null?Math.round((gp-pp)*10)/10:null;
+    return barRow(k,w,hl?colors[i%colors.length]:BAR_GREY,w+'%'+cmpArrow(diff),hl);
+  }).join('');
+}
 function buildCmpPanel(z,sr,gr,color,byForm){
   var sa=analyze(sr),ga=analyze(gr);
-  var sn=sr.length,gn=gr.length;
+  var sn=sr.length,gn=gr.length,hasPost=gn>0;
+  var noData=hasPost?'':'<div class="ins" style="background:#FEF9EC;border-color:var(--amber);color:#7A4F00;margin-bottom:12px">⚠️ この区分は試合後データが0件です / No post-game plays in this segment.</div>';
+  var samp='<div class="msel-note" style="display:flex;gap:18px;align-items:center;flex-wrap:wrap">PRE <b>N='+sn+'</b>　→　POST <b>N='+(hasPost?gn:'0')+'</b>　<span style="font-weight:600;color:var(--g400)">数値=POST・矢印=vs PRE / value=POST, arrow=vs PRE</span></div>';
 
-  // サマリー
-  function mkMC(label,sv,gv,isPct){
-    var diff=gn>0?Math.round((gv-sv)*10)/10:null;
-    var dc=diffColor(diff);
-    return'<div class="mc"><div class="ml">'+label+'</div>'+'<div style="font-size:11px;color:var(--g400);margin-bottom:2px">事前: <b style="color:var(--navy)">'+sv+(isPct?'%':'')+'</b></div>'+'<div style="font-size:11px;color:var(--g400)">試合後: <b style="color:var(--navy)">'+(gn?gv+(isPct?'%':''):'—')+'</b></div>'+'<div style="font-size:12px;font-weight:700;color:'+dc+';margin-top:3px">'+(diff!==null?diffLabel(diff,isPct):'—')+'</div></div>';
-  }
-  function mkMCStr(label,sv,gv){
-    var same=sv===gv;
-    return'<div class="mc"><div class="ml">'+label+'</div>'+'<div style="font-size:11px;color:var(--g400);margin-bottom:2px">事前: <b style="color:var(--navy)">'+sv+'</b></div>'+'<div style="font-size:11px;color:var(--g400)">試合後: <b style="color:var(--navy)">'+(gn?gv:'—')+'</b></div>'+'<div style="font-size:11px;font-weight:700;margin-top:3px;color:'+(same?'var(--green)':'var(--amber)')+'">'+( same?'✅ 一致':'⚠️ 変化あり')+'</div></div>';
-  }
-  var sumH='<div class="g3" style="margin-bottom:14px">'+mkMC('BLITZ率',sa.bp,ga.bp,true)+mkMC('STUNTS率',sa.sp,ga.sp,true)+mkMCStr('主FRONT',sa.front[0]?sa.front[0][0]:'—',ga.front[0]?ga.front[0][0]:'—')+'</div>';
+  var frontCard='<div class="card"><div class="sec">FRONT</div>'+cmpBars(sa.front,ga.front,sn,gn,FRONT_COLORS)+'</div>';
+  var donutCard='<div class="card"><div class="sec">BLITZ / STUNTS</div><div class="donut-row">'
+    +cmpDonut('BLITZ RATE','var(--blue)',sa.bp,ga.bp,hasPost)
+    +cmpDonut('STUNTS RATE','var(--green)',sa.sp,ga.sp,hasPost)
+    +'</div></div>';
+  var covCard='<div class="card"><div class="sec">COVERAGE</div>'+cmpBars(sa.cov,ga.cov,sn,gn)+'</div>';
 
-  // 割合比較テーブル
-  function mkTable(title,getKeys,getVal,sTotal,gTotal,isBlitz){
-    var keys=getKeys();
-    var rows=keys.map(function(k){
-      var sv=getVal(sr,k),gv=getVal(gr,k);
-      var sp2=p(sv,sTotal),gp2=gn?p(gv,gTotal):null;
-      var diff=gp2!==null?Math.round((gp2-sp2)*10)/10:null;
-      var dc=diffColor(diff);
-      return'<tr><td style="font-weight:700;color:var(--navy)">'+k+'</td>'+'<td style="text-align:center">'+sp2+'%<span style="color:var(--g400);font-size:10px"> ('+sv+'件)</span></td>'+'<td style="text-align:center">'+(gp2!==null?gp2+'%<span style="color:var(--g400);font-size:10px"> ('+gv+'件)</span>':'—')+'</td>'+'<td style="text-align:center;font-weight:700;color:'+dc+'">'+(diff!==null?diffLabel(diff,true):'—')+'</td></tr>';
-    }).join('');
-    return'<table class="tbl"><tr><th>'+title+'</th><th style="text-align:center">事前(%)</th><th style="text-align:center">試合後(%)</th><th style="text-align:center;width:80px">差分</th></tr>'+rows+'</table>';
-  }
-
-  function mergeKeys(a1,a2,n){var seen={},res=[];(a1||[]).forEach(function(x){if(!seen[x[0]]){seen[x[0]]=1;res.push(x[0]);}});(a2||[]).forEach(function(x){if(!seen[x[0]]){seen[x[0]]=1;res.push(x[0]);}});return res.slice(0,n||10);}
-  function countKey(rows2,key,val){return rows2.filter(function(r){return r[key]===val;}).length;}
-
-  var covT=mkTable('カバー',function(){return mergeKeys(sa.cov,ga.cov,10);},function(rows2,k){return countKey(rows2,'COVERAGE',k);},sn,gn);
-  var frtT=mkTable('FRONT',function(){return mergeKeys(sa.front,ga.front,8);},function(rows2,k){return countKey(rows2,'DEF FRONT',k);},sn,gn);
-  var blzT=mkTable('BLITZ種別',function(){return mergeKeys(sa.blitzRaw,ga.blitzRaw,8);},function(rows2,k){return rows2.filter(function(r){return (r.BLITZ||'').trim()===k;}).length;},sn,gn);
-  var sttT=mkTable('STUNTS種別',function(){return mergeKeys(sa.stunt,ga.stunt,8);},function(rows2,k){return countKey(rows2,'STUNT',k);},sn,gn);
-
-  // BLITZ方向比較
+  // BLITZ DIRECTION
   var sbt={BOUNDARY:0,FIELD:0,BOTH:0},gbt={BOUNDARY:0,FIELD:0,BOTH:0};
-  sr.forEach(function(r){if(r.BT)sbt[r.BT]++;});
-  gr.forEach(function(r){if(r.BT)gbt[r.BT]++;});
+  sr.forEach(function(r){if(r.BT)sbt[r.BT]++;});gr.forEach(function(r){if(r.BT)gbt[r.BT]++;});
   var sbn=sr.filter(function(r){return r.HB;}).length,gbn=gr.filter(function(r){return r.HB;}).length;
-  var btRows=['BOUNDARY','FIELD','BOTH'].map(function(side){
-    var sv=p(sbt[side]||0,sbn),gv=gbn?p(gbt[side]||0,gbn):null;
-    var diff=gv!==null?Math.round((gv-sv)*10)/10:null;
-    var dc=diffColor(diff);
-    return'<tr><td style="font-weight:700;color:var(--navy)">'+side+'</td><td style="text-align:center">'+sv+'%</td><td style="text-align:center">'+(gv!==null?gv+'%':'—')+'</td><td style="text-align:center;font-weight:700;color:'+dc+'">'+(diff!==null?diffLabel(diff,true):'—')+'</td></tr>';
+  var dirBars=['BOUNDARY','FIELD','BOTH'].map(function(side,i){
+    var pp=p(sbt[side]||0,sbn),gp=gbn?p(gbt[side]||0,gbn):null;
+    var w=gp!==null?gp:pp,hl=w>=25,diff=gp!==null?Math.round((gp-pp)*10)/10:null;
+    return barRow(side,w,hl?BAR_COLORS[i%BAR_COLORS.length]:BAR_GREY,w+'%'+cmpArrow(diff),hl);
   }).join('');
-  var btT='<table class="tbl"><tr><th>BLITZ方向</th><th style="text-align:center">事前(%)</th><th style="text-align:center">試合後(%)</th><th style="text-align:center;width:80px">差分</th></tr>'+btRows+'</table>';
+  var dirCard='<div class="card"><div class="sec">BLITZ DIRECTION</div>'+dirBars+'</div>';
 
-  // ダウン別BLITZ率比較
-  var dnT='<table class="tbl"><tr><th>ダウン</th><th style="text-align:center">事前 BLITZ率</th><th style="text-align:center">試合後 BLITZ率</th><th style="text-align:center;width:80px">差分</th></tr>';
-  [1,2,3,4].forEach(function(dn){
+  // BLITZ RATE by DOWN
+  var dnBars=[1,2,3,4].map(function(dn){
     var ss=sr.filter(function(r){return r.DN===dn;}),gs=gr.filter(function(r){return r.DN===dn;});
-    if(!ss.length&&!gs.length)return;
+    if(!ss.length&&!gs.length)return'';
     var sbp=Math.round(p(ss.filter(function(r){return r.HB;}).length,ss.length));
     var gbp=gs.length?Math.round(p(gs.filter(function(r){return r.HB;}).length,gs.length)):null;
-    var diff=gbp!==null?Math.round((gbp-sbp)*10)/10:null;
-    var dc=diffColor(diff);
-    dnT+='<tr><td style="font-weight:700;color:var(--navy)">'+(dn===1?'1st':dn===2?'2nd':dn===3?'3rd':'4th')+' Down</td><td style="text-align:center">'+sbp+'% <span style="color:var(--g400);font-size:10px">('+ss.length+'P)</span></td><td style="text-align:center">'+(gbp!==null?gbp+'% <span style="color:var(--g400);font-size:10px">('+gs.length+'P)</span>':'—')+'</td><td style="text-align:center;font-weight:700;color:'+dc+'">'+(diff!==null?diffLabel(diff,true):'—')+'</td></tr>';
-  });
-  dnT+='</table>';
+    var w=gbp!==null?gbp:sbp,hl=w>=45,diff=gbp!==null?Math.round((gbp-sbp)*10)/10:null;
+    return barRow(dnLbl(dn)+' Down',w,hl?'var(--blue)':BAR_GREY,w+'%'+cmpArrow(diff),hl);
+  }).join('');
+  var dnCard='<div class="card"><div class="sec">BLITZ RATE by DOWN</div>'+(dnBars||'<div style="color:var(--g400);font-size:12px">—</div>')+'</div>';
 
-  var noData=gn===0?'<div class="ins" style="background:#FEF9EC;border-color:var(--amber);color:#7A4F00;margin-bottom:12px">⚠️ 試合後データが0件です。正しいCSVか確認してください。</div>':'';
+  var blzCard='<div class="card"><div class="sec">BLITZ TYPE</div>'+cmpBars(sa.blitzRaw,ga.blitzRaw,sn,gn)+'</div>';
+  var sttCard='<div class="card"><div class="sec">STUNTS TYPE</div>'+cmpBars(sa.stunt,ga.stunt,sn,gn)+'</div>';
 
-  return noData+'<div class="sec">サマリー比較 / Summary Comparison</div>'+sumH+'<div class="g2"><div class="card"><div class="sec">カバー 比較 / Coverage</div>'+covT+'</div><div class="card"><div class="sec">FRONT 比較 / Front</div>'+frtT+'</div></div><div class="card" style="margin-top:12px"><div class="sec">BLITZ方向 比較 / Blitz Direction</div>'+btT+'</div><div class="card" style="margin-top:12px"><div class="sec">ダウン別BLITZ率比較 / Blitz Rate by Down</div>'+dnT+'</div><div class="g2" style="margin-top:12px"><div class="card"><div class="sec">BLITZ種別 比較 / Blitz Type</div>'+blzT+'</div><div class="card"><div class="sec">STUNTS種別比較 / Stunt Type</div>'+sttT+'</div></div>'+ '<div class="ai-section" style="margin-top:16px"><div class="ai-box"><div class="ai-hdr"><span class="ai-badge">🤖 AI</span><span>比較分析 / Comparison Analysis</span><button class="btn-ai" onclick="generateAnalysis(\''+z+'\',true,'+(byForm?'true':'false')+')">分析を生成 / Generate</button></div><div class="ai-body" id="ai-cmp-'+z+'"><span class="ai-placeholder">事前スカウティングと試合後の差異をAIが分析します<br>Press "Generate" for AI pre/post analysis.</span></div></div></div>';
+  var ai='<div class="ai-section" style="margin-top:16px"><div class="ai-box"><div class="ai-hdr"><span class="ai-badge">🤖 AI</span><span>比較分析 / Comparison Analysis</span><button class="btn-ai" onclick="generateAnalysis(\''+z+'\',true,'+(byForm?'true':'false')+')">分析を生成 / Generate</button></div><div class="ai-body" id="ai-cmp-'+z+'"><span class="ai-placeholder">事前スカウティングと試合後の差異をAIが分析します<br>Press "Generate" for AI pre/post analysis.</span></div></div></div>';
+
+  return noData+samp
+    +'<div class="ov3" style="margin-bottom:12px">'+frontCard+donutCard+covCard+'</div>'
+    +'<div class="g2">'+dirCard+dnCard+'</div>'
+    +'<div class="g2" style="margin-top:12px">'+blzCard+sttCard+'</div>'
+    +ai;
+}
+
+// ===== COMPARE SUMMARY (call-sheet cards, PRE → POST per segment) =====
+function cmpOv2Item(name,color,ssub,gsub){
+  var sa=analyze(ssub),ga=analyze(gsub);
+  var hasPost=gsub.length>0;
+  function pct(lbl,pre,post,col){
+    var diff=hasPost?Math.round((post-pre)*10)/10:null;
+    return'<div class="cs-row"><span>'+lbl+'</span><b style="color:'+col+'">'+pre+'%'+(hasPost?' <span style="color:var(--g400);font-weight:600">→</span> '+post+'%':'')+cmpArrow(diff)+'</b></div>';
+  }
+  var scov=sa.cov[0]?sa.cov[0][0]:'—',gcov=ga.cov[0]?ga.cov[0][0]:'—';
+  var sfr=sa.front[0]?sa.front[0][0]:'—',gfr=ga.front[0]?ga.front[0][0]:'—';
+  return'<div class="cs-card"'+(sa.n===0?' style="opacity:.5"':'')+'><div class="cs-name" style="border-top-color:'+color+'">'+name+'<span class="cs-n">PRE '+sa.n+' / POST '+(hasPost?ga.n:0)+'</span></div>'
+    +'<div class="cs-row cov"><span>COVERAGE</span><b>'+scov+(hasPost?' → '+gcov:'')+'</b></div>'
+    +'<div class="cs-row cov"><span>MAIN FRONT</span><b>'+sfr+(hasPost?' → '+gfr:'')+'</b></div>'
+    +pct('BLITZ',sa.bp,ga.bp,'var(--blue)')
+    +pct('STUNTS',sa.sp,ga.sp,'var(--green)')
+    +'</div>';
+}
+function buildCmpSummary(scout,game){
+  var twoMinF=function(r){return (''+(r['2 MIN']||'')).trim().toUpperCase()==='Y';};
+  function halfOpen(rows){var h=Math.ceil(rows.length/2);return[rows.slice(0,Math.min(12,h)),rows.slice(h,h+12)];}
+  var all=cmpOv2Item('ALL / 全体','#002B5C',scout,game);
+  var byF=FO.map(function(fg){return cmpOv2Item(fg,FC[fg]||'#475569',scout.filter(function(r){return r.FG===fg;}),game.filter(function(r){return r.FG===fg;}));}).join('');
+  var sz=byZone(scout),gz=byZone(game);
+  var byZ=ZO.filter(function(z){return z!=='ALL';}).map(function(z){return cmpOv2Item(ZN[z]||z,ZCS[z],sz[z]||[],gz[z]||[]);}).join('');
+  var fc={};scout.forEach(function(r){if(r['DEF FRONT'])fc[r['DEF FRONT']]=(fc[r['DEF FRONT']]||0)+1;});
+  var byFr=topN(fc,8).map(function(x,i){var fr=x[0];return cmpOv2Item(fr,CS_FCOL[i%CS_FCOL.length],scout.filter(function(r){return r['DEF FRONT']===fr;}),game.filter(function(r){return r['DEF FRONT']===fr;}));}).join('')||'<div style="color:var(--g400);font-size:12px">—</div>';
+  var sH=halfOpen(scout),gH=halfOpen(game);
+  var sp=cmpOv2Item('2-MINUTE','#7C3AED',scout.filter(twoMinF),game.filter(twoMinF))
+    +cmpOv2Item('1ST HALF OPENERS','#0055A4',sH[0],gH[0])
+    +cmpOv2Item('2ND HALF OPENERS','#059669',sH[1],gH[1]);
+  return'<div class="msel-note">数値は <b>事前 → 試合後</b>（PRE → POST）／矢印=vs PRE</div>'
+    +'<div class="sec">ALL / 全体</div><div class="cs-grid">'+all+'</div>'
+    +'<div class="sec" style="margin-top:18px">FORMATION 別 / by Formation</div><div class="cs-grid">'+byF+'</div>'
+    +'<div class="sec" style="margin-top:18px">FIELD ZONE 別 / by Field Zone</div><div class="cs-grid">'+byZ+'</div>'
+    +'<div class="sec" style="margin-top:18px">FRONT 別 / by Front</div><div class="cs-grid">'+byFr+'</div>'
+    +'<div class="sec" style="margin-top:18px">SPECIAL SITUATIONS</div><div class="cs-grid">'+sp+'</div>';
 }
 
 // ===== CSV PARSE =====
@@ -1271,7 +1383,7 @@ function boot(rows,label){
     document.getElementById('overview2-body').innerHTML=buildOverview2(valid);
 
     // Zone tab（YARD LINE 任意指定 + ゾーンプリセット）
-    setupZoneYard('zone-tabs','zone-body',valid,base);
+    setupZoneYard('zone-tabs','zone-body',valid,base,'zone-fieldbar');
 
     // Form tab（複数選択可）
     setupMultiTabs('form-tabs','form-body',FO,
@@ -1439,6 +1551,8 @@ document.addEventListener('DOMContentLoaded',function(){
   document.getElementById('tt-overview2').addEventListener('click',function(){showTab('overview2');});
   document.getElementById('tt-zone').addEventListener('click',function(){showTab('zone');});
   document.getElementById('tt-form').addEventListener('click',function(){showTab('form');});
+  document.getElementById('cmp-mode-overview').addEventListener('click',function(){cmpMode('overview');});
+  document.getElementById('cmp-mode-summary').addEventListener('click',function(){cmpMode('summary');});
   document.getElementById('cmp-mode-zone').addEventListener('click',function(){cmpMode('zone');});
   document.getElementById('cmp-mode-form').addEventListener('click',function(){cmpMode('form');});
 
