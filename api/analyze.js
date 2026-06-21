@@ -21,12 +21,37 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { zone, stats, compareStats, isCompare } = req.body;
+    const { zone, stats, compareStats, isCompare, isCustom, question, context } = req.body;
 
     // ===== プロンプト構築 =====
     let prompt = '';
 
-    if (isCompare && compareStats) {
+    if (isCustom && question) {
+      // 自由入力（ASK AI）プロンプト
+      const st = stats || {};
+      const q = String(question).slice(0, 2000);
+      const ctx = context ? String(context).slice(0, 6000) : '';
+      prompt = `あなたはアメリカンフットボールの優秀なオフェンスコーチ兼アナリストです。
+以下は相手ディフェンスのスカウティングデータの要約です。これに基づき、ユーザーの質問に日本語で具体的かつ簡潔に答えてください。
+
+【データ要約】
+${ctx}
+
+【主要指標（全体）】
+- 総プレー数: ${st.n}P / ブリッツ率 ${st.bp}% / スタント率 ${st.sp}%
+- 主要カバレッジ: ${(st.cov || []).slice(0,5).map(x => x[0] + '(' + x[1] + '件)').join(', ')}
+- 主要フロント: ${(st.front || []).slice(0,4).map(x => x[0]).join(', ')}
+
+【ブリッツ補足知識】
+- W/F/C = バウンダリーサイドのLB、M/S = フィールドサイドのLB
+- 偶数番（2,4,6,8）= バウンダリー方向、奇数番（1,3,5,7,9）= フィールド方向、L-5+W-6のようなBOTHは両サイド同時
+
+【ユーザーの質問】
+${q}
+
+回答方針: データの数値を根拠として引用し、必要に応じて具体的なプレーコール／スキーム提案を含める。前置きは省き要点から。データに無い事項は推測である旨を明示。日本語で、長すぎない自然な文章で。`;
+
+    } else if (isCompare && compareStats) {
       // 比較分析プロンプト
       prompt = `あなたはアメリカンフットボールの優秀なオフェンスコーチです。
 以下は事前スカウティングと実際の試合後データの比較分析結果です。

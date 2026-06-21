@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>IMPULSE Defense Scouting</title>
+<script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
 <style>
 :root{
   --navy:#002B5C;--navy-deep:#001B3A;--blue:#0055A4;--blue-bright:#1A7AFF;--blue-pale:#E6EFF9;
@@ -371,6 +372,10 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
 .ai-loading{display:flex;align-items:center;gap:10px;color:var(--g400);font-size:12px}
 .ai-spinner{width:18px;height:18px;border:2px solid var(--g200);border-top-color:var(--blue);border-radius:50%;animation:spin .8s linear infinite;flex-shrink:0}
 @keyframes spin{to{transform:rotate(360deg)}}
+/* ASK AI custom tab */
+.ask-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.ask-chip{font-size:11px;padding:5px 12px;border-radius:20px;border:1px solid var(--g200);background:var(--white);color:var(--g600);cursor:pointer;transition:all .15s}
+.ask-chip:hover{border-color:var(--blue);color:var(--blue)}
 
 /* UPLOAD (game) */
 .upload-card.game-card{border-color:#059669}
@@ -450,6 +455,7 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
     <div class="i-stat" id="i-file" style="font-size:12px;color:var(--g600);font-weight:600"></div>
     <div class="i-actions">
       <button class="btn btn-blue" id="btn-compare" style="font-size:12px;padding:7px 16px">⚡ 試合後データと比較 / Compare</button>
+      <button class="btn btn-ghost" id="btn-pptx" style="font-size:12px;padding:7px 14px">📊 PPTX出力 / Export</button>
       <button class="btn btn-ghost" id="btn-print" style="font-size:12px;padding:7px 14px">🖨️ 印刷 / Print</button>
       <button class="btn btn-ghost" id="btn-back">← 別データ / Back</button>
     </div>
@@ -460,11 +466,25 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
       <div class="tt" id="tt-overview2">🗒️ SUMMARY</div>
       <div class="tt" id="tt-zone">📍 FIELD ZONE</div>
       <div class="tt" id="tt-form">📋 FORMATION</div>
+      <div class="tt" id="tt-ask">🧠 ASK AI</div>
     </div>
     <div class="tp vis" id="tab-overview"><div id="overview-body"></div></div>
     <div class="tp" id="tab-overview2"><div id="overview2-body"></div></div>
     <div class="tp" id="tab-zone"><div id="zone-fieldbar"></div><div class="ztabs" id="zone-tabs"></div><div id="zone-body"></div></div>
     <div class="tp" id="tab-form"><div class="ztabs" id="form-tabs"></div><div id="form-body"></div></div>
+    <div class="tp" id="tab-ask">
+      <div class="card">
+        <div class="sec">ASK AI — 自由分析 / Custom Analysis</div>
+        <div style="font-size:12px;color:var(--g600);margin-bottom:8px">知りたい分析を文章で入力してください。読み込み済みのスカウティングデータを踏まえて AI が回答します。<br><span style="color:var(--g400)">Type any question; the AI answers using the loaded scouting data.</span></div>
+        <div class="ask-chips" id="ask-chips"></div>
+        <textarea id="ask-input" placeholder="例: 3rd &amp; long で最も多いブリッツは？ その対策コンセプトも教えて / e.g. What blitz is most common on 3rd & long, and how do we beat it?"></textarea>
+        <div style="margin-top:10px;display:flex;gap:10px;align-items:center">
+          <button class="btn btn-blue" id="btn-ask">🧠 分析する / Analyze</button>
+          <span style="font-size:11px;color:var(--g400)">Enter で改行・送信はボタン / Shift not needed</span>
+        </div>
+        <div class="ai-body" id="ask-output" style="margin-top:14px"><span class="ai-placeholder">ここに結果が表示されます / Output appears here.</span></div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -493,11 +513,12 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
         <span><span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:#0A357E;margin-right:4px"></span>-10%pt〜 大きく減少 / Down</span>
         <span style="color:var(--g400);font-size:11px">※ 割合(%pt)で比較 / by % not count</span>
       </div>
-      <div class="ttabs" id="cmp-mode" style="max-width:620px;margin-bottom:14px">
+      <div class="ttabs" id="cmp-mode" style="max-width:760px;margin-bottom:14px">
         <div class="tt on" id="cmp-mode-overview">📊 OVERVIEW</div>
         <div class="tt" id="cmp-mode-summary">🗒️ SUMMARY</div>
         <div class="tt" id="cmp-mode-zone">📍 FIELD ZONE</div>
         <div class="tt" id="cmp-mode-form">📋 FORMATION</div>
+        <div class="tt" id="cmp-mode-ask">🧠 ASK AI</div>
       </div>
       <div id="cmp-overview-wrap">
         <div id="cmp-overview-body"></div>
@@ -512,6 +533,16 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
       <div id="cmp-form-wrap" style="display:none">
         <div class="ztabs" id="cmp-form-tabs"></div>
         <div id="cmp-form-body"></div>
+      </div>
+      <div id="cmp-ask-wrap" style="display:none">
+        <div class="card">
+          <div class="sec">ASK AI — 事前 vs 試合後 自由分析 / Pre-vs-Post Custom Analysis</div>
+          <div style="font-size:12px;color:var(--g600);margin-bottom:8px">事前スカウティングと試合後の差について、知りたいことを文章で入力してください。<br><span style="color:var(--g400)">Ask anything about how pre-scout vs the actual game differed.</span></div>
+          <div class="ask-chips" id="cmp-ask-chips"></div>
+          <textarea id="cmp-ask-input" placeholder="例: スカウティングと実際で最も変わったのは？ 次戦への修正点は？ / e.g. What changed most vs the scout, and what should we adjust?"></textarea>
+          <div style="margin-top:10px"><button class="btn btn-blue" id="btn-cmp-ask">🧠 分析する / Analyze</button></div>
+          <div class="ai-body" id="cmp-ask-output" style="margin-top:14px"><span class="ai-placeholder">ここに結果が表示されます / Output appears here.</span></div>
+        </div>
       </div>
     </div>
   </div>
@@ -799,24 +830,7 @@ function buildIdentity(rows,a){
   if(red.length>=3&&redb>a.bp)b.push('Red Zone で攻撃性が上昇（'+redb+'%）<span class="idt-en">/ More aggressive in the red zone</span>');
   return'<div class="card identity"><div class="idt-watermark">🏈</div><div class="idt-head"><span class="idt-ico">🎯</span><div><div class="idt-label">DEFENSIVE IDENTITY</div><div class="idt-name">'+name+'</div></div></div><ul class="idt-list">'+b.map(function(x){return'<li>'+x+'</li>';}).join('')+'</ul></div>';
 }
-function ssCard(icon,name,color,sub,total){
-  var a=analyze(sub);
-  var calls=a.cov.slice(0,3).map(function(x,i){return'<div class="ss-call"><span class="ss-rank" style="background:'+color+'">'+(i+1)+'</span><span class="ss-cn">'+x[0]+'</span><span class="ss-cbar"><span style="width:'+p(x[1],a.n)+'%;background:'+color+'"></span></span><span class="ss-cp">'+p(x[1],a.n)+'%</span></div>';}).join('')||'<div style="color:var(--g400);font-size:11px">—</div>';
-  return'<div class="card ss-card"><div class="ss-head"><span class="ss-ico" style="color:'+color+'">'+icon+'</span><span class="ss-name" style="color:'+color+'">'+name+'</span><span class="ss-use">使用率(全体比) <b style="color:'+color+'">'+p(a.n,total)+'%</b></span></div><div class="ss-grid"><div class="ss-stats"><div class="ss-row"><span>BLITZ率</span><b>'+a.bp+'%</b></div><div class="ss-row"><span>主カバー</span><b>'+(a.cov[0]?a.cov[0][0]:'—')+'</b></div></div><div class="ss-calls"><div class="ss-ct">TOP CALLS</div>'+calls+'</div></div></div>';
-}
-function buildSpecial(rows){
-  var total=rows.length;
-  var twoMin=rows.filter(function(r){return (''+(r['2 MIN']||'')).trim().toUpperCase()==='Y';}); // 2 MIN 列=Y を参照
-  var half=Math.ceil(rows.length/2);
-  var firstOpen=rows.slice(0,Math.min(12,half)),secondOpen=rows.slice(half,half+12);
-  return'<div class="sec" style="margin-top:18px">SPECIAL SITUATIONS</div><div style="font-size:10px;color:var(--g400);margin-bottom:8px">※ 2-MINUTE は「2 MIN」列=Y の行を集計。OPENERS は専用列が無いため各ハーフ序盤の参考値 / openers are a proxy</div>'
-    +'<div class="ss-row3">'
-    +ssCard('⏱','2-MINUTE','#7C3AED',twoMin,total)
-    +ssCard('🎯','1ST HALF OPENERS','#0055A4',firstOpen,total)
-    +ssCard('🏃','2ND HALF OPENERS','#059669',secondOpen,total)
-    +'</div>';
-}
-// SUMMARY 用：他セクションと同じ call-sheet カード（ov2Item）で揃える
+// SPECIAL SITUATIONS は OVERVIEW / SUMMARY 共通で buildSpecial2（クリックで詳細）を使用
 function buildSpecial2(rows){
   var twoMin=rows.filter(function(r){return (''+(r['2 MIN']||'')).trim().toUpperCase()==='Y';}); // 2 MIN 列=Y を参照
   var half=Math.ceil(rows.length/2);
@@ -839,7 +853,7 @@ function buildNextSteps(rows,a){
 }
 function buildOverview(rows){
   var a=analyze(rows);
-  return buildIdentity(rows,a)+overviewBody(rows,'ALL',null,buildSpecial(rows))+buildNextSteps(rows,a);
+  return buildIdentity(rows,a)+overviewBody(rows,'ALL',null,'')+buildNextSteps(rows,a);
 }
 
 // ===== OVERVIEW2 (call-sheet style: BLITZ RATE / STUNTS RATE / COVERAGE per item) =====
@@ -922,7 +936,7 @@ function renderMCell(c,key,dn,dg,allType){
 
 // ===== TAB / PANEL SWITCHING =====
 function showTab(id){
-  ['overview','overview2','zone','form'].forEach(function(t){
+  ['overview','overview2','zone','form','ask'].forEach(function(t){
     document.getElementById('tab-'+t).className='tp'+(t===id?' vis':'');
     document.getElementById('tt-'+t).className='tt'+(t===id?' on':'');
   });
@@ -1197,7 +1211,7 @@ function renderCompare(scout,game){
   cmpMode('overview');
 }
 function cmpMode(m){
-  ['overview','summary','zone','form'].forEach(function(x){
+  ['overview','summary','zone','form','ask'].forEach(function(x){
     document.getElementById('cmp-mode-'+x).className='tt'+(x===m?' on':'');
     document.getElementById('cmp-'+x+'-wrap').style.display=x===m?'':'none';
   });
@@ -1490,6 +1504,199 @@ function generateAnalysis(zone, isCompare, byForm) {
   });
 }
 
+// ===== ASK AI (free-text custom analysis) =====
+// AI へ渡すための簡潔なデータ要約（ゾーン/ダウン/フォーメーション別）
+function scoutContext(rows){
+  var L=[],a=analyze(rows);
+  L.push('全体 / ALL: N='+a.n+', BLITZ '+a.bp+'%, STUNTS '+a.sp+'%, 主COVERAGE '+a.cov.slice(0,3).map(function(x){return x[0]+'('+p(x[1],a.n)+'%)';}).join(', '));
+  L.push('  主FRONT '+a.front.slice(0,3).map(function(x){return x[0];}).join(', ')+' / BLITZ方向 BOUNDARY'+a.bt.BOUNDARY+' FIELD'+a.bt.FIELD+' BOTH'+a.bt.BOTH);
+  var zd=byZone(rows);
+  ZO.filter(function(z){return z!=='ALL';}).forEach(function(z){var zr=zd[z]||[];if(zr.length>=2){var za=analyze(zr);L.push('['+(ZN[z]||z)+'] N='+za.n+', BLITZ '+za.bp+'%, STUNTS '+za.sp+'%, COV '+za.cov.slice(0,2).map(function(x){return x[0];}).join('/'));}});
+  [1,2,3,4].forEach(function(dn){
+    var parts=[];
+    DO.forEach(function(dg){var s=rows.filter(function(r){return r.DN===dn&&r.DIST_GRP===dg;});if(s.length){parts.push(dg+' '+Math.round(p(s.filter(function(r){return r.HB;}).length,s.length))+'%(N'+s.length+')');}});
+    if(parts.length)L.push(dnLbl(dn)+' Down BLITZ%: '+parts.join(' / '));
+  });
+  FO.forEach(function(fg){var fr=rows.filter(function(r){return r.FG===fg;});if(fr.length>=2){var fa=analyze(fr);L.push('vs '+fg+': N='+fa.n+', BLITZ '+fa.bp+'%, COV '+(fa.cov[0]?fa.cov[0][0]:'—'));}});
+  return L.join('\n');
+}
+function setupAskChips(chipsId,inputId,presets){
+  var el=document.getElementById(chipsId||'ask-chips');if(!el)return;
+  var inId=inputId||'ask-input';
+  presets=presets||['3rd & long で多いブリッツと対策は？','レッドゾーンのカバレッジ傾向と弱点は？','最も読みやすい(偏りが大きい)局面はどこ？','このディフェンスを崩す有効なパス3つは？','ブリッツが少なく縦を狙える局面は？'];
+  el.innerHTML=presets.map(function(){return'<span class="ask-chip"></span>';}).join('');
+  Array.prototype.forEach.call(el.querySelectorAll('.ask-chip'),function(c,i){c.textContent=presets[i];c.onclick=function(){var t=document.getElementById(inId);t.value=presets[i];t.focus();};});
+}
+// 比較画面用 ASK AI（事前 vs 試合後の両方を文脈に渡す）
+function generateCustomCompare(){
+  var inp=document.getElementById('cmp-ask-input'),out=document.getElementById('cmp-ask-output');
+  var q=(inp.value||'').trim();
+  if(!q){out.innerHTML='<span style="color:var(--red)">質問を入力してください / Please enter a question.</span>';return;}
+  var scout=__scoutDataGlobal,game=__gameDataGlobal;
+  if(!scout||!scout.length){out.innerHTML='<span style="color:var(--red)">スカウティングデータが読み込まれていません</span>';return;}
+  if(!game||!game.length){out.innerHTML='<span style="color:var(--red)">試合後データが読み込まれていません</span>';return;}
+  if(location.protocol==='file:'){out.innerHTML='<div style="background:#FEF9EC;border-left:3px solid var(--amber);border-radius:0 6px 6px 0;padding:10px 14px;color:#7A4F00;line-height:1.8"><b>⚠️ AI分析はサーバ経由でのみ動作します</b><br>file:// では <code>/api/analyze</code> に接続できません。Vercel等のサーバ経由で開いてください。</div>';return;}
+  out.innerHTML='<div class="ai-loading"><div class="ai-spinner"></div><span>AIが分析中 / Analyzing...</span></div>';
+  var a=analyze(scout);
+  var ctx='これは『事前スカウティング(PRE)』と『試合後(POST)』の比較データです。両者の差分に注目して回答してください。\n\n【PRE 事前スカウティング】\n'+scoutContext(scout)+'\n\n【POST 試合後】\n'+scoutContext(game);
+  var payload={isCustom:true,question:q,context:ctx,stats:{
+    n:a.n,bn:a.bn,sn:a.sn,bp:a.bp,sp:a.sp,bt:a.bt,
+    cov:a.cov.slice(0,8).map(function(x){return[x[0],x[1]];}),
+    blitz:a.blitz.slice(0,8).map(function(x){return[x[0],x[1]];}),
+    front:a.front.slice(0,6).map(function(x){return[x[0],x[1]];}),
+    stunt:a.stunt.slice(0,5).map(function(x){return[x[0],x[1]];})
+  }};
+  fetch('/api/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
+    .then(function(res){return res.json();})
+    .then(function(data){out.innerHTML=data.error?'<span style="color:var(--red)">エラー: '+data.error+'</span>':'<div class="ai-result">'+data.comment.replace(/\n/g,'<br>')+'</div>';})
+    .catch(function(err){out.innerHTML='<span style="color:var(--red)">通信エラー: '+err.message+'</span>';});
+}
+function generateCustom(){
+  var inp=document.getElementById('ask-input'),out=document.getElementById('ask-output');
+  var q=(inp.value||'').trim();
+  if(!q){out.innerHTML='<span style="color:var(--red)">質問を入力してください / Please enter a question.</span>';return;}
+  var rows=window.__scoutData;
+  if(!rows||!rows.length){out.innerHTML='<span style="color:var(--red)">スカウティングデータが読み込まれていません</span>';return;}
+  if(location.protocol==='file:'){out.innerHTML='<div style="background:#FEF9EC;border-left:3px solid var(--amber);border-radius:0 6px 6px 0;padding:10px 14px;color:#7A4F00;line-height:1.8"><b>⚠️ AI分析はサーバ経由でのみ動作します</b><br>file:// では <code>/api/analyze</code> に接続できません。Vercel等のサーバ経由で開いてください。<br><span style="font-size:11px;color:var(--g600)">AI requires a server; open via the Vercel deployment.</span></div>';return;}
+  out.innerHTML='<div class="ai-loading"><div class="ai-spinner"></div><span>AIが分析中 / Analyzing...</span></div>';
+  var a=analyze(rows);
+  var payload={isCustom:true,question:q,context:scoutContext(rows),stats:{
+    n:a.n,bn:a.bn,sn:a.sn,bp:a.bp,sp:a.sp,bt:a.bt,
+    cov:a.cov.slice(0,8).map(function(x){return[x[0],x[1]];}),
+    blitz:a.blitz.slice(0,8).map(function(x){return[x[0],x[1]];}),
+    front:a.front.slice(0,6).map(function(x){return[x[0],x[1]];}),
+    stunt:a.stunt.slice(0,5).map(function(x){return[x[0],x[1]];})
+  }};
+  fetch('/api/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
+    .then(function(res){return res.json();})
+    .then(function(data){out.innerHTML=data.error?'<span style="color:var(--red)">エラー: '+data.error+'</span>':'<div class="ai-result">'+data.comment.replace(/\n/g,'<br>')+'</div>';})
+    .catch(function(err){out.innerHTML='<span style="color:var(--red)">通信エラー: '+err.message+'</span>';});
+}
+
+// ===== PPTX EXPORT (editable PowerPoint shapes/charts/tables) =====
+function exportPptx(){
+  if(typeof PptxGenJS==='undefined'){alert('PPTXライブラリを読み込めませんでした。オンライン環境で再度お試しください。\nPPTX library failed to load (needs internet).');return;}
+  var rows=window.__scoutData;
+  if(!rows||!rows.length){alert('データがありません / No data loaded.');return;}
+  try{
+    // ---- palette / type ----
+    var INK='12243B',NAVY='002B5C',BLUE='0055A4',SKY='1A7AFF',GREEN='059669',RED='C0392B',GREY='5A6472',GREYL='9AA4B2',HAIR='E3E8F0',BAND='F4F7FB',WHITE='FFFFFF',FONT='Arial';
+    var a=analyze(rows),zd=byZone(rows),bn=a.bn||1;
+    var pptx=new PptxGenJS();pptx.layout='LAYOUT_WIDE';
+    var label=((document.getElementById('i-file')||{}).textContent||'IMPULSE Scouting').replace(/\s+/g,' ').trim();
+    var dateStr=new Date().toLocaleDateString('ja-JP');
+    function pctv(v){return Math.round(p(v,a.n));}
+    var topc=a.cov[0]?a.cov[0][0]:'—';
+    var identity=(a.bp>=45?'Pressure-Oriented':a.bp>=30?'Balanced-Pressure':'Coverage-Oriented')+'  ·  '+topc+'-Based Defense';
+
+    // ---- slide master: top accent + footer + page number ----
+    pptx.defineSlideMaster({title:'BASE',background:{color:WHITE},objects:[
+      {rect:{x:0,y:0,w:'100%',h:0.13,fill:{color:NAVY}}},
+      {rect:{x:0,y:0.13,w:'100%',h:0.03,fill:{color:SKY}}},
+      {text:{text:'IMPULSE DEFENSE SCOUTING',options:{x:0.5,y:7.05,w:7,h:0.3,fontSize:8,color:GREYL,fontFace:FONT}}},
+      {text:{text:'CONFIDENTIAL',options:{x:5.5,y:7.05,w:2.33,h:0.3,align:'center',fontSize:8,color:GREYL,fontFace:FONT}}}
+    ],slideNumber:{x:12.3,y:7.05,w:0.6,h:0.3,fontSize:8,color:GREYL,align:'right',fontFace:FONT}});
+
+    function head(s,kicker,title){
+      s.addText(kicker.toUpperCase(),{x:0.5,y:0.5,w:12,h:0.25,fontSize:11,bold:true,color:SKY,charSpacing:2,fontFace:FONT});
+      s.addText(title,{x:0.5,y:0.74,w:12.33,h:0.5,fontSize:23,bold:true,color:INK,fontFace:FONT});
+      s.addShape(pptx.ShapeType.line,{x:0.5,y:1.34,w:12.33,h:0,line:{color:HAIR,width:1}});
+    }
+    function kpi(s,x,y,w,lab,val,accent,fs){
+      s.addShape(pptx.ShapeType.rect,{x:x,y:y,w:w,h:1.35,fill:{color:WHITE},line:{color:HAIR,width:1}});
+      s.addShape(pptx.ShapeType.rect,{x:x,y:y,w:w,h:0.07,fill:{color:accent}});
+      s.addText(lab.toUpperCase(),{x:x+0.18,y:y+0.2,w:w-0.36,h:0.3,fontSize:10,color:GREY,bold:true,charSpacing:1,fontFace:FONT});
+      s.addText(val,{x:x+0.18,y:y+0.52,w:w-0.36,h:0.7,fontSize:fs||30,bold:true,color:accent,fontFace:FONT,valign:'middle'});
+    }
+    function chartOpts(extra){
+      var o={showLegend:false,showTitle:false,showValue:true,dataLabelPosition:'outEnd',dataLabelColor:INK,dataLabelFontFace:FONT,dataLabelFontSize:10,catAxisLabelColor:GREY,catAxisLabelFontFace:FONT,catAxisLabelFontSize:9,valAxisHidden:true,valGridLine:{style:'none'},catGridLine:{style:'none'},valAxisLineShow:false,catAxisLineShow:false,chartColors:[BLUE]};
+      for(var k in (extra||{}))o[k]=extra[k];return o;
+    }
+    function cell(t,o){o=o||{};o.fontFace=FONT;return{text:t,options:o};}
+    function tbl(s,header,body,x,y,w,colW){
+      var rws=[header.map(function(h){return cell(h.t,{fill:{color:NAVY},color:WHITE,bold:true,align:h.a||'left',fontSize:11,valign:'middle'});})];
+      body.forEach(function(r,i){var band=i%2?BAND:WHITE;rws.push(r.map(function(c){var o={fill:{color:band},color:c.c||INK,fontSize:11,valign:'middle',align:c.a||'left'};if(c.b)o.bold=true;return cell(c.t,o);}));});
+      s.addTable(rws,{x:x,y:y,w:w,colW:colW,fontFace:FONT,rowH:0.34,valign:'middle',border:{type:'solid',pt:0.5,color:HAIR},margin:[2,6,2,6]});
+    }
+
+    // ---- Slide 1: cover (full-bleed) ----
+    var s1=pptx.addSlide();s1.background={color:NAVY};
+    s1.addShape(pptx.ShapeType.rect,{x:0,y:0,w:0.18,h:'100%',fill:{color:SKY}});
+    s1.addText('IMPULSE  ·  DEFENSE SCOUTING',{x:0.8,y:1.5,w:11,h:0.4,fontSize:13,bold:true,color:SKY,charSpacing:4,fontFace:FONT});
+    s1.addText('OPPONENT DEFENSE REPORT',{x:0.8,y:2.0,w:12,h:1.1,fontSize:40,bold:true,color:WHITE,fontFace:FONT});
+    s1.addText(identity,{x:0.82,y:3.25,w:12,h:0.5,fontSize:18,color:'AFC6E6',fontFace:FONT});
+    function tk(x,lab,val){s1.addText(lab.toUpperCase(),{x:x,y:4.85,w:3,h:0.3,fontSize:11,bold:true,color:SKY,charSpacing:1,fontFace:FONT});s1.addText(val,{x:x,y:5.15,w:3,h:0.8,fontSize:30,bold:true,color:WHITE,fontFace:FONT});}
+    tk(0.82,'Plays',''+a.n);tk(3.95,'Blitz',a.bp+'%');tk(7.08,'Stunts',a.sp+'%');tk(10.2,'Top Cover',topc);
+    s1.addText(label+'     ·     '+dateStr,{x:0.82,y:6.6,w:12,h:0.3,fontSize:11,color:GREYL,fontFace:FONT});
+
+    // ---- Slide 2: Defensive Profile ----
+    var s2=pptx.addSlide({masterName:'BASE'});head(s2,'01 · Profile','Defensive Profile');
+    kpi(s2,0.5,1.55,2.95,'Plays',''+a.n,NAVY);
+    kpi(s2,3.6,1.55,2.95,'Blitz Rate',a.bp+'%',BLUE);
+    kpi(s2,6.7,1.55,2.95,'Stunts Rate',a.sp+'%',GREEN);
+    kpi(s2,9.8,1.55,2.95,'Top Coverage',topc,NAVY,topc.length>6?16:22);
+    s2.addText('PRESSURE',{x:0.5,y:3.35,w:5.3,h:0.25,fontSize:11,bold:true,color:SKY,charSpacing:1,fontFace:FONT});
+    s2.addChart(pptx.ChartType.bar,[{name:'%',labels:['BLITZ','STUNTS'],values:[a.bp,a.sp]}],chartOpts({x:0.4,y:3.6,w:5.3,h:3.0,barDir:'col',chartColors:[BLUE,GREEN],valAxisMaxVal:100}));
+    s2.addText('KEY TAKEAWAYS',{x:6.1,y:3.35,w:6.7,h:0.25,fontSize:11,bold:true,color:SKY,charSpacing:1,fontFace:FONT});
+    var tkk=[];
+    tkk.push('プレッシャー型: BLITZ '+a.bp+'% / STUNTS '+a.sp+'%（'+identity.split('  ·  ')[0]+'）');
+    if(a.cov[0])tkk.push('主カバレッジ '+a.cov[0][0]+'（'+pctv(a.cov[0][1])+'%）'+(a.cov[1]?'、次に '+a.cov[1][0]+'（'+pctv(a.cov[1][1])+'%）':''));
+    if(a.front[0])tkk.push('ベースフロント '+a.front[0][0]+'（'+pctv(a.front[0][1])+'%）');
+    var d3=rows.filter(function(r){return r.DN===3;});if(d3.length>=3){var d3b=Math.round(p(d3.filter(function(r){return r.HB;}).length,d3.length));tkk.push('3rd Down BLITZ '+d3b+'%（全体比 '+(d3b-a.bp>=0?'+':'')+(d3b-a.bp)+'pt）');}
+    var rz=rows.filter(function(r){return r.ZONE==='HRED'||r.ZONE==='MRED'||r.ZONE==='LRED';});if(rz.length>=3){var rzb=Math.round(p(rz.filter(function(r){return r.HB;}).length,rz.length));tkk.push('レッドゾーン BLITZ '+rzb+'%（全体比 '+(rzb-a.bp>=0?'+':'')+(rzb-a.bp)+'pt）');}
+    var dir=[['BOUNDARY',a.bt.BOUNDARY],['FIELD',a.bt.FIELD],['BOTH',a.bt.BOTH]].sort(function(x,y){return y[1]-x[1];})[0];tkk.push('BLITZ方向は '+dir[0]+' に偏重（'+Math.round(p(dir[1],bn))+'%）');
+    s2.addText(tkk.map(function(t){return{text:t,options:{bullet:{code:'2022'},color:INK,fontSize:13,paraSpaceAfter:10,fontFace:FONT}};}),{x:6.1,y:3.65,w:6.7,h:3.0,valign:'top'});
+
+    // ---- Slide 3: Tendencies ----
+    var s3=pptx.addSlide({masterName:'BASE'});head(s3,'02 · Tendencies','Coverage, Front & Pressure');
+    var cov=a.cov.slice(0,6);
+    s3.addText('COVERAGE %',{x:0.5,y:1.5,w:5.8,h:0.25,fontSize:11,bold:true,color:SKY,charSpacing:1,fontFace:FONT});
+    s3.addChart(pptx.ChartType.bar,[{name:'%',labels:cov.map(function(x){return x[0];}),values:cov.map(function(x){return pctv(x[1]);})}],chartOpts({x:0.4,y:1.75,w:6.1,h:2.35,barDir:'bar',chartColors:[BLUE]}));
+    var frn=a.front.slice(0,6);
+    s3.addText('FRONT %',{x:0.5,y:4.25,w:5.8,h:0.25,fontSize:11,bold:true,color:SKY,charSpacing:1,fontFace:FONT});
+    s3.addChart(pptx.ChartType.bar,[{name:'%',labels:frn.map(function(x){return x[0];}),values:frn.map(function(x){return pctv(x[1]);})}],chartOpts({x:0.4,y:4.5,w:6.1,h:2.15,barDir:'bar',chartColors:[NAVY]}));
+    function pctt(arr){return (arr||[]).slice(0,5).map(function(x){return[{t:x[0],b:true},{t:pctv(x[1])+'%  ('+x[1]+')',a:'right'}];});}
+    s3.addText('BLITZ DIRECTION',{x:6.9,y:1.5,w:6,h:0.25,fontSize:11,bold:true,color:SKY,charSpacing:1,fontFace:FONT});
+    tbl(s3,[{t:'Direction'},{t:'Share',a:'right'}],[['BOUNDARY',a.bt.BOUNDARY],['FIELD',a.bt.FIELD],['BOTH',a.bt.BOTH]].map(function(r){return[{t:r[0],b:true},{t:Math.round(p(r[1],bn))+'%',a:'right'}];}),6.9,1.75,6.0,[3.8,2.2]);
+    s3.addText('TOP BLITZ TYPE',{x:6.9,y:3.15,w:6,h:0.25,fontSize:11,bold:true,color:SKY,charSpacing:1,fontFace:FONT});
+    tbl(s3,[{t:'Call'},{t:'Share',a:'right'}],pctt(a.blitzRaw).length?pctt(a.blitzRaw):[[{t:'—'},{t:''}]],6.9,3.4,6.0,[3.8,2.2]);
+    s3.addText('TOP STUNTS TYPE',{x:6.9,y:5.05,w:6,h:0.25,fontSize:11,bold:true,color:SKY,charSpacing:1,fontFace:FONT});
+    tbl(s3,[{t:'Stunt'},{t:'Share',a:'right'}],pctt(a.stunt).length?pctt(a.stunt):[[{t:'—'},{t:''}]],6.9,5.3,6.0,[3.8,2.2]);
+
+    // ---- Slide 4: Down & Distance ----
+    var s4=pptx.addSlide({masterName:'BASE'});head(s4,'03 · Situational','Down & Distance — Blitz% / Coverage');
+    var dHead=[cell('DOWN \\ DIST',{fill:{color:NAVY},color:WHITE,bold:true,fontSize:11,valign:'middle'})];
+    DO.forEach(function(d){dHead.push(cell(d,{fill:{color:NAVY},color:WHITE,bold:true,align:'center',fontSize:10,valign:'middle'}));});
+    dHead.push(cell('ALL',{fill:{color:'1B3A63'},color:WHITE,bold:true,align:'center',fontSize:11,valign:'middle'}));
+    var dRows=[dHead];
+    [1,2,3,4].forEach(function(dn,i){
+      var band=i%2?BAND:WHITE;
+      var r=[cell(dnLbl(dn)+' Down',{fill:{color:band},color:INK,bold:true,fontSize:11,valign:'middle'})];
+      DO.forEach(function(dg){var c=mCell(rows.filter(function(x){return x.DN===dn&&x.DIST_GRP===dg;}));
+        r.push({text:[{text:(c?c.bp+'%':'—'),options:{bold:true,color:(c&&c.bp>=45?RED:INK),breakLine:true,fontFace:FONT}},{text:(c&&c.tc?c.tc:''),options:{fontSize:8,color:GREY,fontFace:FONT}}],options:{fill:{color:band},align:'center',valign:'middle',fontSize:11}});});
+      var ca=mCell(rows.filter(function(x){return x.DN===dn;}));
+      r.push(cell((ca?ca.bp+'%':'—'),{fill:{color:band},align:'center',bold:true,color:INK,fontSize:11,valign:'middle'}));
+      dRows.push(r);
+    });
+    s4.addTable(dRows,{x:0.5,y:1.55,w:12.33,fontFace:FONT,rowH:0.7,valign:'middle',border:{type:'solid',pt:0.5,color:HAIR},margin:[2,4,2,4]});
+    s4.addText('セル: 上=BLITZ%（45%以上は赤）／下=主COVERAGE。右端=ダウン計。',{x:0.5,y:6.45,w:12,h:0.3,fontSize:9,italic:true,color:GREYL,fontFace:FONT});
+
+    // ---- Slides 5/6: segment summaries ----
+    function summarySlide(kicker,title,pairs){
+      var s=pptx.addSlide({masterName:'BASE'});head(s,kicker,title);
+      var body=[];
+      pairs.forEach(function(pr){var sub=pr[1];if(!sub.length)return;var za=analyze(sub);
+        body.push([{t:pr[0],b:true},{t:''+za.n,a:'center'},{t:za.bp+'%',a:'center',c:(za.bp>=45?RED:INK),b:true},{t:za.sp+'%',a:'center'},{t:za.cov[0]?za.cov[0][0]:'—'},{t:za.front[0]?za.front[0][0]:'—'}]);});
+      if(!body.length)body=[[{t:'—'},{t:''},{t:''},{t:''},{t:''},{t:''}]];
+      tbl(s,[{t:'区分 / Segment'},{t:'N',a:'center'},{t:'BLITZ%',a:'center'},{t:'STUNTS%',a:'center'},{t:'TOP COVERAGE'},{t:'TOP FRONT'}],body,0.5,1.55,12.33,[3.6,1.1,1.6,1.6,2.2,2.23]);
+    }
+    summarySlide('04 · Field Zone','by Field Zone',ZO.filter(function(z){return z!=='ALL';}).map(function(z){return[ZN[z]||z,zd[z]||[]];}));
+    summarySlide('05 · Formation','by Formation',FO.map(function(fg){return[fg,rows.filter(function(r){return r.FG===fg;})];}));
+
+    pptx.writeFile({fileName:'IMPULSE_scouting_'+new Date().toISOString().slice(0,10)+'.pptx'});
+  }catch(e){console.error(e);alert('PPTX生成でエラー: '+e.message);}
+}
+
 document.addEventListener('DOMContentLoaded',function(){
 
   // ロゴ埋め込み
@@ -1551,10 +1758,17 @@ document.addEventListener('DOMContentLoaded',function(){
   document.getElementById('tt-overview2').addEventListener('click',function(){showTab('overview2');});
   document.getElementById('tt-zone').addEventListener('click',function(){showTab('zone');});
   document.getElementById('tt-form').addEventListener('click',function(){showTab('form');});
+  document.getElementById('tt-ask').addEventListener('click',function(){showTab('ask');});
+  document.getElementById('btn-ask').addEventListener('click',generateCustom);
+  document.getElementById('btn-pptx').addEventListener('click',exportPptx);
+  setupAskChips();
   document.getElementById('cmp-mode-overview').addEventListener('click',function(){cmpMode('overview');});
   document.getElementById('cmp-mode-summary').addEventListener('click',function(){cmpMode('summary');});
   document.getElementById('cmp-mode-zone').addEventListener('click',function(){cmpMode('zone');});
   document.getElementById('cmp-mode-form').addEventListener('click',function(){cmpMode('form');});
+  document.getElementById('cmp-mode-ask').addEventListener('click',function(){cmpMode('ask');});
+  document.getElementById('btn-cmp-ask').addEventListener('click',generateCustomCompare);
+  setupAskChips('cmp-ask-chips','cmp-ask-input',['スカウティングと実際で最も変わった点は？','相手が試合中に修正してきた点は？','次戦に向けた具体的な修正点は？','読みが当たった部分・外れた部分は？']);
 
   document.getElementById('btn-print').addEventListener('click',function(){window.print();});
 
