@@ -1520,6 +1520,28 @@ function scoutContext(rows){
   FO.forEach(function(fg){var fr=rows.filter(function(r){return r.FG===fg;});if(fr.length>=2){var fa=analyze(fr);L.push('vs '+fg+': N='+fa.n+', BLITZ '+fa.bp+'%, COV '+(fa.cov[0]?fa.cov[0][0]:'—'));}});
   return L.join('\n');
 }
+function esc(s){return (''+s).replace(/[&<>]/g,function(c){return c==='&'?'&amp;':c==='<'?'&lt;':'&gt;';});}
+// ASK AI の JSON 出力をダッシュボード風（KPI / バー / 表）で描画。失敗時はテキスト。
+function renderAskBlocks(out,text){
+  var obj=null;
+  try{var t=(''+text).trim().replace(/^```(?:json)?\s*/i,'').replace(/```$/,'').trim();obj=JSON.parse(t);}catch(e){}
+  if(!obj||!obj.blocks){out.innerHTML='<div class="ai-result">'+(''+text).replace(/\n/g,'<br>')+'</div>';return;}
+  var h='';
+  if(obj.summary)h+='<div class="ins" style="margin-bottom:12px">'+esc(obj.summary)+'</div>';
+  (obj.blocks||[]).forEach(function(b){
+    if(b.type==='kpi'&&b.items&&b.items.length){
+      h+='<div class="g4" style="margin:10px 0">'+b.items.slice(0,8).map(function(it){return '<div class="mc"><div class="ml">'+esc(it.label||'')+'</div><div class="mv">'+esc(it.value)+(it.unit?'<span style="font-size:14px"> '+esc(it.unit)+'</span>':'')+'</div></div>';}).join('')+'</div>';
+    }else if(b.type==='bars'&&b.data&&b.data.length){
+      var vals=b.data.map(function(d){return Number(d.value)||0;}),mx=Math.max.apply(null,vals.concat([1]));
+      h+='<div class="card" style="margin:10px 0"><div class="sec">'+esc(b.title||'')+'</div>'+b.data.slice(0,8).map(function(d){var v=Number(d.value)||0,pc=Math.round(v/mx*100),hl=pc>=60;return barRow(esc(d.label||''),pc,hl?'var(--blue)':'var(--g400)',esc(''+d.value)+(b.unit?esc(b.unit):''),hl);}).join('')+'</div>';
+    }else if(b.type==='table'&&b.rows&&b.rows.length){
+      h+='<div class="card" style="margin:10px 0"><div class="sec">'+esc(b.title||'')+'</div><table class="tbl"><tr>'+((b.headers||[]).map(function(x){return '<th>'+esc(x)+'</th>';}).join(''))+'</tr>'+b.rows.map(function(r){return '<tr>'+(r||[]).map(function(c){return '<td>'+esc(c)+'</td>';}).join('')+'</tr>';}).join('')+'</table></div>';
+    }else if(b.type==='note'&&b.text){
+      h+='<div class="ins" style="background:#FEF9EC;border-color:var(--amber);color:#7A4F00;margin:10px 0">'+esc(b.text)+'</div>';
+    }
+  });
+  out.innerHTML=h||('<div class="ai-result">'+(''+text).replace(/\n/g,'<br>')+'</div>');
+}
 function setupAskChips(chipsId,inputId,presets){
   var el=document.getElementById(chipsId||'ask-chips');if(!el)return;
   var inId=inputId||'ask-input';
@@ -1548,7 +1570,7 @@ function generateCustomCompare(){
   }};
   fetch('/api/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
     .then(function(res){return res.json();})
-    .then(function(data){out.innerHTML=data.error?'<span style="color:var(--red)">エラー: '+data.error+'</span>':'<div class="ai-result">'+data.comment.replace(/\n/g,'<br>')+'</div>';})
+    .then(function(data){if(data.error){out.innerHTML='<span style="color:var(--red)">エラー: '+data.error+'</span>';}else{renderAskBlocks(out,data.comment);}})
     .catch(function(err){out.innerHTML='<span style="color:var(--red)">通信エラー: '+err.message+'</span>';});
 }
 function generateCustom(){
@@ -1569,7 +1591,7 @@ function generateCustom(){
   }};
   fetch('/api/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
     .then(function(res){return res.json();})
-    .then(function(data){out.innerHTML=data.error?'<span style="color:var(--red)">エラー: '+data.error+'</span>':'<div class="ai-result">'+data.comment.replace(/\n/g,'<br>')+'</div>';})
+    .then(function(data){if(data.error){out.innerHTML='<span style="color:var(--red)">エラー: '+data.error+'</span>';}else{renderAskBlocks(out,data.comment);}})
     .catch(function(err){out.innerHTML='<span style="color:var(--red)">通信エラー: '+err.message+'</span>';});
 }
 
@@ -1580,118 +1602,142 @@ function exportPptx(){
   if(!rows||!rows.length){alert('データがありません / No data loaded.');return;}
   try{
     // ---- palette / type ----
-    var INK='12243B',NAVY='002B5C',BLUE='0055A4',SKY='1A7AFF',GREEN='059669',RED='C0392B',GREY='5A6472',GREYL='9AA4B2',HAIR='E3E8F0',BAND='F4F7FB',WHITE='FFFFFF',FONT='Arial';
+    var INK='12243B',NAVY='002B5C',BLUE='0055A4',SKY='1A7AFF',GREEN='059669',RED='C0392B',GREY='5A6472',GREYL='9AA4B2',HAIR='E3E8F0',BAND='F4F7FB',TRACK='EEF1F6',WHITE='FFFFFF',FONT='Arial';
+    var BARC=['0055A4','059669','7C3AED','D97706','C0392B','8A94A6'],FRC=['C0392B','0055A4','8A94A6','8A94A6','8A94A6','8A94A6'];
     var a=analyze(rows),zd=byZone(rows),bn=a.bn||1;
-    var pptx=new PptxGenJS();pptx.layout='LAYOUT_WIDE';
+    var W=8.27,H=11.69,CW=7.27,X0=0.5;
+    var pptx=new PptxGenJS();pptx.defineLayout({name:'A4P',width:W,height:H});pptx.layout='A4P';
     var label=((document.getElementById('i-file')||{}).textContent||'IMPULSE Scouting').replace(/\s+/g,' ').trim();
     var dateStr=new Date().toLocaleDateString('ja-JP');
     function pctv(v){return Math.round(p(v,a.n));}
-    var topc=a.cov[0]?a.cov[0][0]:'—';
+    var topc=a.cov[0]?a.cov[0][0]:'—',topf=a.front[0]?a.front[0][0]:'—';
+    var dir=[['BOUNDARY',a.bt.BOUNDARY],['FIELD',a.bt.FIELD],['BOTH',a.bt.BOTH]].sort(function(x,y){return y[1]-x[1];})[0];
     var identity=(a.bp>=45?'Pressure-Oriented':a.bp>=30?'Balanced-Pressure':'Coverage-Oriented')+'  ·  '+topc+'-Based Defense';
 
-    // ---- slide master: top accent + footer + page number ----
+    // ---- slide master (portrait): top accent + footer + page number ----
     pptx.defineSlideMaster({title:'BASE',background:{color:WHITE},objects:[
-      {rect:{x:0,y:0,w:'100%',h:0.13,fill:{color:NAVY}}},
-      {rect:{x:0,y:0.13,w:'100%',h:0.03,fill:{color:SKY}}},
-      {text:{text:'IMPULSE DEFENSE SCOUTING',options:{x:0.5,y:7.05,w:7,h:0.3,fontSize:8,color:GREYL,fontFace:FONT}}},
-      {text:{text:'CONFIDENTIAL',options:{x:5.5,y:7.05,w:2.33,h:0.3,align:'center',fontSize:8,color:GREYL,fontFace:FONT}}}
-    ],slideNumber:{x:12.3,y:7.05,w:0.6,h:0.3,fontSize:8,color:GREYL,align:'right',fontFace:FONT}});
+      {rect:{x:0,y:0,w:'100%',h:0.16,fill:{color:NAVY}}},
+      {rect:{x:0,y:0.16,w:'100%',h:0.035,fill:{color:SKY}}},
+      {text:{text:'IMPULSE DEFENSE SCOUTING',options:{x:0.5,y:H-0.38,w:4,h:0.3,fontSize:8,color:GREYL,fontFace:FONT}}},
+      {text:{text:'CONFIDENTIAL',options:{x:0.5,y:H-0.38,w:CW,h:0.3,align:'center',fontSize:8,color:GREYL,fontFace:FONT}}}
+    ],slideNumber:{x:6.9,y:H-0.38,w:0.87,h:0.3,fontSize:8,color:GREYL,align:'right',fontFace:FONT}});
 
     function head(s,kicker,title){
-      s.addText(kicker.toUpperCase(),{x:0.5,y:0.5,w:12,h:0.25,fontSize:11,bold:true,color:SKY,charSpacing:2,fontFace:FONT});
-      s.addText(title,{x:0.5,y:0.74,w:12.33,h:0.5,fontSize:23,bold:true,color:INK,fontFace:FONT});
-      s.addShape(pptx.ShapeType.line,{x:0.5,y:1.34,w:12.33,h:0,line:{color:HAIR,width:1}});
+      s.addText(kicker.toUpperCase(),{x:X0,y:0.45,w:CW,h:0.25,fontSize:10,bold:true,color:SKY,charSpacing:2,fontFace:FONT});
+      s.addText(title,{x:X0,y:0.68,w:CW,h:0.5,fontSize:20,bold:true,color:INK,fontFace:FONT});
+      s.addShape(pptx.ShapeType.line,{x:X0,y:1.2,w:CW,h:0,line:{color:HAIR,width:1}});
     }
     function kpi(s,x,y,w,lab,val,accent,fs){
-      s.addShape(pptx.ShapeType.rect,{x:x,y:y,w:w,h:1.35,fill:{color:WHITE},line:{color:HAIR,width:1}});
+      s.addShape(pptx.ShapeType.rect,{x:x,y:y,w:w,h:1.15,fill:{color:WHITE},line:{color:HAIR,width:1}});
       s.addShape(pptx.ShapeType.rect,{x:x,y:y,w:w,h:0.07,fill:{color:accent}});
-      s.addText(lab.toUpperCase(),{x:x+0.18,y:y+0.2,w:w-0.36,h:0.3,fontSize:10,color:GREY,bold:true,charSpacing:1,fontFace:FONT});
-      s.addText(val,{x:x+0.18,y:y+0.52,w:w-0.36,h:0.7,fontSize:fs||30,bold:true,color:accent,fontFace:FONT,valign:'middle'});
+      s.addText(lab.toUpperCase(),{x:x+0.12,y:y+0.18,w:w-0.24,h:0.28,fontSize:9,color:GREY,bold:true,charSpacing:1,fontFace:FONT});
+      s.addText(''+val,{x:x+0.12,y:y+0.46,w:w-0.24,h:0.6,fontSize:fs||24,bold:true,color:accent,fontFace:FONT,valign:'middle'});
     }
-    function chartOpts(extra){
-      var o={showLegend:false,showTitle:false,showValue:true,dataLabelPosition:'outEnd',dataLabelColor:INK,dataLabelFontFace:FONT,dataLabelFontSize:10,catAxisLabelColor:GREY,catAxisLabelFontFace:FONT,catAxisLabelFontSize:9,valAxisHidden:true,valGridLine:{style:'none'},catGridLine:{style:'none'},valAxisLineShow:false,catAxisLineShow:false,chartColors:[BLUE]};
-      for(var k in (extra||{}))o[k]=extra[k];return o;
+    // dashboard-style donut ring
+    function donutP(s,x,y,d,pct,accent,title,sub){
+      s.addChart(pptx.ChartType.doughnut,[{name:'r',labels:['on','off'],values:[pct,Math.max(0,100-pct)]}],{x:x,y:y,w:d,h:d,holeSize:72,chartColors:[accent,TRACK],showLegend:false,showTitle:false,showValue:false,dataBorder:{pt:1,color:WHITE}});
+      s.addText(pct+'%',{x:x,y:y+d/2-0.42,w:d,h:0.6,align:'center',fontSize:26,bold:true,color:accent,fontFace:FONT});
+      if(sub)s.addText(sub,{x:x,y:y+d/2+0.14,w:d,h:0.25,align:'center',fontSize:9,color:GREYL,fontFace:FONT});
+      s.addText(title,{x:x,y:y+d-0.02,w:d,h:0.3,align:'center',fontSize:11,bold:true,color:GREY,fontFace:FONT});
+    }
+    // dashboard-style horizontal bars (grey track + colored fill ≥25%)
+    function bars(s,x,y,w,arr,total,colors){
+      var lblW=1.45,gap=0.08,valW=1.2,rowH=0.34,gapY=0.08,trackX=x+lblW+gap,trackW=w-lblW-gap-valW-gap;
+      (arr||[]).slice(0,6).forEach(function(it,i){
+        var k=it[0],v=it[1],pc=total?Math.round(v/total*100):0,yy=y+i*(rowH+gapY),col=pc>=25?colors[i%colors.length]:'9AA4B2';
+        s.addText(''+k,{x:x,y:yy,w:lblW,h:rowH,align:'right',fontSize:9,color:GREY,valign:'middle',fontFace:FONT});
+        s.addShape(pptx.ShapeType.roundRect,{x:trackX,y:yy+0.05,w:trackW,h:rowH-0.1,fill:{color:TRACK},rectRadius:0.03,line:{type:'none'}});
+        if(pc>0)s.addShape(pptx.ShapeType.roundRect,{x:trackX,y:yy+0.05,w:Math.max(0.06,trackW*pc/100),h:rowH-0.1,fill:{color:col},rectRadius:0.03,line:{type:'none'}});
+        s.addText(pc+'% ('+v+')',{x:trackX+trackW+gap,y:yy,w:valW,h:rowH,align:'right',fontSize:9,bold:true,color:(pc>=25?col:GREY),valign:'middle',fontFace:FONT});
+      });
     }
     function cell(t,o){o=o||{};o.fontFace=FONT;return{text:t,options:o};}
+    function kick(s,t,y){s.addText(t.toUpperCase(),{x:X0,y:y,w:CW,h:0.25,fontSize:10,bold:true,color:SKY,charSpacing:1,fontFace:FONT});}
     function tbl(s,header,body,x,y,w,colW){
-      var rws=[header.map(function(h){return cell(h.t,{fill:{color:NAVY},color:WHITE,bold:true,align:h.a||'left',fontSize:11,valign:'middle'});})];
-      body.forEach(function(r,i){var band=i%2?BAND:WHITE;rws.push(r.map(function(c){var o={fill:{color:band},color:c.c||INK,fontSize:11,valign:'middle',align:c.a||'left'};if(c.b)o.bold=true;return cell(c.t,o);}));});
-      s.addTable(rws,{x:x,y:y,w:w,colW:colW,fontFace:FONT,rowH:0.34,valign:'middle',border:{type:'solid',pt:0.5,color:HAIR},margin:[2,6,2,6]});
+      var rws=[header.map(function(h){return cell(h.t,{fill:{color:NAVY},color:WHITE,bold:true,align:h.a||'left',fontSize:10,valign:'middle'});})];
+      body.forEach(function(r,i){var band=i%2?BAND:WHITE;rws.push(r.map(function(c){var o={fill:{color:band},color:c.c||INK,fontSize:10,valign:'middle',align:c.a||'left'};if(c.b)o.bold=true;return cell(c.t,o);}));});
+      s.addTable(rws,{x:x,y:y,w:w,colW:colW,fontFace:FONT,rowH:0.34,valign:'middle',border:{type:'solid',pt:0.5,color:HAIR},margin:[2,5,2,5]});
     }
 
-    // ---- Slide 1: cover (full-bleed) ----
+    // ---- Slide 1: cover (full-bleed, portrait) ----
     var s1=pptx.addSlide();s1.background={color:NAVY};
-    s1.addShape(pptx.ShapeType.rect,{x:0,y:0,w:0.18,h:'100%',fill:{color:SKY}});
-    s1.addText('IMPULSE  ·  DEFENSE SCOUTING',{x:0.8,y:1.5,w:11,h:0.4,fontSize:13,bold:true,color:SKY,charSpacing:4,fontFace:FONT});
-    s1.addText('OPPONENT DEFENSE REPORT',{x:0.8,y:2.0,w:12,h:1.1,fontSize:40,bold:true,color:WHITE,fontFace:FONT});
-    s1.addText(identity,{x:0.82,y:3.25,w:12,h:0.5,fontSize:18,color:'AFC6E6',fontFace:FONT});
-    function tk(x,lab,val){s1.addText(lab.toUpperCase(),{x:x,y:4.85,w:3,h:0.3,fontSize:11,bold:true,color:SKY,charSpacing:1,fontFace:FONT});s1.addText(val,{x:x,y:5.15,w:3,h:0.8,fontSize:30,bold:true,color:WHITE,fontFace:FONT});}
-    tk(0.82,'Plays',''+a.n);tk(3.95,'Blitz',a.bp+'%');tk(7.08,'Stunts',a.sp+'%');tk(10.2,'Top Cover',topc);
-    s1.addText(label+'     ·     '+dateStr,{x:0.82,y:6.6,w:12,h:0.3,fontSize:11,color:GREYL,fontFace:FONT});
+    s1.addShape(pptx.ShapeType.rect,{x:0,y:0,w:'100%',h:0.22,fill:{color:SKY}});
+    s1.addShape(pptx.ShapeType.rect,{x:0,y:H-0.22,w:'100%',h:0.22,fill:{color:SKY}});
+    s1.addText('IMPULSE  ·  DEFENSE SCOUTING',{x:0.7,y:3.0,w:7,h:0.4,fontSize:14,bold:true,color:SKY,charSpacing:4,fontFace:FONT});
+    s1.addText('OPPONENT\nDEFENSE REPORT',{x:0.7,y:3.5,w:7.3,h:1.9,fontSize:38,bold:true,color:WHITE,fontFace:FONT,lineSpacingMultiple:1.0});
+    s1.addText(identity,{x:0.72,y:5.5,w:7,h:0.6,fontSize:16,color:'AFC6E6',fontFace:FONT});
+    function tk(x,y,lab,val){s1.addText(lab.toUpperCase(),{x:x,y:y,w:3.3,h:0.3,fontSize:11,bold:true,color:SKY,charSpacing:1,fontFace:FONT});s1.addText(''+val,{x:x,y:y+0.32,w:3.3,h:0.7,fontSize:26,bold:true,color:WHITE,fontFace:FONT});}
+    tk(0.72,6.7,'Plays',a.n);tk(4.2,6.7,'Top Cover',topc);tk(0.72,7.9,'Blitz',a.bp+'%');tk(4.2,7.9,'Stunts',a.sp+'%');
+    s1.addText(label+'     ·     '+dateStr,{x:0.72,y:H-0.95,w:7,h:0.3,fontSize:11,color:GREYL,fontFace:FONT});
 
     // ---- Slide 2: Defensive Profile ----
     var s2=pptx.addSlide({masterName:'BASE'});head(s2,'01 · Profile','Defensive Profile');
-    kpi(s2,0.5,1.55,2.95,'Plays',''+a.n,NAVY);
-    kpi(s2,3.6,1.55,2.95,'Blitz Rate',a.bp+'%',BLUE);
-    kpi(s2,6.7,1.55,2.95,'Stunts Rate',a.sp+'%',GREEN);
-    kpi(s2,9.8,1.55,2.95,'Top Coverage',topc,NAVY,topc.length>6?16:22);
-    s2.addText('PRESSURE',{x:0.5,y:3.35,w:5.3,h:0.25,fontSize:11,bold:true,color:SKY,charSpacing:1,fontFace:FONT});
-    s2.addChart(pptx.ChartType.bar,[{name:'%',labels:['BLITZ','STUNTS'],values:[a.bp,a.sp]}],chartOpts({x:0.4,y:3.6,w:5.3,h:3.0,barDir:'col',chartColors:[BLUE,GREEN],valAxisMaxVal:100}));
-    s2.addText('KEY TAKEAWAYS',{x:6.1,y:3.35,w:6.7,h:0.25,fontSize:11,bold:true,color:SKY,charSpacing:1,fontFace:FONT});
+    kpi(s2,X0,1.4,1.73,'Plays',a.n,NAVY,22);
+    kpi(s2,2.34,1.4,1.73,'Top Cover',topc,NAVY,(''+topc).length>6?12:16);
+    kpi(s2,4.18,1.4,1.73,'Top Front',topf,NAVY,(''+topf).length>6?12:16);
+    kpi(s2,6.02,1.4,1.73,'Blitz Dir',dir[0],NAVY,12);
+    donutP(s2,1.0,2.95,2.6,a.bp,BLUE,'BLITZ RATE',a.bn+' / '+a.n);
+    donutP(s2,4.4,2.95,2.6,a.sp,GREEN,'STUNTS RATE',a.sn+' / '+a.n);
+    kick(s2,'Key Takeaways',6.0);
     var tkk=[];
     tkk.push('プレッシャー型: BLITZ '+a.bp+'% / STUNTS '+a.sp+'%（'+identity.split('  ·  ')[0]+'）');
     if(a.cov[0])tkk.push('主カバレッジ '+a.cov[0][0]+'（'+pctv(a.cov[0][1])+'%）'+(a.cov[1]?'、次に '+a.cov[1][0]+'（'+pctv(a.cov[1][1])+'%）':''));
     if(a.front[0])tkk.push('ベースフロント '+a.front[0][0]+'（'+pctv(a.front[0][1])+'%）');
     var d3=rows.filter(function(r){return r.DN===3;});if(d3.length>=3){var d3b=Math.round(p(d3.filter(function(r){return r.HB;}).length,d3.length));tkk.push('3rd Down BLITZ '+d3b+'%（全体比 '+(d3b-a.bp>=0?'+':'')+(d3b-a.bp)+'pt）');}
     var rz=rows.filter(function(r){return r.ZONE==='HRED'||r.ZONE==='MRED'||r.ZONE==='LRED';});if(rz.length>=3){var rzb=Math.round(p(rz.filter(function(r){return r.HB;}).length,rz.length));tkk.push('レッドゾーン BLITZ '+rzb+'%（全体比 '+(rzb-a.bp>=0?'+':'')+(rzb-a.bp)+'pt）');}
-    var dir=[['BOUNDARY',a.bt.BOUNDARY],['FIELD',a.bt.FIELD],['BOTH',a.bt.BOTH]].sort(function(x,y){return y[1]-x[1];})[0];tkk.push('BLITZ方向は '+dir[0]+' に偏重（'+Math.round(p(dir[1],bn))+'%）');
-    s2.addText(tkk.map(function(t){return{text:t,options:{bullet:{code:'2022'},color:INK,fontSize:13,paraSpaceAfter:10,fontFace:FONT}};}),{x:6.1,y:3.65,w:6.7,h:3.0,valign:'top'});
+    tkk.push('BLITZ方向は '+dir[0]+' に偏重（'+Math.round(p(dir[1],bn))+'%）');
+    s2.addText(tkk.map(function(t){return{text:t,options:{bullet:{code:'2022'},color:INK,fontSize:12,paraSpaceAfter:9,fontFace:FONT}};}),{x:X0,y:6.35,w:CW,h:4.6,valign:'top'});
 
-    // ---- Slide 3: Tendencies ----
-    var s3=pptx.addSlide({masterName:'BASE'});head(s3,'02 · Tendencies','Coverage, Front & Pressure');
-    var cov=a.cov.slice(0,6);
-    s3.addText('COVERAGE %',{x:0.5,y:1.5,w:5.8,h:0.25,fontSize:11,bold:true,color:SKY,charSpacing:1,fontFace:FONT});
-    s3.addChart(pptx.ChartType.bar,[{name:'%',labels:cov.map(function(x){return x[0];}),values:cov.map(function(x){return pctv(x[1]);})}],chartOpts({x:0.4,y:1.75,w:6.1,h:2.35,barDir:'bar',chartColors:[BLUE]}));
-    var frn=a.front.slice(0,6);
-    s3.addText('FRONT %',{x:0.5,y:4.25,w:5.8,h:0.25,fontSize:11,bold:true,color:SKY,charSpacing:1,fontFace:FONT});
-    s3.addChart(pptx.ChartType.bar,[{name:'%',labels:frn.map(function(x){return x[0];}),values:frn.map(function(x){return pctv(x[1]);})}],chartOpts({x:0.4,y:4.5,w:6.1,h:2.15,barDir:'bar',chartColors:[NAVY]}));
-    function pctt(arr){return (arr||[]).slice(0,5).map(function(x){return[{t:x[0],b:true},{t:pctv(x[1])+'%  ('+x[1]+')',a:'right'}];});}
-    s3.addText('BLITZ DIRECTION',{x:6.9,y:1.5,w:6,h:0.25,fontSize:11,bold:true,color:SKY,charSpacing:1,fontFace:FONT});
-    tbl(s3,[{t:'Direction'},{t:'Share',a:'right'}],[['BOUNDARY',a.bt.BOUNDARY],['FIELD',a.bt.FIELD],['BOTH',a.bt.BOTH]].map(function(r){return[{t:r[0],b:true},{t:Math.round(p(r[1],bn))+'%',a:'right'}];}),6.9,1.75,6.0,[3.8,2.2]);
-    s3.addText('TOP BLITZ TYPE',{x:6.9,y:3.15,w:6,h:0.25,fontSize:11,bold:true,color:SKY,charSpacing:1,fontFace:FONT});
-    tbl(s3,[{t:'Call'},{t:'Share',a:'right'}],pctt(a.blitzRaw).length?pctt(a.blitzRaw):[[{t:'—'},{t:''}]],6.9,3.4,6.0,[3.8,2.2]);
-    s3.addText('TOP STUNTS TYPE',{x:6.9,y:5.05,w:6,h:0.25,fontSize:11,bold:true,color:SKY,charSpacing:1,fontFace:FONT});
-    tbl(s3,[{t:'Stunt'},{t:'Share',a:'right'}],pctt(a.stunt).length?pctt(a.stunt):[[{t:'—'},{t:''}]],6.9,5.3,6.0,[3.8,2.2]);
+    // ---- Slide 3: Coverage & Front (dashboard-style bars) ----
+    var s3=pptx.addSlide({masterName:'BASE'});head(s3,'02 · Tendencies','Coverage & Front');
+    kick(s3,'Coverage',1.45);bars(s3,X0,1.85,CW,a.cov,a.n,BARC);
+    kick(s3,'Front',4.55);bars(s3,X0,4.95,CW,a.front,a.n,FRC);
 
-    // ---- Slide 4: Down & Distance ----
-    var s4=pptx.addSlide({masterName:'BASE'});head(s4,'03 · Situational','Down & Distance — Blitz% / Coverage');
-    var dHead=[cell('DOWN \\ DIST',{fill:{color:NAVY},color:WHITE,bold:true,fontSize:11,valign:'middle'})];
-    DO.forEach(function(d){dHead.push(cell(d,{fill:{color:NAVY},color:WHITE,bold:true,align:'center',fontSize:10,valign:'middle'}));});
-    dHead.push(cell('ALL',{fill:{color:'1B3A63'},color:WHITE,bold:true,align:'center',fontSize:11,valign:'middle'}));
-    var dRows=[dHead];
-    [1,2,3,4].forEach(function(dn,i){
-      var band=i%2?BAND:WHITE;
-      var r=[cell(dnLbl(dn)+' Down',{fill:{color:band},color:INK,bold:true,fontSize:11,valign:'middle'})];
-      DO.forEach(function(dg){var c=mCell(rows.filter(function(x){return x.DN===dn&&x.DIST_GRP===dg;}));
-        r.push({text:[{text:(c?c.bp+'%':'—'),options:{bold:true,color:(c&&c.bp>=45?RED:INK),breakLine:true,fontFace:FONT}},{text:(c&&c.tc?c.tc:''),options:{fontSize:8,color:GREY,fontFace:FONT}}],options:{fill:{color:band},align:'center',valign:'middle',fontSize:11}});});
-      var ca=mCell(rows.filter(function(x){return x.DN===dn;}));
-      r.push(cell((ca?ca.bp+'%':'—'),{fill:{color:band},align:'center',bold:true,color:INK,fontSize:11,valign:'middle'}));
-      dRows.push(r);
+    // ---- Slide 4: Pressure detail ----
+    var s4=pptx.addSlide({masterName:'BASE'});head(s4,'03 · Pressure','Blitz Direction & Types');
+    kick(s4,'Blitz Direction',1.45);bars(s4,X0,1.85,CW,[['BOUNDARY',a.bt.BOUNDARY],['FIELD',a.bt.FIELD],['BOTH',a.bt.BOTH]],bn,BARC);
+    kick(s4,'Top Blitz Type',3.55);bars(s4,X0,3.95,CW,a.blitzRaw,a.n,BARC);
+    kick(s4,'Top Stunts Type',6.65);bars(s4,X0,7.05,CW,a.stunt,a.n,BARC);
+
+    // ---- Slide 5: Down & Distance heatmap (same look as dashboard matrix) ----
+    function mfill(bp){if(!bp)return 'F7FAFE';if(bp<=30)return 'FEF9EC';if(bp<=45)return 'FEECC6';if(bp<=60)return 'FDD88A';if(bp<=75)return 'F5A623';return 'C0392B';}
+    function mtxt(bp){return bp>75?'FFFFFF':'12243B';}
+    function mc(c){if(!c)return{text:'—',options:{fill:{color:'F7FAFE'},align:'center',valign:'middle',color:GREY,fontSize:9}};
+      var tc2=mtxt(c.bp);return{text:[
+        {text:'COV '+(c.tc||'—'),options:{fontSize:7,color:tc2,breakLine:true,fontFace:FONT}},
+        {text:'FR '+(c.tf||'—'),options:{fontSize:7,color:tc2,breakLine:true,fontFace:FONT}},
+        {text:'BLITZ '+c.bp+'%',options:{fontSize:10,bold:true,color:tc2,breakLine:true,fontFace:FONT}},
+        {text:'STUNT '+c.sp+'%   N='+c.n,options:{fontSize:7,color:tc2,fontFace:FONT}}
+      ],options:{fill:{color:mfill(c.bp)},align:'center',valign:'middle'}};
+    }
+    var s5=pptx.addSlide({masterName:'BASE'});head(s5,'04 · Situational','Down & Distance — Heatmap');
+    var hh=[cell('DOWN \\ DIST',{fill:{color:NAVY},color:WHITE,bold:true,fontSize:9,valign:'middle'})];
+    DO.forEach(function(d){hh.push(cell(d,{fill:{color:NAVY},color:WHITE,bold:true,align:'center',fontSize:9,valign:'middle'}));});
+    hh.push(cell('ALL',{fill:{color:'1B3A63'},color:WHITE,bold:true,align:'center',fontSize:9,valign:'middle'}));
+    var mRows=[hh];
+    [1,2,3,4].forEach(function(dn){
+      var r=[cell(dnLbl(dn)+' Down',{fill:{color:BAND},color:INK,bold:true,fontSize:10,valign:'middle'})];
+      DO.forEach(function(dg){r.push(mc(mCell(rows.filter(function(x){return x.DN===dn&&x.DIST_GRP===dg;}))));});
+      r.push(mc(mCell(rows.filter(function(x){return x.DN===dn;}))));
+      mRows.push(r);
     });
-    s4.addTable(dRows,{x:0.5,y:1.55,w:12.33,fontFace:FONT,rowH:0.7,valign:'middle',border:{type:'solid',pt:0.5,color:HAIR},margin:[2,4,2,4]});
-    s4.addText('セル: 上=BLITZ%（45%以上は赤）／下=主COVERAGE。右端=ダウン計。',{x:0.5,y:6.45,w:12,h:0.3,fontSize:9,italic:true,color:GREYL,fontFace:FONT});
+    var allr=[cell('ALL',{fill:{color:'1B3A63'},color:WHITE,bold:true,fontSize:10,valign:'middle'})];
+    DO.forEach(function(dg){allr.push(mc(mCell(rows.filter(function(x){return x.DIST_GRP===dg;}))));});
+    allr.push(mc(mCell(rows)));mRows.push(allr);
+    s5.addTable(mRows,{x:X0,y:1.4,w:CW,colW:[1.27,1.15,1.15,1.15,1.15,1.4],rowH:1.2,valign:'middle',border:{type:'solid',pt:1,color:WHITE},margin:[1,2,1,2]});
+    s5.addText('セル背景=BLITZ率の濃淡（〜30/〜45/〜60/〜75/76+）。各セル: COVERAGE / FRONT / BLITZ% / STUNT% ・ N。',{x:X0,y:10.5,w:CW,h:0.3,fontSize:8,italic:true,color:GREYL,fontFace:FONT});
 
-    // ---- Slides 5/6: segment summaries ----
+    // ---- Slides 6/7: segment summaries ----
     function summarySlide(kicker,title,pairs){
       var s=pptx.addSlide({masterName:'BASE'});head(s,kicker,title);
       var body=[];
       pairs.forEach(function(pr){var sub=pr[1];if(!sub.length)return;var za=analyze(sub);
         body.push([{t:pr[0],b:true},{t:''+za.n,a:'center'},{t:za.bp+'%',a:'center',c:(za.bp>=45?RED:INK),b:true},{t:za.sp+'%',a:'center'},{t:za.cov[0]?za.cov[0][0]:'—'},{t:za.front[0]?za.front[0][0]:'—'}]);});
       if(!body.length)body=[[{t:'—'},{t:''},{t:''},{t:''},{t:''},{t:''}]];
-      tbl(s,[{t:'区分 / Segment'},{t:'N',a:'center'},{t:'BLITZ%',a:'center'},{t:'STUNTS%',a:'center'},{t:'TOP COVERAGE'},{t:'TOP FRONT'}],body,0.5,1.55,12.33,[3.6,1.1,1.6,1.6,2.2,2.23]);
+      tbl(s,[{t:'区分 / Segment'},{t:'N',a:'center'},{t:'BLITZ%',a:'center'},{t:'STUNTS%',a:'center'},{t:'TOP COVERAGE'},{t:'TOP FRONT'}],body,X0,1.45,CW,[2.1,0.7,1.05,1.05,1.2,1.17]);
     }
-    summarySlide('04 · Field Zone','by Field Zone',ZO.filter(function(z){return z!=='ALL';}).map(function(z){return[ZN[z]||z,zd[z]||[]];}));
-    summarySlide('05 · Formation','by Formation',FO.map(function(fg){return[fg,rows.filter(function(r){return r.FG===fg;})];}));
+    summarySlide('05 · Field Zone','by Field Zone',ZO.filter(function(z){return z!=='ALL';}).map(function(z){return[ZN[z]||z,zd[z]||[]];}));
+    summarySlide('06 · Formation','by Formation',FO.map(function(fg){return[fg,rows.filter(function(r){return r.FG===fg;})];}));
 
     pptx.writeFile({fileName:'IMPULSE_scouting_'+new Date().toISOString().slice(0,10)+'.pptx'});
   }catch(e){console.error(e);alert('PPTX生成でエラー: '+e.message);}
