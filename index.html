@@ -833,12 +833,10 @@ function buildIdentity(rows,a){
 // SPECIAL SITUATIONS は OVERVIEW / SUMMARY 共通で buildSpecial2（クリックで詳細）を使用
 function buildSpecial2(rows){
   var twoMin=rows.filter(function(r){return (''+(r['2 MIN']||'')).trim().toUpperCase()==='Y';}); // 2 MIN 列=Y を参照
-  var half=Math.ceil(rows.length/2);
-  var firstOpen=rows.slice(0,Math.min(12,half)),secondOpen=rows.slice(half,half+12);
-  return'<div class="sec" style="margin-top:18px">SPECIAL SITUATIONS</div><div style="font-size:10px;color:var(--g400);margin-bottom:8px">※ 2-MINUTE は「2 MIN」列=Y の行を集計。OPENERS は専用列が無いため各ハーフ序盤の参考値 / openers are a proxy</div><div class="cs-grid">'
+  var firstOpen=rows.filter(function(r){return (''+(r['SERIES']||'')).trim()==='1';}); // SERIES 列=1 を参照
+  return'<div class="sec" style="margin-top:18px">SPECIAL SITUATIONS</div><div style="font-size:10px;color:var(--g400);margin-bottom:8px">※ 2-MINUTE は「2 MIN」列=Y、1ST HALF OPENERS は「SERIES」列=1 の行を集計 / by 2 MIN=Y and SERIES=1</div><div class="cs-grid">'
     +ov2Item('2-MINUTE','#7C3AED',twoMin)
     +ov2Item('1ST HALF OPENERS','#0055A4',firstOpen)
-    +ov2Item('2ND HALF OPENERS','#059669',secondOpen)
     +'</div>';
 }
 function buildNextSteps(rows,a){
@@ -1009,13 +1007,12 @@ function setupZoneYard(tabsId,bodyId,rows,base,fbId){
     if(fp>0&&fp<100){var lbl=(fp<=50?fp:100-fp);nums+='<div class="fb-num t" style="left:'+fp+'%">'+lbl+'</div><div class="fb-num" style="left:'+fp+'%">'+lbl+'</div>';}
   }
   var hashes='<div class="fb-hash" style="top:4px"></div><div class="fb-hash" style="top:36px"></div><div class="fb-hash" style="top:64px"></div><div class="fb-hash" style="bottom:4px"></div>';
-  var bands=zones.filter(function(z){return z!=='GREEN';}).map(function(z){var r=ZYARD[z];if(!r)return'';return'<div class="fb-band" title="'+(ZN[z]||z)+'" style="left:'+r[0]+'%;width:'+(r[1]-r[0])+'%;background:'+ZCS[z]+'"></div>';}).join('');
   fe.innerHTML='<div class="fieldbar">'
     +'<div class="fb-ends"><span>◀ 自陣 OWN</span><span>MID 50</span><span>OPP 敵陣 ▶</span></div>'
     +'<div class="fb-field">'
       +'<div class="fb-ez l">END ZONE</div>'
       +'<div class="fb-track" id="'+tabsId+'-trk">'
-        +'<div class="fb-turf"><div class="fb-bands">'+bands+'</div>'+lines+hashes+nums+'</div>'
+        +'<div class="fb-turf">'+lines+hashes+nums+'</div>'
         +'<div class="fb-sel" id="'+tabsId+'-sel"></div><div class="fb-h" id="'+tabsId+'-hlo"></div><div class="fb-h" id="'+tabsId+'-hhi"></div>'
       +'</div>'
       +'<div class="fb-ez r">END ZONE</div>'
@@ -1323,17 +1320,15 @@ function cmpOv2Item(name,color,ssub,gsub){
 }
 function buildCmpSummary(scout,game){
   var twoMinF=function(r){return (''+(r['2 MIN']||'')).trim().toUpperCase()==='Y';};
-  function halfOpen(rows){var h=Math.ceil(rows.length/2);return[rows.slice(0,Math.min(12,h)),rows.slice(h,h+12)];}
+  var openF=function(r){return (''+(r['SERIES']||'')).trim()==='1';};
   var all=cmpOv2Item('ALL / 全体','#002B5C',scout,game);
   var byF=FO.map(function(fg){return cmpOv2Item(fg,FC[fg]||'#475569',scout.filter(function(r){return r.FG===fg;}),game.filter(function(r){return r.FG===fg;}));}).join('');
   var sz=byZone(scout),gz=byZone(game);
   var byZ=ZO.filter(function(z){return z!=='ALL';}).map(function(z){return cmpOv2Item(ZN[z]||z,ZCS[z],sz[z]||[],gz[z]||[]);}).join('');
   var fc={};scout.forEach(function(r){if(r['DEF FRONT'])fc[r['DEF FRONT']]=(fc[r['DEF FRONT']]||0)+1;});
   var byFr=topN(fc,8).map(function(x,i){var fr=x[0];return cmpOv2Item(fr,CS_FCOL[i%CS_FCOL.length],scout.filter(function(r){return r['DEF FRONT']===fr;}),game.filter(function(r){return r['DEF FRONT']===fr;}));}).join('')||'<div style="color:var(--g400);font-size:12px">—</div>';
-  var sH=halfOpen(scout),gH=halfOpen(game);
   var sp=cmpOv2Item('2-MINUTE','#7C3AED',scout.filter(twoMinF),game.filter(twoMinF))
-    +cmpOv2Item('1ST HALF OPENERS','#0055A4',sH[0],gH[0])
-    +cmpOv2Item('2ND HALF OPENERS','#059669',sH[1],gH[1]);
+    +cmpOv2Item('1ST HALF OPENERS','#0055A4',scout.filter(openF),game.filter(openF));
   return'<div class="msel-note">数値は <b>事前 → 試合後</b>（PRE → POST）／矢印=vs PRE</div>'
     +'<div class="sec">ALL / 全体</div><div class="cs-grid">'+all+'</div>'
     +'<div class="sec" style="margin-top:18px">FORMATION 別 / by Formation</div><div class="cs-grid">'+byF+'</div>'
@@ -1749,9 +1744,6 @@ function exportPptx(){
     donutP(s2,4.4,2.95,2.6,a.sp,GREEN,'STUNTS RATE',a.sn+' / '+a.n);
     kick(s2,'Key Takeaways',6.0);
     var tkk=[];
-    tkk.push('プレッシャー型: BLITZ '+a.bp+'% / STUNTS '+a.sp+'%（'+identity.split('  ·  ')[0]+'）');
-    if(a.cov[0])tkk.push('主カバレッジ '+a.cov[0][0]+'（'+pctv(a.cov[0][1])+'%）'+(a.cov[1]?'、次に '+a.cov[1][0]+'（'+pctv(a.cov[1][1])+'%）':''));
-    if(a.front[0])tkk.push('ベースフロント '+a.front[0][0]+'（'+pctv(a.front[0][1])+'%）');
     var d3=rows.filter(function(r){return r.DN===3;});if(d3.length>=3){var d3b=Math.round(p(d3.filter(function(r){return r.HB;}).length,d3.length));tkk.push('3rd Down BLITZ '+d3b+'%（全体比 '+(d3b-a.bp>=0?'+':'')+(d3b-a.bp)+'pt）');}
     var rz=rows.filter(function(r){return r.ZONE==='HRED'||r.ZONE==='MRED'||r.ZONE==='LRED';});if(rz.length>=3){var rzb=Math.round(p(rz.filter(function(r){return r.HB;}).length,rz.length));tkk.push('レッドゾーン BLITZ '+rzb+'%（全体比 '+(rzb-a.bp>=0?'+':'')+(rzb-a.bp)+'pt）');}
     tkk.push('BLITZ方向は '+dir[0]+' に偏重（'+Math.round(p(dir[1],bn))+'%）');
@@ -1807,6 +1799,15 @@ function exportPptx(){
     }
     summarySlide('05 · Field Zone','by Field Zone',ZO.filter(function(z){return z!=='ALL';}).map(function(z){return[ZN[z]||z,zd[z]||[]];}));
     summarySlide('06 · Formation','by Formation',FO.map(function(fg){return[fg,rows.filter(function(r){return r.FG===fg;})];}));
+
+    // ---- Slide 7: by Front (BLITZ direction per front) ----
+    var sFr=pptx.addSlide({masterName:'BASE'});head(sFr,'07 · Front','by Front');
+    var ffc={};rows.forEach(function(r){if(r['DEF FRONT'])ffc[r['DEF FRONT']]=(ffc[r['DEF FRONT']]||0)+1;});
+    var fbody=topN(ffc,10).map(function(x){var fr=x[0],sub=rows.filter(function(r){return r['DEF FRONT']===fr;}),za=analyze(sub),fbn=za.bn||1;
+      return [{t:fr,b:true},{t:''+za.n,a:'center'},{t:za.bp+'%',a:'center',c:(za.bp>=45?RED:INK),b:true},{t:za.sp+'%',a:'center'},{t:Math.round(p(za.bt.BOUNDARY,fbn))+'%',a:'center'},{t:Math.round(p(za.bt.FIELD,fbn))+'%',a:'center'},{t:Math.round(p(za.bt.BOTH,fbn))+'%',a:'center'}];});
+    if(!fbody.length)fbody=[[{t:'—'},{t:''},{t:''},{t:''},{t:''},{t:''},{t:''}]];
+    tbl(sFr,[{t:'FRONT'},{t:'N',a:'center'},{t:'BLITZ%',a:'center'},{t:'STUNTS%',a:'center'},{t:'BOUNDARY%',a:'center'},{t:'FIELD%',a:'center'},{t:'BOTH%',a:'center'}],fbody,X0,1.45,CW,[1.95,0.7,1.0,1.0,0.9,0.9,0.82]);
+    sFr.addText('BOUNDARY/FIELD/BOTH はブリッツ時の方向内訳（BLITZ件数に対する%）。',{x:X0,y:10.5,w:CW,h:0.3,fontSize:8,italic:true,color:GREYL,fontFace:FONT});
 
     pptx.writeFile({fileName:'IMPULSE_scouting_'+new Date().toISOString().slice(0,10)+'.pptx'});
   }catch(e){console.error(e);alert('PPTX生成でエラー: '+e.message);}
