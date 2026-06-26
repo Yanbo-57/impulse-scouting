@@ -35,6 +35,8 @@ b,.mv,.mcp,.mcs,.i-stat b,td,th,.bf,.mcstunt{font-variant-numeric:tabular-nums;f
 #splash.on{display:flex;opacity:1}
 #splash.out{opacity:0}
 .splash-inner{text-align:center;animation:fadeUp .5s ease both}
+.splash-emblem{width:88px;height:88px;margin:0 auto 22px;color:#4DA3FF;filter:drop-shadow(0 0 22px rgba(77,163,255,.6));animation:emblemSpin 7s linear infinite}
+@keyframes emblemSpin{to{transform:rotate(360deg)}}
 .splash-mark{font-size:38px;font-weight:800;letter-spacing:.34em;color:#fff;text-shadow:0 0 26px rgba(77,163,255,.6);padding-left:.34em}
 .splash-sub{margin-top:8px;font-size:11px;font-weight:700;letter-spacing:.42em;color:#7FB0F0;padding-left:.42em}
 .splash-bar{width:210px;height:3px;border-radius:3px;background:rgba(255,255,255,.12);margin:26px auto 0;overflow:hidden;position:relative}
@@ -53,6 +55,7 @@ b,.mv,.mcp,.mcs,.i-stat b,td,th,.bf,.mcstunt{font-variant-numeric:tabular-nums;f
 .hdr-title{font-size:18px;font-weight:800;letter-spacing:.1em}
 .hdr-sub{font-size:10px;letter-spacing:.16em;opacity:.65;text-transform:uppercase;margin-top:2px}
 .hdr-badge{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.28);border-radius:20px;padding:6px 15px;font-size:11px;font-weight:800;letter-spacing:.14em;backdrop-filter:blur(6px)}
+.hdr-mark{position:absolute;right:128px;top:-34px;width:150px;height:150px;color:#5FB0FF;opacity:.12;z-index:0;pointer-events:none}
 
 /* ERROR */
 .err-box{background:#FEF2F2;border-left:4px solid var(--red);border-radius:var(--r);padding:12px 16px;font-size:13px;color:var(--red);margin:14px 18px;display:none;line-height:1.6}
@@ -93,6 +96,15 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
 .i-stat b{color:var(--navy);font-weight:800;font-size:15px}
 .i-sep{width:1px;height:24px;background:var(--g200)}
 .i-actions{margin-left:auto;display:flex;align-items:center;gap:10px}
+/* GAME SWITCHER (multi-game) */
+.game-switch{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:10px 24px;background:linear-gradient(180deg,#F4F8FE,#EAF1FB);border-bottom:1px solid var(--g200);position:sticky;top:54px;z-index:19}
+.gs-label{font-size:11px;font-weight:800;color:var(--g400);text-transform:uppercase;letter-spacing:.06em;margin-right:2px}
+.gs-pill{font:inherit;font-size:12px;font-weight:700;color:var(--navy);background:#fff;border:1.5px solid var(--g200);border-radius:20px;padding:6px 13px;cursor:pointer;display:inline-flex;align-items:center;gap:7px;transition:all .15s ease}
+.gs-pill:hover{border-color:var(--blue);box-shadow:var(--sh)}
+.gs-pill.on{background:var(--navy);border-color:var(--navy);color:#fff}
+.gs-pill.gs-all.on{background:var(--blue);border-color:var(--blue)}
+.gs-n{font-size:10px;font-weight:800;background:rgba(0,0,0,.08);color:inherit;border-radius:10px;padding:1px 7px;font-variant-numeric:tabular-nums}
+.gs-pill.on .gs-n{background:rgba(255,255,255,.22)}
 
 /* MAIN TABS */
 .main{padding:18px}
@@ -162,22 +174,22 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
 
 /* FIELD ZONE yard-line field bar — football-field look */
 .fieldbar{flex:1 1 100%;margin-bottom:4px}
-.fb-ends{display:flex;justify-content:space-between;font-size:9px;font-weight:800;color:var(--g400);letter-spacing:.08em;margin-bottom:5px}
+.fb-ends{display:flex;justify-content:space-between;font-size:9px;font-weight:800;color:var(--g400);letter-spacing:.08em;margin-bottom:3px}
 .fb-field{display:flex;align-items:stretch;border-radius:9px;overflow:hidden;border:3px solid #fff;box-shadow:0 3px 14px rgba(8,30,16,.26)}
 .fb-ez{flex:0 0 30px;display:flex;align-items:center;justify-content:center;background:#1F6B3A;color:rgba(255,255,255,.92);font-size:8px;font-weight:800;letter-spacing:.12em;writing-mode:vertical-rl;text-orientation:mixed;white-space:nowrap}
 .fb-ez.l{transform:rotate(180deg)}
-.fb-track{position:relative;flex:1;height:104px;user-select:none;touch-action:none}
+.fb-track{position:relative;flex:1;height:68px;user-select:none;touch-action:none}
 .fb-turf{position:absolute;inset:0;overflow:hidden;background:repeating-linear-gradient(90deg,#2C8B4C 0,#2C8B4C 10%,#2F9150 10%,#2F9150 20%);border-left:2px solid rgba(255,255,255,.95);border-right:2px solid rgba(255,255,255,.95)}
 .fb-bands{position:absolute;inset:0;opacity:.2;mix-blend-mode:multiply}
 .fb-band{position:absolute;top:0;bottom:0}
 .fb-yl{position:absolute;top:0;bottom:0;width:2px;background:rgba(255,255,255,.82);transform:translateX(-1px)}
 .fb-hash{position:absolute;left:0;right:0;height:8px;background:repeating-linear-gradient(90deg,rgba(255,255,255,.6) 0 1.5px,transparent 1.5px,transparent 2%)}
-.fb-num{position:absolute;bottom:6px;transform:translateX(-50%);font-size:11px;color:#fff;font-weight:800;font-variant-numeric:tabular-nums;text-shadow:0 1px 2px rgba(0,0,0,.45)}
-.fb-num.t{top:6px;bottom:auto;transform:translateX(-50%) rotate(180deg)}
+.fb-num{position:absolute;bottom:3px;transform:translateX(-50%);font-size:10px;color:#fff;font-weight:800;font-variant-numeric:tabular-nums;text-shadow:0 1px 2px rgba(0,0,0,.45)}
+.fb-num.t{top:3px;bottom:auto;transform:translateX(-50%) rotate(180deg)}
 .fb-sel{position:absolute;top:0;bottom:0;background:rgba(255,255,255,.16);border-left:3px solid #FFD24A;border-right:3px solid #FFD24A;box-shadow:0 0 0 1px rgba(0,0,0,.25);pointer-events:none}
-.fb-h{position:absolute;top:50%;width:30px;height:30px;transform:translate(-50%,-50%);display:flex;align-items:center;justify-content:center;font-size:18px;background:#fff;border:2px solid var(--navy);border-radius:50%;cursor:ew-resize;box-shadow:0 2px 7px rgba(0,0,0,.4);z-index:4}
+.fb-h{position:absolute;top:50%;width:26px;height:26px;transform:translate(-50%,-50%);display:flex;align-items:center;justify-content:center;font-size:15px;background:#fff;border:2px solid var(--navy);border-radius:50%;cursor:ew-resize;box-shadow:0 2px 7px rgba(0,0,0,.4);z-index:4}
 .fb-h::after{content:'🏈';line-height:1}
-.fb-read{text-align:center;font-size:12px;font-weight:800;color:var(--navy);margin-top:6px;font-variant-numeric:tabular-nums}
+.fb-read{text-align:center;font-size:11px;font-weight:800;color:var(--navy);margin-top:4px;font-variant-numeric:tabular-nums}
 .zt-yd{font-size:9px;font-weight:700;opacity:.7}
 .msel-btn:hover{border-color:var(--blue);color:var(--blue)}
 .zt .mck{font-size:13px;margin-right:1px}
@@ -221,15 +233,62 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
 
 /* DEFENSIVE IDENTITY */
 .identity{position:relative;overflow:hidden;margin-bottom:14px;background:linear-gradient(135deg,#0E2347,#0A1A33);border:none;color:#fff}
-.idt-watermark{position:absolute;right:-6px;top:-14px;font-size:120px;opacity:.06;pointer-events:none}
+.idt-watermark{position:absolute;right:-20px;top:-24px;width:210px;height:210px;opacity:.08;color:#fff;pointer-events:none}
 .idt-head{display:flex;align-items:center;gap:12px;position:relative}
 .idt-ico{font-size:26px}
 .idt-label{font-size:10px;font-weight:800;letter-spacing:.14em;color:#7FB0F0}
 .idt-name{font-size:20px;font-weight:800;letter-spacing:.01em;margin-top:2px}
+.idt-sub{position:relative;font-size:10.5px;font-weight:800;color:#7FB0F0;letter-spacing:.05em;text-transform:uppercase;margin:14px 0 0}
 .idt-list{list-style:none;margin:12px 0 0;padding:0;position:relative}
 .idt-list li{position:relative;padding:5px 0 5px 18px;font-size:12.5px;line-height:1.6;color:#E6EEFA}
 .idt-list li::before{content:'•';position:absolute;left:2px;color:#5FB0FF;font-weight:800}
 .idt-en{color:#8FA7C8;font-size:11px}
+.idt-cta{margin-top:14px;width:100%;background:rgba(95,176,255,.16);border:1px solid rgba(95,176,255,.45);color:#DCEcFF;font:inherit;font-size:12px;font-weight:800;letter-spacing:.02em;padding:10px 14px;border-radius:10px;cursor:pointer;transition:all .15s ease}
+.idt-cta:hover{background:rgba(95,176,255,.3);border-color:#5FB0FF}
+/* OVERVIEW accordion (embedded FIELD ZONE / FORMATION) */
+.ov-acc-wrap{display:flex;flex-direction:column;gap:10px;margin:14px 0}
+.ov-acc{border:1px solid var(--g200);border-radius:var(--r);background:#fff;box-shadow:var(--sh)}
+.ov-acc>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:9px;padding:13px 16px;font-size:13px;font-weight:800;color:var(--navy);user-select:none;border-radius:var(--r)}
+.ov-acc>summary::-webkit-details-marker{display:none}
+.ov-acc>summary:hover{background:var(--g50)}
+.ov-acc-ico{font-size:15px}
+.ov-acc-en{font-size:11px;font-weight:600;color:var(--g400)}
+.ov-acc-chev{margin-left:auto;color:var(--blue);font-size:12px;transition:transform .2s ease}
+.ov-acc[open]>summary{border-bottom:1px solid var(--g100);background:var(--blue-pale);border-radius:var(--r) var(--r) 0 0}
+.ov-acc[open]>summary .ov-acc-chev{transform:rotate(180deg)}
+.ov-acc-body{padding:14px 16px}
+.ov-acc-body .ztabs{position:static;top:auto;backdrop-filter:none;background:transparent}
+
+/* SCOUTING REPORT (READ KEYS + tendency summary) */
+.rep-intro{font-size:12px;color:var(--g600);background:var(--blue-pale);border:1px solid var(--g100);border-radius:var(--r);padding:11px 14px;margin-bottom:14px;line-height:1.7}
+.rk-note{font-size:11px;color:var(--g400);margin:0 0 12px;line-height:1.6}
+.rk-list{display:flex;flex-direction:column;gap:8px}
+.rk{display:grid;grid-template-columns:minmax(140px,1.1fr) 22px 2fr auto;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--g100);border-left:4px solid var(--blue);border-radius:10px;background:#fff;transition:box-shadow .15s ease}
+.rk:hover{box-shadow:var(--sh2)}
+.rk-when{display:flex;align-items:center;gap:7px;min-width:0}
+.rk-if{font-size:9px;font-weight:800;color:#fff;background:var(--g400);border-radius:5px;padding:2px 6px;letter-spacing:.05em;flex-shrink:0}
+.rk-x{font-size:12.5px;font-weight:800;color:var(--navy);line-height:1.25;overflow-wrap:anywhere}
+.rk-arrow{font-size:16px;color:var(--blue);font-weight:800;text-align:center}
+.rk-then{min-width:0}
+.rk-head{font-size:15px;font-weight:800;line-height:1.2}
+.rk-head.rk-up{color:var(--red)}.rk-head.rk-down{color:#0A357E}.rk-head.rk-cov{color:var(--navy)}.rk-head.rk-stunt{color:var(--green)}
+.rk-diff{font-size:11px;font-weight:800;opacity:.8}
+.rk-metrics{font-size:11px;color:var(--g600);margin-top:3px;font-variant-numeric:tabular-nums}
+.rk-metrics b{color:var(--navy)}
+.rk-meta{display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0}
+.rk-n{font-size:10px;font-weight:800;color:var(--g400);font-variant-numeric:tabular-nums}
+.rk-conf{font-size:10px;letter-spacing:1px}
+.rk-conf.hi{color:var(--green)}.rk-conf.mid{color:var(--amber)}.rk-conf.low{color:var(--g200)}
+.rk-empty{font-size:12px;color:var(--g400);padding:10px 0}
+.rep-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 26px}
+.rep-cat{break-inside:avoid}
+.rep-cat-h{font-size:11px;font-weight:800;color:var(--blue);text-transform:uppercase;letter-spacing:.05em;border-bottom:2px solid var(--g100);padding-bottom:5px;margin:10px 0 4px}
+.rep-list{list-style:none;margin:0;padding:0}
+.rep-list li{font-size:12px;color:var(--g600);line-height:1.55;padding:6px 0;border-top:1px dashed var(--g100)}
+.rep-list li:first-child{border-top:none}
+.rep-en{color:var(--g400);font-size:10.5px}
+.rep-n{color:var(--g400);font-size:10px;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+@media(max-width:720px){.rk{grid-template-columns:1fr;gap:5px}.rk-arrow{display:none}.rep-grid{grid-template-columns:1fr}}
 
 /* GAME PLAN PRIORITIES */
 .prio{display:flex;align-items:center;gap:14px;padding:12px 6px;border-top:1px solid var(--g100)}
@@ -286,7 +345,7 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
 .rec-en{color:var(--g400);font-size:10.5px}
 
 /* SECTION TITLE */
-.sec{font-size:11px;font-weight:700;color:var(--g400);border-bottom:1px solid var(--g100);padding-bottom:6px;margin:16px 0 10px;text-transform:uppercase;letter-spacing:.07em;display:flex;align-items:center;gap:7px}
+.sec{font-size:13px;font-weight:800;color:var(--navy);border-bottom:1px solid var(--g100);padding-bottom:6px;margin:16px 0 10px;text-transform:uppercase;letter-spacing:.07em;display:flex;align-items:center;gap:7px}
 .sec::before{content:'';width:3px;height:13px;background:linear-gradient(180deg,var(--blue-bright),var(--blue));border-radius:2px;flex-shrink:0}
 
 /* INSIGHT */
@@ -336,6 +395,21 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
 .h3{background:#FDD88A}.h4{background:#F5A623}.h5{background:#C0392B}
 .hleg{display:flex;gap:7px;align-items:center;font-size:11px;color:var(--g400);margin-bottom:12px;flex-wrap:wrap}
 .hl{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
+/* DOWN & DISTANCE header: title left, BLITZ% color-scale legend right */
+.dd-head{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;border-bottom:1px solid var(--g100);padding-bottom:8px;margin:16px 0 6px}
+.dd-title{font-size:13px;font-weight:800;color:var(--navy);text-transform:uppercase;letter-spacing:.07em}
+.hscale{display:flex;align-items:center;gap:7px;font-size:10px;color:var(--g600)}
+.hscale-lab{font-weight:800;color:var(--navy)}
+.hscale-end{font-weight:700;color:var(--g400);font-size:10px}
+.hscale-cells{display:flex;border-radius:6px;overflow:hidden;border:1px solid var(--g100);box-shadow:var(--sh1)}
+.hsc{padding:3px 9px;font-size:9px;font-weight:800;color:#3A4252;font-variant-numeric:tabular-nums;line-height:1.4}
+.cell-leg{font-size:10px;color:var(--g600);margin:0 0 9px}
+.cell-leg b{color:var(--navy)}
+/* heatmap cell sample-size badge (bottom-left) */
+.mtx td.hascell{position:relative}
+.mn{position:absolute;left:6px;bottom:4px;font-size:10px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:.01em;pointer-events:none}
+/* IMPULSE mitsudomoe (三つ巴) emblem — currentColor fill */
+.mitsu{display:block;width:100%;height:100%}
 
 /* TABLE */
 .tbl{width:100%;border-collapse:collapse;font-size:12px}
@@ -414,6 +488,7 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
 <body>
 
 <div class="hdr">
+  <div class="hdr-mark" aria-hidden="true"><svg class="mitsu" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><g fill="currentColor"><path d="M100,100 A45,45 0 0,1 100,10 A90,90 0 0,1 177.94,145 A45,45 0 0,0 100,100 Z"/><path d="M100,100 A45,45 0 0,1 100,10 A90,90 0 0,1 177.94,145 A45,45 0 0,0 100,100 Z" transform="rotate(120 100 100)"/><path d="M100,100 A45,45 0 0,1 100,10 A90,90 0 0,1 177.94,145 A45,45 0 0,0 100,100 Z" transform="rotate(240 100 100)"/></g></svg></div>
   <img id="hdr-logo" class="hdr-logo" alt="IMPULSE">
   <div class="hdr-titles">
     <div class="hdr-title">DEFENSE SCOUTING</div>
@@ -425,6 +500,7 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
 <!-- TRANSITION SPLASH -->
 <div id="splash">
   <div class="splash-inner">
+    <div class="splash-emblem" aria-hidden="true"><svg class="mitsu" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><g fill="currentColor"><path d="M100,100 A45,45 0 0,1 100,10 A90,90 0 0,1 177.94,145 A45,45 0 0,0 100,100 Z"/><path d="M100,100 A45,45 0 0,1 100,10 A90,90 0 0,1 177.94,145 A45,45 0 0,0 100,100 Z" transform="rotate(120 100 100)"/><path d="M100,100 A45,45 0 0,1 100,10 A90,90 0 0,1 177.94,145 A45,45 0 0,0 100,100 Z" transform="rotate(240 100 100)"/></g></svg></div>
     <div class="splash-mark">IMPULSE</div>
     <div class="splash-sub">DEFENSE SCOUTING</div>
     <div class="splash-bar"><span></span></div>
@@ -442,9 +518,9 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
   </div>
   <div class="upload-card" id="drop-zone-scout">
     <span class="upload-icon">📋</span>
-    <h3>スカウティングCSV / Scouting CSV</h3>
-    <p>ファイルをドラッグ＆ドロップ、またはボタンで選択<br>Drag & drop or click to select file<br><span style="font-size:11px;color:var(--g400)">※ ODK=D（スカウティング）・ODK=O（試合後）どちらも対応</span></p>
-    <label class="btn btn-navy" style="cursor:pointer">📁 ファイルを選択 / Select File<input type="file" id="input-scout" accept=".csv" style="display:none"></label>
+    <h3>スカウティングCSV / Scouting CSV<br><span style="font-size:12px;font-weight:700;color:var(--blue)">複数試合をまとめて選択OK / multiple games supported</span></h3>
+    <p>ファイルをドラッグ＆ドロップ、またはボタンで選択（複数可）<br>Drag &amp; drop or select one or more CSV files<br><span style="font-size:11px;color:var(--g400)">※ 1ファイル＝1試合・ファイル名がゲーム名／<b>ODK=D の行のみ集計</b> / 1 file = 1 game, only ODK=D rows used</span></p>
+    <label class="btn btn-navy" style="cursor:pointer">📁 ファイルを選択 / Select File(s)<input type="file" id="input-scout" accept=".csv" multiple style="display:none"></label>
     <div class="upload-status" id="scout-filename"></div>
   </div>
 </div>
@@ -460,16 +536,19 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
       <button class="btn btn-ghost" id="btn-back">← 別データ / Back</button>
     </div>
   </div>
+  <div class="game-switch" id="game-switch" style="display:none"></div>
   <div class="main">
     <div class="ttabs">
       <div class="tt on" id="tt-overview">📊 OVERVIEW</div>
       <div class="tt" id="tt-overview2">🗒️ SUMMARY</div>
+      <div class="tt" id="tt-report">🔍 SCOUTING REPORT</div>
       <div class="tt" id="tt-zone">📍 FIELD ZONE</div>
       <div class="tt" id="tt-form">📋 FORMATION</div>
       <div class="tt" id="tt-ask">🧠 ASK AI</div>
     </div>
     <div class="tp vis" id="tab-overview"><div id="overview-body"></div></div>
     <div class="tp" id="tab-overview2"><div id="overview2-body"></div></div>
+    <div class="tp" id="tab-report"><div id="report-body"></div></div>
     <div class="tp" id="tab-zone"><div id="zone-fieldbar"></div><div class="ztabs" id="zone-tabs"></div><div id="zone-body"></div></div>
     <div class="tp" id="tab-form"><div class="ztabs" id="form-tabs"></div><div id="form-body"></div></div>
     <div class="tp" id="tab-ask">
@@ -576,6 +655,10 @@ var topN=function(obj,k){return Object.entries(obj).sort(function(a,b){return b[
   var img=document.getElementById('hdr-logo');
   if(img) img.src='data:image/png;base64,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';
 })();
+
+// ===== IMPULSE EMBLEM (三つ巴 / mitsudomoe) — inline SVG, currentColor fill =====
+var MITSU_PATH='M100,100 A45,45 0 0,1 100,10 A90,90 0 0,1 177.94,145 A45,45 0 0,0 100,100 Z';
+var MITSU='<svg class="mitsu" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><g fill="currentColor"><path d="'+MITSU_PATH+'"/><path d="'+MITSU_PATH+'" transform="rotate(120 100 100)"/><path d="'+MITSU_PATH+'" transform="rotate(240 100 100)"/></g></svg>';
 
 // ===== DATA FUNCTIONS =====
 function normalizeVal(v){
@@ -746,52 +829,52 @@ function buildRecommendations(rows,a){
   // 1) 3rd & Long のプロテクション設計（圧力量で打ち手を分岐）
   var d3l=rows.filter(function(r){return r.DN===3&&isLong(r);});
   if(d3l.length>=3){var r3=rate(d3l),c3=topcov(d3l)||'不明',s3=stuntRate(d3l);
-    var plan=r3>=55?'<b>マックスプロテクト＋単独ホット</b>を基本に、ブリッツ側へ<b>スクリーン/スワング</b>で即時リリース。':r3>=ov?'<b>6メン保護＋ホット確認</b>を徹底し、'+c3+'のソフトスポットへ素早く投げ切る。':'圧力は薄め。<b>5メン保護で縦2段</b>を取り、'+c3+'のディープを突く。';
+    var plan=r3>=55?'<b>max protection ＋ single hot</b> を基本に、blitz 側へ <b>screen / swing</b> で即時リリース。':r3>=ov?'<b>6-man protection ＋ hot read</b> を徹底し、'+c3+' の soft spot へ素早く投げ切る。':'圧力は薄め。<b>5-man protection で 2-level vertical</b> を取り、'+c3+' の deep を突く。';
     var planEn=r3>=55?'Base out of <b>max protection plus a single hot</b> and release the ball immediately to the blitz side with <b>screens / swing routes</b>.':r3>=ov?'Stay in <b>6-man protection and confirm the hot</b>, then get the ball out quickly into the soft spot of '+c3+'.':'Pressure is light here — keep <b>5-man protection and attack vertically with a 2-level concept</b>, hitting the deep zones of '+c3+'.';
-    if(s3>=40){plan+=' STUNTSも'+s3+'%と多く、<b>内側ガード/センターの受け渡し</b>を最優先。';planEn+=' Stunts are also high ('+s3+'%), so make the <b>guard / center pass-off</b> the top priority.';}
-    recs.push(recCard('🛡️','3rd & Long のプロテクション設計','3rd & Long Protection','3rd & Long('+d3l.length+'P) は BLITZ <b>'+r3+'%</b>・背後 <b>'+c3+'</b>・STUNTS '+s3+'%。'+plan,'On 3rd & Long ('+d3l.length+' plays) they blitz <b>'+r3+'%</b> with <b>'+c3+'</b> behind it and stunt on '+s3+'%. '+planEn));}
+    if(s3>=40){plan+=' STUNTS も '+s3+'% と多く、<b>G/C の受け渡し（pass-off）</b>を最優先。';planEn+=' Stunts are also high ('+s3+'%), so make the <b>G/C pass-off</b> the top priority.';}
+    recs.push(recCard('🛡️','3rd & Long の protection 設計','3rd & Long Protection','3rd & Long('+d3l.length+'P) は BLITZ <b>'+r3+'%</b>・背後 <b>'+c3+'</b>・STUNTS '+s3+'%。'+plan,'On 3rd & Long ('+d3l.length+' plays) they blitz <b>'+r3+'%</b> with <b>'+c3+'</b> behind it and stunt on '+s3+'%. '+planEn));}
 
   // 2) 最多カバーを割る具体コンセプト
   if(a.cov[0]){var c1=a.cov[0][0],c1s=p(a.cov[0][1],a.n),c2=a.cov[1]?a.cov[1][0]:null;
-    var depend=c1s>=45?'<b>'+c1+'偏重('+c1s+'%)で的を絞れる</b>。プリスナップで確認し、':'';
+    var depend=c1s>=45?'<b>'+c1+' に大きく偏っており（'+c1s+'%）読みやすい</b>。snap 前に確認して、':'';
     var dependEn=c1s>=45?'<b>'+c1+' is heavily favored ('+c1s+'%), so you can key on it.</b> Confirm it pre-snap, then ':'';
-    recs.push(recCard('🎯','最多カバー '+c1+' のビート手順','Beat Top Coverage',depend+'<b>フォーメーション/モーションで'+c1+'を誘発→想定どおりか確認→水平+垂直のストレッチ</b>でDBに二択を強いる。'+(c2?'チェック先の <b>'+c2+'</b> 用コールも1つ用意。':''),dependEn+'<b>force '+c1+' with formation and motion, confirm it shows, then attack it with horizontal and vertical stretches</b> to put the DBs in conflict.'+(c2?' Also prepare one call against the check coverage <b>'+c2+'</b>.':'')));}
+    recs.push(recCard('🎯','最多カバー '+c1+' の崩し方','Beat Top Coverage',depend+'<b>formation / motion で '+c1+' を引き出す → 出たカバーを確認 → 横と縦の stretch</b> で DB を迷わせて空いた所へ。'+(c2?'切り替え先の <b>'+c2+'</b> 用コールも1つ用意。':''),dependEn+'<b>force '+c1+' with formation and motion, confirm it shows, then attack it with horizontal and vertical stretches</b> to put the DBs in conflict.'+(c2?' Also prepare one call against the check coverage <b>'+c2+'</b>.':'')));}
 
   // 3) 傾向ブレイカー：最も読める局面を逆手に
   var best=null;
   [1,2,3,4].forEach(function(dn){DO.forEach(function(dg){var sub=rows.filter(function(r){return r.DN===dn&&r.DIST_GRP===dg;});if(sub.length>=4){var rt=rate(sub),dev=Math.abs(rt-ov);if(!best||dev>best.dev)best={dn:dn,dg:dg,rt:rt,n:sub.length,dev:dev,cov:topcov(sub)};}});});
   if(best&&best.dev>=18){var dl=(best.dn===1?'1st':best.dn===2?'2nd':best.dn===3?'3rd':'4th')+' & '+best.dg;
-    var act=best.rt>ov?'圧力前提で<b>クイック/ドロー/RPO</b>を常備し、テンポで的を絞らせない。':'圧力が薄い局面。<b>プレイアクション＋縦</b>でビッグプレーを狙う。';
+    var act=best.rt>ov?'圧力前提で <b>quick / draw / RPO</b> を常備し、tempo で的を絞らせない。':'圧力が薄い局面。<b>play-action ＋ vertical</b> でビッグプレーを狙う。';
     var actEn=best.rt>ov?'Expect pressure here, so keep <b>quick game, draw, and RPO</b> ready and play fast so they cannot tee off.':'Pressure is light here — take a shot with <b>play-action and vertical routes</b> for an explosive play.';
-    recs.push(recCard('📌','最も読める局面 '+dl+' を突く','Exploit Tendency','<b>'+dl+'</b>('+best.n+'P)は BLITZ <b>'+best.rt+'%</b>（全体 '+ov+'%）'+(best.cov?'／'+best.cov:'')+'と偏り大。'+act,'<b>'+dl+'</b> ('+best.n+' plays) shows BLITZ <b>'+best.rt+'%</b> versus '+ov+'% overall'+(best.cov?', coverage '+best.cov:'')+' — a strong, readable tendency. '+actEn));}
+    recs.push(recCard('📌','最も読みやすい局面 '+dl+' を狙う','Exploit Tendency','<b>'+dl+'</b>('+best.n+'P)は BLITZ <b>'+best.rt+'%</b>（全体 '+ov+'%）'+(best.cov?'／'+best.cov:'')+'と偏りが大きい。'+act,'<b>'+dl+'</b> ('+best.n+' plays) shows BLITZ <b>'+best.rt+'%</b> versus '+ov+'% overall'+(best.cov?', coverage '+best.cov:'')+' — a strong, readable tendency. '+actEn));}
 
   // 4) 早いダウンで主導権（1st Down 戦略）
   var d1=rows.filter(function(r){return r.DN===1;});
   if(d1.length>=4){var r1=rate(d1),c1d=topcov(d1)||'不明';
-    var early=r1<ov-5?'圧力が薄く、<b>'+c1d+'相手に縦/PA</b>で2nd&shortを作りやすい。先制パンチを。':r1>ov+5?'1stから圧力。<b>テンポを上げ簡潔な保護</b>で後手を防ぐ。':'標準。<b>ラン/パスのバランス</b>でダウンを進める。';
+    var early=r1<ov-5?'圧力が薄く、<b>'+c1d+' 相手に vertical / PA</b> で 2nd & short を作りやすい。先制パンチを。':r1>ov+5?'1st から圧力。<b>tempo を上げ simple protection</b> で後手を防ぐ。':'標準。<b>run / pass のバランス</b>でダウンを進める。';
     var earlyEn=r1<ov-5?'Pressure is light, so against <b>'+c1d+'</b> you can hit <b>vertical and play-action shots</b> to set up 2nd & short. Land the first punch.':r1>ov+5?'They pressure from 1st down, so <b>push the tempo with simple protections</b> to stay ahead of the chains.':'A standard look — <b>stay balanced between run and pass</b> to move the chains.';
     recs.push(recCard('🚀','1st Down で主導権を握る','Own 1st Down','1st Down は BLITZ <b>'+r1+'%</b>・主カバー <b>'+c1d+'</b>。'+early,'On 1st Down they blitz <b>'+r1+'%</b> with top coverage <b>'+c1d+'</b>. '+earlyEn));}
 
   // 5) スタンツ対応のOLルール（起点フロントまで特定）
   if(a.sp>=35){var sf={};rows.forEach(function(r){if(r.HS&&r['DEF FRONT'])sf[r['DEF FRONT']]=(sf[r['DEF FRONT']]||0)+1;});var tf=topN(sf,1)[0];
-    recs.push(recCard('🔄','スタンツ対応のOLルール','Stunt Protection Rules','STUNTS <b>'+a.sp+'%</b>'+(tf?'／起点は主に <b>'+tf[0]+'</b>':'')+'。'+(tf?'<b>'+tf[0]+'</b>を見たら':'当該フロントでは')+'<b>受け渡し(パス・オフ)を声出しで統一</b>し、内側を最優先で締める。RBのスキャンルールも明確化。','Stunts occur on <b>'+a.sp+'%</b> of plays'+(tf?', most often originating from the <b>'+tf[0]+'</b> front':'')+'. '+(tf?'When you see <b>'+tf[0]+'</b>, ':'On that front, ')+'<b>unify your pass-off ("you / me") calls out loud</b> and protect the inside gaps first, and define the running back\'s scan rule clearly.'));}
+    recs.push(recCard('🔄','STUNTS 対応の OL ルール','Stunt Protection Rules','STUNTS <b>'+a.sp+'%</b>'+(tf?'／起点は主に <b>'+tf[0]+'</b>':'')+'。'+(tf?'<b>'+tf[0]+'</b> を見たら':'当該 front では')+'<b>受け渡し（pass-off）を声出しで統一</b>し、inside gap を最優先で締める。RB の scan rule も明確化。','Stunts occur on <b>'+a.sp+'%</b> of plays'+(tf?', most often originating from the <b>'+tf[0]+'</b> front':'')+'. '+(tf?'When you see <b>'+tf[0]+'</b>, ':'On that front, ')+'<b>unify your pass-off ("you / me") calls out loud</b> and protect the inside gaps first, and define the running back\'s scan rule clearly.'));}
 
   if(!recs.length)recs.push(recCard('📋','データ収集の継続','Collect More Data','傾向判断にはサンプルが不足。試合データを蓄積し精度を上げましょう。','The sample size is too small to read tendencies reliably. Keep logging game data to improve accuracy.'));
   return'<div class="card"><div class="sec">RECOMMENDATIONS</div><div class="rec-list">'+recs.slice(0,5).join('')+'</div></div>';
 }
 
 // ===== SHARED OVERVIEW-STYLE BLOCKS =====
-var DD_LEGEND='<div class="hleg" style="margin-bottom:8px;font-size:10px">'
-  +'<span style="font-weight:700;color:var(--navy)">セル背景=BLITZ率:</span>'
-  +'<span class="hl" style="background:#FEF9EC;color:#3A4252">〜30</span>'
-  +'<span class="hl" style="background:#FEECC6;color:#3A4252">〜45</span>'
-  +'<span class="hl" style="background:#FDD88A;color:#3A4252">〜60</span>'
-  +'<span class="hl" style="background:#F5A623;color:#fff">〜75</span>'
-  +'<span class="hl" style="background:#C0392B;color:#fff">76+</span>'
-  +'<span style="color:var(--g600)">｜各セル(上から): <b style="color:var(--navy)">COVERAGE / MAIN FRONT / BLITZ% / STUNTS% / N</b>　クリックで詳細</span>'
-  +'</div>';
+// DOWN & DISTANCE header — title left, BLITZ% color-scale legend top-right
+var DD_SCALE='<div class="hscale"><span class="hscale-lab">セル背景: BLITZ率</span><span class="hscale-end">低</span><span class="hscale-cells">'
+  +'<span class="hsc" style="background:#FEF9EC">〜30%</span>'
+  +'<span class="hsc" style="background:#FEECC6">〜45%</span>'
+  +'<span class="hsc" style="background:#FDD88A">〜60%</span>'
+  +'<span class="hsc" style="background:#F5A623;color:#fff">〜75%</span>'
+  +'<span class="hsc" style="background:#C0392B;color:#fff">75%+</span>'
+  +'</span><span class="hscale-end">高</span></div>';
+var CELL_LEGEND='<div class="cell-leg">各セル(上から): <b>COVERAGE / MAIN FRONT / BLITZ% / STUNTS%</b>、左下に <b>N</b>。クリックで詳細</div>';
 function ddCard(z,rows,color){
-  return'<div class="card" style="margin-bottom:14px"><div class="sec">DOWN &amp; DISTANCE</div>'+DD_LEGEND+buildMtxPanel(z,rows,color)+'</div>';
+  return'<div class="card" style="margin-bottom:14px"><div class="dd-head"><span class="dd-title">DOWN &amp; DISTANCE</span>'+DD_SCALE+'</div>'+CELL_LEGEND+buildMtxPanel(z,rows,color)+'</div>';
 }
 function insightsCard(rows,a,color){
   var ins=buildInsights(rows,a,color||'#0055A4',true);
@@ -804,7 +887,7 @@ function sampleNote(n){
 }
 
 // ===== OVERVIEW (shared body: FRONT/TENDENCY/COVERAGE → heatmap → INSIGHTS/RECS) =====
-function overviewBody(rows,z,base,afterMtx){
+function overviewBody(rows,z,base,afterMtx,skipInsights){
   var a=analyze(rows);
   var bDiff=base?diffBadge(a.bp,base.bp):'',sDiff=base?diffBadge(a.sp,base.sp):'';
   var dk='d'+(++__mtxSeq);__MTX[dk]=rows; // ドーナツのクリック用に行データを登録
@@ -814,21 +897,135 @@ function overviewBody(rows,z,base,afterMtx){
     +'<div class="donut-clk" onclick="showTypeModal(\''+dk+'\',\'stunts\')">'+donut(a.sp,'var(--green)','STUNTS RATE',a.sn+' / '+a.n,sDiff)+'</div>'
     +'</div></div>';
   var covCard='<div class="card"><div class="sec">COVERAGE</div>'+makeBars(a.cov,a.n)+'</div>';
-  return sampleNote(a.n)+'<div class="ov3">'+frontCard+donutC+covCard+'</div>'+ddCard(z||'ALL',rows,'#0055A4')+(afterMtx||'')+'<div class="ov2" style="margin-top:14px">'+insightsCard(rows,a,'#0055A4')+buildRecommendations(rows,a)+'</div>';
+  var tail=skipInsights?'':'<div style="margin-top:14px">'+insightsCard(rows,a,'#0055A4')+'</div>';
+  return sampleNote(a.n)+'<div class="ov3">'+frontCard+donutC+covCard+'</div>'+ddCard(z||'ALL',rows,'#0055A4')+(afterMtx||'')+tail;
 }
 // ===== OVERVIEW top sections (identity / priorities / special / next steps) =====
 function ovRate(sub){return sub.length?Math.round(p(sub.filter(function(r){return r.HB;}).length,sub.length)):0;}
-function buildIdentity(rows,a){
-  var d3=rows.filter(function(r){return r.DN===3;}),d3b=ovRate(d3);
-  var red=rows.filter(function(r){return r.ZONE==='HRED'||r.ZONE==='MRED'||r.ZONE==='LRED';}),redb=ovRate(red);
+// ===== DC TELL ENGINE (shared) — データ上だけで分かる癖を {cat,jp,en,str,n} で返す =====
+function dcTells(rows,a){
+  var ov=a.bp, ovsp=a.sp, T=[];
+  var rate=function(s){return s.length?Math.round(p(s.filter(function(r){return r.HB;}).length,s.length)):0;};
+  var srate=function(s){return s.length?Math.round(p(s.filter(function(r){return r.HS;}).length,s.length)):0;};
+  var tcov=function(s){var c={};s.forEach(function(r){if(r.COVERAGE)c[r.COVERAGE]=(c[r.COVERAGE]||0)+1;});var t=topN(c,1)[0];return t?{n:t[0],s:Math.round(p(t[1],s.length))}:null;};
+  var tfr=function(s){var c={};s.forEach(function(r){if(r['DEF FRONT'])c[r['DEF FRONT']]=(c[r['DEF FRONT']]||0)+1;});var t=topN(c,1)[0];return t?{n:t[0],s:Math.round(p(t[1],s.length))}:null;};
+  function add(cat,jp,en,str,n){T.push({cat:cat,jp:jp,en:en,str:str,n:n||a.n});}
+  // ---- PRESSURE ----
+  add('PRESSURE','BLITZ率 <b>'+a.bp+'%</b>・STUNTS率 <b>'+a.sp+'%</b>'+(ov>=45?' と圧力量は多め':ov<=25?' と圧力は控えめ':''),'Blitz '+a.bp+'% · Stunts '+a.sp+'%'+(ov>=45?' (aggressive)':ov<=25?' (conservative)':''),Math.abs(ov-35)+25,a.n);
+  var bn=a.bn||0;
+  if(bn>=5){var dirs=[['BOUNDARY',a.bt.BOUNDARY],['FIELD',a.bt.FIELD]].sort(function(x,y){return y[1]-x[1];}),tp=dirs[0],ds=Math.round(p(tp[1],bn));
+    if(ds>=56)add('PRESSURE','BLITZ は <b>'+tp[0]+'</b> 方向に偏る（'+ds+'%）','Blitzes mostly to the '+tp[0].toLowerCase()+' ('+ds+'%)',ds,bn);}
+  var d3=rows.filter(function(r){return r.DN===3;});
+  if(d3.length>=4){var d3b=rate(d3),dd=d3b-ov; if(Math.abs(dd)>=8)add('PRESSURE','3rd Down で BLITZ が'+(dd>=0?'増える':'減る')+'（'+d3b+'%, '+(dd>=0?'+':'')+dd+'pt）','Blitz '+(dd>=0?'rises':'drops')+' on 3rd ('+d3b+'%)',Math.abs(dd)+15,d3.length);}
+  // ---- COVERAGE ----
+  var hb=rows.filter(function(r){return r.HB;});
+  if(hb.length>=5){var cb=tcov(hb); if(cb&&cb.s>=40)add('COVERAGE','BLITZ の背後は <b>'+cb.n+'</b>（'+cb.s+'%）','Coverage behind the blitz: '+cb.n+' ('+cb.s+'%)',cb.s,hb.length);}
+  if(a.cov[0]){var cs=Math.round(p(a.cov[0][1],a.n)),topc=a.cov[0][0];
+    add('COVERAGE','ベースは <b>'+topc+'</b>（'+cs+'%）'+(cs>=45?'・偏り強い':'を中心に変化'),'Base coverage '+topc+' ('+cs+'%)',cs,a.n);
+    if(a.cov.length<=3||cs>=50)add('COVERAGE','カバーは実質 '+a.cov.length+' 種・ディスガイズ少なめ','Only '+a.cov.length+' coverages — limited disguise',45+(cs>=50?cs-50:0),a.n);}
+  var d1=rows.filter(function(r){return r.DN===1;});
+  if(d1.length>=4&&d3.length>=4){var c1=tcov(d1),c3=tcov(d3); if(c1&&c3&&c1.n!==c3.n)add('COVERAGE','ダウンで主カバーが変化（1st <b>'+c1.n+'</b> → 3rd <b>'+c3.n+'</b>）','Coverage shifts '+c1.n+'→'+c3.n+' (1st→3rd)',46,Math.min(d1.length,d3.length));}
+  // ---- FRONT & STUNTS ----
+  if(a.front[0]){var fs0=Math.round(p(a.front[0][1],a.n)); add('FRONT','ベース front は <b>'+a.front[0][0]+'</b>（'+fs0+'%）','Base front '+a.front[0][0]+' ('+fs0+'%)',fs0,a.n);}
+  if(a.sp>=30){var sf={};rows.forEach(function(r){if(r.HS&&r['DEF FRONT'])sf[r['DEF FRONT']]=(sf[r['DEF FRONT']]||0)+1;});var tf=topN(sf,1)[0]; if(tf)add('FRONT','STUNTS の起点は主に <b>'+tf[0]+'</b> front','Stunts originate from '+tf[0],35+a.sp,a.n);}
+  // ---- SITUATIONAL ----
+  var red=rows.filter(function(r){return r.ZONE==='HRED'||r.ZONE==='MRED'||r.ZONE==='LRED';});
+  if(red.length>=4){var rb=rate(red),d=rb-ov,rc=tcov(red);
+    if(d>=8)add('SITUATIONAL','<b>Red Zone は BLITZ で攻める</b>（'+rb+'%, +'+d+'pt）','Attacks in the red zone ('+rb+'%, +'+d+'pt)',Math.abs(d)+30,red.length);
+    else if(d<=-8)add('SITUATIONAL','<b>Red Zone は引いて守る</b>（BLITZ '+rb+'%, '+d+'pt）'+(rc?'・'+rc.n:''),'Bends in the red zone ('+rb+'%, '+d+'pt)',Math.abs(d)+30,red.length);
+    else add('SITUATIONAL','Red Zone の圧力は平常どおり（'+rb+'%）','Red-zone pressure ≈ overall ('+rb+'%)',12,red.length);}
+  var back=rows.filter(function(r){return r.ZONE==='KNOCK';});
+  if(back.length>=4){var bb=rate(back),db=bb-ov; if(Math.abs(db)>=10)add('SITUATIONAL','自陣深く(KNOCK)で BLITZ が'+(db>=0?'増える':'減る')+'（'+bb+'%）','Backed-up blitz '+(db>=0?'up':'down')+' ('+bb+'%)',Math.abs(db)+12,back.length);}
+  var isLong=function(r){return r.DIST_GRP==='LONG(7-10)'||r.DIST_GRP==='X-LONG(11+)';};
+  var d3l=d3.filter(isLong),d3s=d3.filter(function(r){return r.DIST_GRP==='SHORT(1-3)';});
+  if(d3l.length>=3){var r3l=rate(d3l),cl=tcov(d3l);add('SITUATIONAL','3rd & Long は BLITZ <b>'+r3l+'%</b>・背後 '+(cl?cl.n:'—'),'3rd & Long: blitz '+r3l+'%',Math.abs(r3l-ov)+18,d3l.length);}
+  if(d3s.length>=3){var r3s=rate(d3s);add('SITUATIONAL','3rd & Short は BLITZ <b>'+r3s+'%</b>','3rd & Short: blitz '+r3s+'%',Math.abs(r3s-ov)+12,d3s.length);}
+  var tm=rows.filter(function(r){return (''+(r['2 MIN']||'')).trim().toUpperCase()==='Y';});
+  if(tm.length>=4){var tb=rate(tm),tc=tcov(tm);add('SITUATIONAL','2-MINUTE は BLITZ '+tb+'%・主カバー '+(tc?tc.n:'—'),'2-minute: blitz '+tb+'%',Math.abs(tb-ov)+12,tm.length);}
+  // ---- SEQUENCING ----
+  var ser={};rows.forEach(function(r){var s=(''+(r['SERIES']||'')).trim();if(s)(ser[s]=ser[s]||[]).push(r);});
+  var sk=Object.keys(ser).filter(function(k){return ser[k].length>=3;});
+  if(sk.length>=3){
+    var sh=sk.map(function(k){var t=tfr(ser[k]);return t?t.s:0;});
+    var avg=Math.round(sh.reduce(function(x,y){return x+y;},0)/sh.length);
+    if(avg>=65)add('SEQUENCING','<b>1シリーズ内は同じ FRONT を続けがち</b>（平均 '+avg+'%）','Keeps the same front within a drive (avg '+avg+'%)',avg,rows.length);
+    var ss=sk.map(function(k){return srate(ser[k]);}),hi=ss.filter(function(v){return v>=60;}).length,lo=ss.filter(function(v){return v<=10;}).length;
+    if(hi>=2&&lo>=2)add('SEQUENCING','STUNTS はシリーズ単位で偏る（多い/無いがはっきり）','Stunts cluster by drive (heavy vs none)',55,rows.length);}
+  var opener=rows.filter(function(r){return (''+(r['SERIES']||'')).trim()==='1';});
+  if(opener.length>=4){var ob=rate(opener),oc=tcov(opener);add('SEQUENCING','シリーズ頭(SERIES=1)は BLITZ '+ob+'%・カバー '+(oc?oc.n:'—'),'Series openers: blitz '+ob+'%',Math.abs(ob-ov)+12,opener.length);}
+  return T;
+}
+
+// DEFENSIVE IDENTITY ＋ KEY INSIGHTS（OVERVIEW 用サマリー）
+function buildIdentityInsights(rows,a,opts){
+  opts=opts||{};
   var topc=a.cov[0]?a.cov[0][0]:'—';
   var name=(a.bp>=45?'Pressure-Oriented':a.bp>=30?'Balanced-Pressure':'Coverage-Oriented')+' '+topc+'-Based Defense';
-  var b=[];
-  b.push('高い BLITZ率('+a.bp+'%)・STUNTS率('+a.sp+'%) でプレッシャーを創出 <span class="idt-en">/ High blitz &amp; stunt pressure</span>');
-  b.push('<b>'+topc+'</b> をベースに、状況に応じてカバーを変化 <span class="idt-en">/ '+topc+'-based, varies coverage by situation</span>');
-  if(d3.length>=3&&d3b>a.bp)b.push('3rd Down でプレッシャーが増加（'+d3b+'%）<span class="idt-en">/ Pressure increases on 3rd down</span>');
-  if(red.length>=3&&redb>a.bp)b.push('Red Zone で攻撃性が上昇（'+redb+'%）<span class="idt-en">/ More aggressive in the red zone</span>');
-  return'<div class="card identity"><div class="idt-watermark">🏈</div><div class="idt-head"><span class="idt-ico">🎯</span><div><div class="idt-label">DEFENSIVE IDENTITY</div><div class="idt-name">'+name+'</div></div></div><ul class="idt-list">'+b.map(function(x){return'<li>'+x+'</li>';}).join('')+'</ul></div>';
+  var tells=dcTells(rows,a).sort(function(x,y){return y.str-x.str;});
+  var lim=opts.limit||8;
+  var lis=tells.slice(0,lim).map(function(t){return'<li>'+t.jp+' <span class="idt-en">/ '+t.en+'</span></li>';}).join('')||'<li>傾向判断にはサンプルが不足 <span class="idt-en">/ Not enough data</span></li>';
+  var cta=opts.cta?'<button class="idt-cta" onclick="showTab(\'report\')">🔍 READ KEYS ＆ 全テルを見る / Full Scouting Report ▸</button>':'';
+  return'<div class="card identity"><div class="idt-watermark">'+MITSU+'</div>'
+    +'<div class="idt-head"><span class="idt-ico">🎯</span><div><div class="idt-label">DEFENSIVE IDENTITY / KEY INSIGHTS</div><div class="idt-name">'+name+'</div></div></div>'
+    +'<div class="idt-sub">データから読める DC の癖（要点）/ Top data-derived tells</div>'
+    +'<ul class="idt-list">'+lis+'</ul>'+cta+'</div>';
+}
+
+// ===== READ KEYS：オフェンスから見える状況 X → ディフェンスの反応 Y（事前リード）=====
+function buildReadKeys(rows){
+  var A=analyze(rows),ov=A.bp,ovsp=A.sp,n0=rows.length||1;
+  var ovCov={};A.cov.forEach(function(x){ovCov[x[0]]=Math.round(p(x[1],n0));});
+  var C=[];
+  function consider(xjp,sub,minN){
+    if(!sub||sub.length<(minN||5))return;
+    var s=analyze(sub),n=s.n;
+    var cov=s.cov[0]?{n:s.cov[0][0],s:Math.round(p(s.cov[0][1],n))}:null;
+    var fr=s.front[0]?{n:s.front[0][0],s:Math.round(p(s.front[0][1],n))}:null;
+    var sB=Math.abs(s.bp-ov),sS=Math.abs(s.sp-ovsp),sC=cov?(cov.s-(ovCov[cov.n]||0)):0;
+    var prim=Math.max(sB,sS*0.85,sC*0.85),wN=Math.min(1,n/12),score=prim*wN;
+    C.push({xjp:xjp,n:n,bp:s.bp,sp:s.sp,cov:cov,fr:fr,sB:sB,sS:sS,sC:sC,score:score});
+  }
+  [1,2,3,4].forEach(function(dn){DO.forEach(function(dg){consider(dnLbl(dn)+' & '+dg,rows.filter(function(r){return r.DN===dn&&r.DIST_GRP===dg;}),4);});});
+  DO.forEach(function(dg){consider(dg,rows.filter(function(r){return r.DIST_GRP===dg;}),6);});
+  [1,2,3,4].forEach(function(dn){consider(dnLbl(dn)+' Down',rows.filter(function(r){return r.DN===dn;}),6);});
+  ['KNOCK','YELLOW','GREEN','ORANGE','HRED','MRED','LRED'].forEach(function(z){consider(ZN[z]||z,rows.filter(function(r){return r.ZONE===z;}),5);});
+  consider('RED ZONE 圏',rows.filter(function(r){return r.ZONE==='HRED'||r.ZONE==='MRED'||r.ZONE==='LRED';}),5);
+  (FO||[]).forEach(function(fg){consider('vs '+fg,rows.filter(function(r){return r.FG===fg;}),5);});
+  var ffc={};rows.forEach(function(r){if(r['DEF FRONT'])ffc[r['DEF FRONT']]=(ffc[r['DEF FRONT']]||0)+1;});
+  topN(ffc,6).forEach(function(x){consider('相手が '+x[0]+' を見せたら',rows.filter(function(r){return r['DEF FRONT']===x[0];}),5);});
+  consider('あなたが MOTION を使うと',rows.filter(function(r){return r.HM;}),6);
+  consider('シリーズ頭（SERIES=1）',rows.filter(function(r){return (''+(r['SERIES']||'')).trim()==='1';}),4);
+  // dedupe + rank
+  var seen={},keys=[];
+  C.sort(function(x,y){return y.score-x.score;}).forEach(function(c){if(seen[c.xjp])return;seen[c.xjp]=1;keys.push(c);});
+  keys=keys.filter(function(c){return c.score>=8;}).slice(0,10);
+  if(!keys.length)return'<div class="rk-empty">サンプルが少なく、明確な事前リードはまだ抽出できません。/ Not enough data for clear read keys yet.</div>';
+  return keys.map(function(c){
+    var head,hcls;
+    if(c.sB>=c.sC&&c.sB>=c.sS){head='BLITZ '+c.bp+'% <span class="rk-diff">'+(c.bp-ov>=0?'+':'')+(c.bp-ov)+'pt</span>';hcls=c.bp>=ov?'rk-up':'rk-down';}
+    else if(c.sC>=c.sS&&c.cov){head=c.cov.n+' '+c.cov.s+'%';hcls='rk-cov';}
+    else{head='STUNTS '+c.sp+'%';hcls='rk-stunt';}
+    var conf=c.n>=12?'hi':c.n>=6?'mid':'low',dots=conf==='hi'?'●●●':conf==='mid'?'●●○':'●○○';
+    var metrics='BLITZ <b>'+c.bp+'%</b> · '+(c.cov?c.cov.n+' '+c.cov.s+'%':'COV —')+' · FR '+(c.fr?c.fr.n:'—')+' · STUNTS '+c.sp+'%';
+    return'<div class="rk"><div class="rk-when"><span class="rk-if">IF</span><span class="rk-x">'+esc(c.xjp)+'</span></div>'
+      +'<div class="rk-arrow">▸</div>'
+      +'<div class="rk-then"><div class="rk-head '+hcls+'">'+head+'</div><div class="rk-metrics">'+metrics+'</div></div>'
+      +'<div class="rk-meta"><span class="rk-n">N='+c.n+'</span><span class="rk-conf '+conf+'" title="信頼度 / confidence (sample size)">'+dots+'</span></div></div>';
+  }).join('');
+}
+function buildScoutingReport(rows){
+  if(!rows||!rows.length)return'<div class="card"><div style="color:var(--g400);padding:8px">データがありません / No data.</div></div>';
+  var a=analyze(rows),tells=dcTells(rows,a);
+  var cats=[['PRESSURE','PRESSURE / 圧力'],['COVERAGE','COVERAGE / カバー'],['FRONT','FRONT &amp; STUNTS'],['SITUATIONAL','SITUATIONAL / 状況別'],['SEQUENCING','SEQUENCING / 連続・配列']];
+  var blocks=cats.map(function(c){var ts=tells.filter(function(t){return t.cat===c[0];}).sort(function(x,y){return y.str-x.str;});
+    if(!ts.length)return'';
+    return'<div class="rep-cat"><div class="rep-cat-h">'+c[1]+'</div><ul class="rep-list">'+ts.map(function(t){return'<li>'+t.jp+' <span class="rep-en">/ '+t.en+'</span> <span class="rep-n">N='+t.n+(t.n<6?' ⚠':'')+'</span></li>';}).join('')+'</ul></div>';
+  }).join('')||'<div style="color:var(--g400);font-size:12px">—</div>';
+  return'<div class="rep-intro">対象 <b>'+esc(activeLabel())+'</b>（'+a.n+' Play）— データから抽出した <b>事前リード(READ KEYS)</b> と <b>傾向</b>。％＝割合 / N＝サンプル数（N&lt;6 は参考）。</div>'
+    +'<div class="card"><div class="sec">🔍 READ KEYS — 事前リード / If you see X ▸ expect Y</div>'
+    +'<div class="rk-note">オフェンスから見える状況（ダウン・距離・ゾーン・フォーメーション・モーション・相手のfront）に対する反応傾向を、強い順に。●＝信頼度(N)。</div>'
+    +'<div class="rk-list">'+buildReadKeys(rows)+'</div></div>'
+    +'<div class="card"><div class="sec">📋 TENDENCY SUMMARY — カテゴリ別の癖</div><div class="rep-grid">'+blocks+'</div></div>';
 }
 // SPECIAL SITUATIONS は OVERVIEW / SUMMARY 共通で buildSpecial2（クリックで詳細）を使用
 function buildSpecial2(rows){
@@ -844,14 +1041,21 @@ function buildNextSteps(rows,a){
   var d3=rows.filter(function(r){return r.DN===3;});
   if(d3.length>=3)steps.push('QUICK GAME / EMPTY の準備');
   steps.push('BOUNDARY ISOLATION の活用');
-  if(a.cov[0])steps.push(a.cov[0][0]+' へのビートコンセプト確認');
-  steps.push('PLAY-ACTION のバリエーション準備');
-  if(a.sp>=35)steps.push('スタンツ対応（受け渡し）の徹底');
+  if(a.cov[0])steps.push(a.cov[0][0]+' への beat concept 確認');
+  steps.push('PLAY-ACTION の variation 準備');
+  if(a.sp>=35)steps.push('STUNTS 対応（pass-off）の徹底');
   return'<div class="card nextsteps"><div class="sec">NEXT STEPS</div><div class="ns-grid">'+steps.map(function(s){return'<div class="ns-item">✔ '+s+'</div>';}).join('')+'</div></div>';
 }
 function buildOverview(rows){
   var a=analyze(rows);
-  return buildIdentity(rows,a)+overviewBody(rows,'ALL',null,'')+buildNextSteps(rows,a);
+  // DEFENSIVE IDENTITY 直下のアコーディオン：FIELD ZONE / FORMATION の選択UIを内蔵（ov- 接頭辞IDで別インスタンス）
+  var acc='<div class="ov-acc-wrap">'
+    +'<details class="ov-acc"><summary><span class="ov-acc-ico">📍</span>FIELD ZONE 別に見る <span class="ov-acc-en">/ Explore by Field Zone</span><span class="ov-acc-chev">▾</span></summary>'
+      +'<div class="ov-acc-body"><div id="ov-zone-fieldbar"></div><div class="ztabs" id="ov-zone-tabs"></div><div id="ov-zone-body"></div></div></details>'
+    +'<details class="ov-acc"><summary><span class="ov-acc-ico">📋</span>FORMATION 別に見る <span class="ov-acc-en">/ Explore by Formation</span><span class="ov-acc-chev">▾</span></summary>'
+      +'<div class="ov-acc-body"><div class="ztabs" id="ov-form-tabs"></div><div id="ov-form-body"></div></div></details>'
+    +'</div>';
+  return buildIdentityInsights(rows,a,{limit:5,cta:true})+acc+overviewBody(rows,'ALL',null,'',true)+buildNextSteps(rows,a);
 }
 
 // ===== OVERVIEW2 (call-sheet style: BLITZ RATE / STUNTS RATE / COVERAGE per item) =====
@@ -864,6 +1068,20 @@ function ov2Item(name,color,sub){
   var clk=a.n>0?' onclick="showSegment(\''+sk+'\')" style="cursor:pointer"':' style="opacity:.5"';
   return'<div class="cs-card"'+clk+'><div class="cs-name" style="border-top-color:'+color+'">'+name+(a.n>0?'<span class="cs-go">詳細 ▸</span>':'')+'</div>'
     +'<div class="cs-row cov"><span>MAIN COVER</span><b>'+cov+'</b></div>'
+    +'<div class="cs-row cov"><span>MAIN FRONT</span><b>'+fr+'</b></div>'
+    +'<div class="cs-row"><span>BLITZ</span><b style="color:var(--blue)">'+a.bp+'%</b></div>'
+    +'<div class="cs-row"><span>STUNTS</span><b style="color:var(--green)">'+a.sp+'%</b></div>'
+    +'<div class="cs-row"><span>N</span><b>'+a.n+'</b></div>'
+    +'</div>';
+}
+// COVERAGE 別カード：MAIN COVER の代わりに USAGE%（全体に占める割合）を表示
+function ov2CovItem(name,color,sub,total){
+  var a=analyze(sub);
+  var fr=a.front.length?a.front.slice(0,2).map(function(x){return x[0];}).join(' / '):'—';
+  var sk='s'+(++__segSeq);__SEG[sk]={rows:sub,name:name,color:color};
+  var clk=a.n>0?' onclick="showSegment(\''+sk+'\')" style="cursor:pointer"':' style="opacity:.5"';
+  return'<div class="cs-card"'+clk+'><div class="cs-name" style="border-top-color:'+color+'">'+esc(name)+(a.n>0?'<span class="cs-go">詳細 ▸</span>':'')+'</div>'
+    +'<div class="cs-row cov"><span>USAGE</span><b>'+Math.round(p(a.n,total||a.n))+'%</b></div>'
     +'<div class="cs-row cov"><span>MAIN FRONT</span><b>'+fr+'</b></div>'
     +'<div class="cs-row"><span>BLITZ</span><b style="color:var(--blue)">'+a.bp+'%</b></div>'
     +'<div class="cs-row"><span>STUNTS</span><b style="color:var(--green)">'+a.sp+'%</b></div>'
@@ -894,10 +1112,13 @@ function buildOverview2(rows){
   var byZ=ZO.filter(function(z){return z!=='ALL';}).map(function(z){return ov2Item(ZN[z]||z,ZCS[z],zd[z]||[]);}).join('');
   var fc={};rows.forEach(function(r){if(r['DEF FRONT'])fc[r['DEF FRONT']]=(fc[r['DEF FRONT']]||0)+1;});
   var byFr=topN(fc,8).map(function(x,i){return ov2Item(x[0],CS_FCOL[i%CS_FCOL.length],rows.filter(function(r){return r['DEF FRONT']===x[0];}));}).join('')||'<div style="color:var(--g400);font-size:12px">—</div>';
+  var cc={};rows.forEach(function(r){if(r.COVERAGE)cc[r.COVERAGE]=(cc[r.COVERAGE]||0)+1;});
+  var byCov=topN(cc,8).map(function(x,i){return ov2CovItem(x[0],CS_FCOL[i%CS_FCOL.length],rows.filter(function(r){return r.COVERAGE===x[0];}),rows.length);}).join('')||'<div style="color:var(--g400);font-size:12px">—</div>';
   return'<div class="sec">ALL / 全体</div><div class="cs-grid">'+all+'</div>'
+    +'<div class="sec" style="margin-top:18px">COVERAGE 別 / by Coverage</div><div class="cs-grid">'+byCov+'</div>'
+    +'<div class="sec" style="margin-top:18px">FRONT 別 / by Front</div><div class="cs-grid">'+byFr+'</div>'
     +'<div class="sec" style="margin-top:18px">FORMATION 別 / by Formation</div><div class="cs-grid">'+byF+'</div>'
     +'<div class="sec" style="margin-top:18px">FIELD ZONE 別 / by Field Zone</div><div class="cs-grid">'+byZ+'</div>'
-    +'<div class="sec" style="margin-top:18px">FRONT 別 / by Front</div><div class="cs-grid">'+byFr+'</div>'
     +buildSpecial2(rows);
 }
 
@@ -917,24 +1138,25 @@ function mCell(rows){
 function renderMCell(c,key,dn,dg,allType){
   var ac=allType==='col'?' allcol':allType==='row'?' allrow':allType==='both'?' allcol allrow':'';
   if(!c||!c.n)return'<td class="h0'+ac+'"><span style="color:var(--g200)">—</span></td>';
-  var vd=c.bp>75;
+  var isAll=!!ac;                 // ALL row/col = neutral white totals (not heat-colored)
+  var vd=!isAll&&c.bp>75;
   var low=c.n<3;
+  var bgCls=isAll?'h0':heatClass(c.bp);
   var main=vd?'color:#fff':'color:#0A1F3C';
   var sub=vd?'color:rgba(255,255,255,.92)':'color:#1E2F4A';
   var lbl=vd?'color:rgba(255,255,255,.78)':'color:#4A5870';
   var clk=key?' onclick="showCell(\''+key+'\',\''+dn+'\',\''+dg+'\')" style="cursor:pointer"':'';
-  return'<td class="'+heatClass(c.bp)+ac+'"'+clk+'><div class="mcell" style="align-items:stretch;gap:3px;text-align:left;padding:1px 3px'+(low?';opacity:.55':'')+'">'
+  return'<td class="'+bgCls+ac+' hascell"'+clk+'><div class="mcell" style="align-items:stretch;gap:3px;text-align:left;padding:1px 3px 14px'+(low?';opacity:.55':'')+'">'
     +'<div class="mline"><span class="mlbl" style="'+lbl+'">COVERAGE</span><span class="mval" style="'+sub+'">'+(c.tc||'—')+'</span></div>'
     +'<div class="mline"><span class="mlbl" style="'+lbl+'">MAIN FRONT</span><span class="mval" style="'+sub+'">'+(c.tf||'—')+'</span></div>'
     +'<div class="mline"><span class="mlbl" style="'+lbl+'">BLITZ</span><span class="mval" style="'+main+';font-weight:800">'+c.bp+'%</span></div>'
     +'<div class="mline"><span class="mlbl" style="'+lbl+'">STUNTS</span><span class="mval" style="'+sub+'">'+c.sp+'%</span></div>'
-    +'<div class="mline"><span class="mlbl" style="'+lbl+'">N</span><span class="mval" style="'+lbl+';font-weight:700">'+c.n+(low?' ⚠':'')+'</span></div>'
-    +'</div></td>';
+    +'</div><span class="mn" style="'+lbl+'">N='+c.n+(low?' ⚠':'')+'</span></td>';
 }
 
 // ===== TAB / PANEL SWITCHING =====
 function showTab(id){
-  ['overview','overview2','zone','form','ask'].forEach(function(t){
+  ['overview','overview2','report','zone','form','ask'].forEach(function(t){
     document.getElementById('tab-'+t).className='tp'+(t===id?' vis':'');
     document.getElementById('tt-'+t).className='tt'+(t===id?' on':'');
   });
@@ -1051,23 +1273,23 @@ function buildInsights(rows,a,color,bare){
   // 1) 3rd & Long の事実（圧力量・背後カバー・スタンツ）
   var d3l=rows.filter(function(r){return r.DN===3&&isLong(r);});
   if(d3l.length>=3){var r3=rate(d3l),s3=stuntRate(d3l),c3=topcov(d3l);
-    tips.push(insTip('🎯','3rd & Long の圧力','3rd & Long Pressure','3rd & Long('+d3l.length+'P)は BLITZ <b style="color:'+color+'">'+r3+'%</b>（全体 '+ov+'%）・背後の主カバー <b>'+c3+'</b>・STUNTS '+s3+'%。','3rd & Long: '+r3+'% blitz (avg '+ov+'%), coverage '+c3+', stunts '+s3+'%.'));}
+    tips.push(insTip('🎯','3rd & Long の BLITZ 傾向','3rd & Long Pressure','3rd & Long('+d3l.length+'P)は BLITZ <b style="color:'+color+'">'+r3+'%</b>（全体 '+ov+'%）・背後の主カバー <b>'+c3+'</b>・STUNTS '+s3+'%。','3rd & Long: '+r3+'% blitz (avg '+ov+'%), coverage '+c3+', stunts '+s3+'%.'));}
 
   // 2) ダウンによるカバー変化（tell）
   var d1=rows.filter(function(r){return r.DN===1;}),d3=rows.filter(function(r){return r.DN===3;});
   if(d1.length>=4&&d3.length>=4){var c1=topcov(d1),c3b=topcov(d3);
-    if(c1!==c3b&&c1!=='—'&&c3b!=='—')tips.push(insTip('🧠','ダウンでカバーが変化','Down-Based Coverage','1st Down は <b>'+c1+'</b> 中心、3rd Down は <b>'+c3b+'</b> が最多。ダウンで主カバーが切り替わる。','Top coverage shifts '+c1+' (1st) → '+c3b+' (3rd).'));}
+    if(c1!==c3b&&c1!=='—'&&c3b!=='—')tips.push(insTip('🧠','ダウンでカバーが変わる','Down-Based Coverage','1st Down は <b>'+c1+'</b> 中心、3rd Down は <b>'+c3b+'</b> が最多。ダウンで主カバーが切り替わる。','Top coverage shifts '+c1+' (1st) → '+c3b+' (3rd).'));}
 
   // 3) フィールドゾーンによる圧力差
   var mid=rows.filter(function(r){return r.ZONE==='GREEN';}),red=rows.filter(function(r){return r.ZONE==='HRED'||r.ZONE==='MRED'||r.ZONE==='LRED';});
   if(mid.length>=3&&red.length>=3){var rm=rate(mid),rr=rate(red);
-    if(Math.abs(rr-rm)>=12)tips.push(insTip('🔥','ゴール前の圧力差','Red-Zone Pressure','レッドゾーン圏 BLITZ <b style="color:'+color+'">'+rr+'%</b>、中盤(GREEN) '+rm+'%。差 '+Math.abs(rr-rm)+'pt。','Red-zone blitz '+rr+'% vs midfield '+rm+'% ('+Math.abs(rr-rm)+'pt gap).'));}
+    if(Math.abs(rr-rm)>=12)tips.push(insTip('🔥','ゴール前と中盤で BLITZ 量が違う','Red-Zone Pressure','ゴール前(Red Zone) BLITZ <b style="color:'+color+'">'+rr+'%</b>、中盤(GREEN) '+rm+'%。差 '+Math.abs(rr-rm)+'pt。','Red-zone blitz '+rr+'% vs midfield '+rm+'% ('+Math.abs(rr-rm)+'pt gap).'));}
 
-  // 4) 最も偏る局面（予測度）
+  // 4) 傾向が最も強い局面（予測度）
   var best=null;
   [1,2,3,4].forEach(function(dn){DO.forEach(function(dg){var sub=rows.filter(function(r){return r.DN===dn&&r.DIST_GRP===dg;});if(sub.length>=4){var rt=rate(sub),dev=Math.abs(rt-ov);if(!best||dev>best.dev)best={dn:dn,dg:dg,rt:rt,n:sub.length,dev:dev,cov:topcov(sub)};}});});
   if(best&&best.dev>=20){var dl=(best.dn===1?'1st':best.dn===2?'2nd':best.dn===3?'3rd':'4th')+' & '+best.dg;
-    tips.push(insTip('📌','最も偏る局面','Strongest Tendency','<b>'+dl+'</b>('+best.n+'P)で BLITZ <b style="color:'+color+'">'+best.rt+'%</b>（全体 '+ov+'%）／主カバー '+best.cov+'。','At '+dl+': '+best.rt+'% blitz vs '+ov+'% overall, coverage '+best.cov+'.'));}
+    tips.push(insTip('📌','傾向が最も強い局面','Strongest Tendency','<b>'+dl+'</b>('+best.n+'P)で BLITZ <b style="color:'+color+'">'+best.rt+'%</b>（全体 '+ov+'%）／主カバー '+best.cov+'。','At '+dl+': '+best.rt+'% blitz vs '+ov+'% overall, coverage '+best.cov+'.'));}
 
   // 5) カバーの多様性（ディスガイズ）
   if(a.cov.length){var distinct=a.cov.length,top=a.cov[0],share=p(top[1],a.n);
@@ -1370,50 +1592,74 @@ function parseCSV(text){
 // ===== BOOT =====
 function showErr(msg){var e=document.getElementById('err-box');e.style.display='block';e.innerHTML='⚠️ '+msg.replace(/\n/g,'<br>');}
 
-function boot(rows,label){
-  try{
-    var processed=processData(rows);
-    var valid=processed.filter(function(r){return r.ZONE!=='UNKNOWN';});
-    if(!valid.length){showErr('有効なディフェンスデータが見つかりません。\nCOVERAGE・DEF FRONT・BLITZのいずれかに値がある行が必要です。');return;}
-    document.getElementById('i-file').textContent='📄 '+label+'（'+valid.length+' Play）';
-    document.getElementById('err-box').style.display='none';
-    var splash=document.getElementById('splash');
-    splash.classList.remove('out');splash.classList.add('on');
-    document.getElementById('start-screen').style.display='none';
-    document.getElementById('dashboard').style.display='block';
+// ===== GAME STATE (複数CSV: 1試合=1ファイル / ファイル名がゲーム名) =====
+var __games=[], __activeGame=0; // activeGame<0 = ALL GAMES（合算）
+function gameName(fn){return (''+fn).replace(/^.*[\\\/]/,'').replace(/\.[^.]+$/,'').trim()||'GAME';}
+function activeRows(){if(__activeGame<0){var all=[];__games.forEach(function(g){all=all.concat(g.valid);});return all;}return (__games[__activeGame]||{valid:[]}).valid;}
+function activeLabel(){if(__activeGame<0)return 'ALL GAMES（'+__games.length+' 試合 合算）';return (__games[__activeGame]||{name:'—'}).name;}
 
-    var zd=byZone(valid);
-    FO=getFOrder(valid); // 実データのフォーメーション群（新規は新タブ）
-    var ovA=analyze(zd.ALL),base={bp:ovA.bp,sp:ovA.sp}; // OVERVIEW(ALL)基準
-
-    // Overview tab
-    document.getElementById('overview-body').innerHTML=buildOverview(zd.ALL);
-    // Overview2 (call sheet)
-    document.getElementById('overview2-body').innerHTML=buildOverview2(valid);
-
-    // Zone tab（YARD LINE 任意指定 + ゾーンプリセット）
-    setupZoneYard('zone-tabs','zone-body',valid,base,'zone-fieldbar');
-
-    // Form tab（複数選択可）
-    setupMultiTabs('form-tabs','form-body',FO,
-      function(fg){return valid.filter(function(r){return r.FG===fg;});},
-      function(fg){return FC[fg];},
-      function(fg){return fg;},
-      base);
-
-    window.__scoutData=valid;
-
-    // おしゃれな画面遷移 / stylish reveal
-    var dash=document.getElementById('dashboard');
-    window.scrollTo(0,0);
-    setTimeout(function(){
-      var sp=document.getElementById('splash');
-      sp.classList.add('out');
-      dash.classList.add('dash-enter');
-      setTimeout(function(){sp.classList.remove('on','out');dash.classList.remove('dash-enter');},560);
-    },1320);
-  }catch(e){var sp2=document.getElementById('splash');if(sp2)sp2.classList.remove('on','out');showErr('エラー: '+e.message);console.error(e);}
+// アクティブゲームのデータで全タブを再描画（スプラッシュなし）
+function renderTabs(valid,label){
+  document.getElementById('i-file').textContent='📄 '+label+'（'+valid.length+' Play）';
+  document.getElementById('err-box').style.display='none';
+  var zd=byZone(valid);
+  FO=getFOrder(valid); // 実データのフォーメーション群（新規は新タブ）
+  var ovA=analyze(zd.ALL),base={bp:ovA.bp,sp:ovA.sp}; // OVERVIEW(ALL)基準
+  document.getElementById('overview-body').innerHTML=buildOverview(zd.ALL);
+  document.getElementById('overview2-body').innerHTML=buildOverview2(valid);
+  document.getElementById('report-body').innerHTML=buildScoutingReport(valid);
+  setupZoneYard('zone-tabs','zone-body',valid,base,'zone-fieldbar');
+  setupMultiTabs('form-tabs','form-body',FO,
+    function(fg){return valid.filter(function(r){return r.FG===fg;});},
+    function(fg){return FC[fg];},
+    function(fg){return fg;},
+    base);
+  // OVERVIEW 内アコーディオン（FIELD ZONE / FORMATION の選択UIを内蔵）
+  if(document.getElementById('ov-zone-tabs'))setupZoneYard('ov-zone-tabs','ov-zone-body',valid,base,'ov-zone-fieldbar');
+  if(document.getElementById('ov-form-tabs'))setupMultiTabs('ov-form-tabs','ov-form-body',FO,
+    function(fg){return valid.filter(function(r){return r.FG===fg;});},
+    function(fg){return FC[fg];},
+    function(fg){return fg;},
+    base);
+  window.__scoutData=valid; __scoutDataGlobal=valid; // PPTX / ASK AI / Compare はアクティブゲームを参照
 }
+// ゲーム切替バー（2試合以上のときだけ表示）
+function buildGameSwitch(){
+  var el=document.getElementById('game-switch'); if(!el)return;
+  if(__games.length<=1){el.style.display='none';el.innerHTML='';return;}
+  var tot=0;__games.forEach(function(g){tot+=g.valid.length;});
+  var html='<span class="gs-label">対象ゲーム / Game</span>'
+    +'<button class="gs-pill gs-all'+(__activeGame<0?' on':'')+'" onclick="switchGame(-1)">ALL GAMES <span class="gs-n">'+tot+'</span></button>';
+  __games.forEach(function(g,i){html+='<button class="gs-pill'+(__activeGame===i?' on':'')+'" onclick="switchGame('+i+')">'+esc(g.name)+' <span class="gs-n">'+g.valid.length+'</span></button>';});
+  el.style.display='flex'; el.innerHTML=html;
+}
+function switchGame(idx){__activeGame=idx;renderTabs(activeRows(),activeLabel());buildGameSwitch();showTab('overview');window.scrollTo(0,0);}
+// 初回ロード：スプラッシュ＋画面遷移
+function enterDashboard(){
+  var valid=activeRows();
+  if(!valid.length){showErr('有効なディフェンスデータが見つかりません。');return;}
+  document.getElementById('err-box').style.display='none';
+  var splash=document.getElementById('splash');splash.classList.remove('out');splash.classList.add('on');
+  document.getElementById('start-screen').style.display='none';
+  document.getElementById('dashboard').style.display='block';
+  renderTabs(valid,activeLabel());
+  buildGameSwitch();
+  var dash=document.getElementById('dashboard');window.scrollTo(0,0);
+  setTimeout(function(){var sp=document.getElementById('splash');sp.classList.add('out');dash.classList.add('dash-enter');setTimeout(function(){sp.classList.remove('on','out');dash.classList.remove('dash-enter');},560);},1320);
+}
+// ODK 列で行を絞り込む（スカウティング=D / 試合後=O）
+function odkRows(rows,code){return (rows||[]).filter(function(r){return (''+(r.ODK||'')).trim().toUpperCase()===code;});}
+// パース済みエントリ [{name, rows}] から試合ごとに __games を構築（ODK=D 行のみ集計）
+function loadGames(entries){
+  try{
+    var games=[],noD=0;
+    entries.forEach(function(e){if(!e||!e.rows)return;var dRows=odkRows(e.rows,'D');if(!dRows.length){noD++;return;}var valid=processData(dRows).filter(function(r){return r.ZONE!=='UNKNOWN';});if(valid.length)games.push({name:gameName(e.name),valid:valid});});
+    if(!games.length){showErr((noD?'ODK=D の行が見つかりません（スカウティングは ODK=D 行を集計します）。\n':'')+'有効なディフェンスデータが見つかりません。\nCOVERAGE・DEF FRONT・BLITZ のいずれかに値がある行が必要です。');return;}
+    __games=games; __activeGame=games.length>1?-1:0; // 複数なら ALL GAMES から開始
+    enterDashboard();
+  }catch(e){var sp=document.getElementById('splash');if(sp)sp.classList.remove('on','out');showErr('エラー: '+e.message);console.error(e);}
+}
+function boot(rows,label){loadGames([{name:label||'GAME',rows:rows}]);} // 後方互換（単一ゲーム）
 
 // ===== EVENTS =====
 
@@ -1523,10 +1769,10 @@ function renderAskObj(out,obj){
 // ===== ローカル自動分析（LLM不使用・無料・オフライン） =====
 function topBars(arr,n){return (arr||[]).slice(0,6).map(function(x){return {label:x[0],value:p(x[1],n)};});}
 function blitzAdvice(a){
-  var t=a.bp>=55?'高圧。マックスプロテクト＋単独ホットを基本に、ブリッツ側へスクリーン/スワングで即時リリース。'
-       :a.bp>=35?'中程度の圧力。6メン保護＋ホット確認で'+(a.cov[0]?a.cov[0][0]:'主カバー')+'のソフトスポットへ素早く投げ切る。'
-       :'圧力は薄め。5メン保護で縦/プレイアクションのビッグプレーを狙える。';
-  if(a.sp>=35)t+=' STUNTSも多い('+a.sp+'%)ので内側ガード/センターの受け渡しを徹底。';
+  var t=a.bp>=55?'Heavy pressure. Base out of max protection + a single hot, and release quickly to the blitz side with screens/swings.'
+       :a.bp>=35?'Moderate pressure. Stay in 6-man protection, confirm the hot, and get the ball out fast into the soft spot of '+(a.cov[0]?a.cov[0][0]:'the top coverage')+'.'
+       :'Light pressure. Use 5-man protection and take vertical / play-action shots.';
+  if(a.sp>=35)t+=' Stunts are also high ('+a.sp+'%) — emphasize the guard/center pass-off inside.';
   return t;
 }
 function localAsk(rows,q){
@@ -1539,77 +1785,77 @@ function localAsk(rows,q){
   if(dn){sub=sub.filter(function(r){return r.DN===dn;});parts.push(dnLbl(dn)+' Down');}
   if(dg){sub=sub.filter(function(r){return r.DIST_GRP===dg;});parts.push(dg);}
   if(zs){sub=sub.filter(function(r){return zs.indexOf(r.ZONE)>=0;});parts.push(zs.length>1?'Red Zone':(ZN[zs[0]]||zs[0]));}
-  var label=parts.join(' / ')||'全体 / ALL';
+  var label=parts.join(' / ')||'ALL';
   var ovbp=analyze(rows).bp;
 
   if(has('偏り','読みやす','読める','最も読','傾向が','tendency','predictable')){
     var best=null;
     [1,2,3,4].forEach(function(d){DO.forEach(function(g){var s=rows.filter(function(r){return r.DN===d&&r.DIST_GRP===g;});if(s.length>=3){var bp=Math.round(p(s.filter(function(r){return r.HB;}).length,s.length)),dev=Math.abs(bp-ovbp);if(!best||dev>best.dev)best={label:dnLbl(d)+' & '+g,bp:bp,n:s.length,dev:dev};}});});
     ZO.filter(function(z){return z!=='ALL';}).forEach(function(z){var s=rows.filter(function(r){return r.ZONE===z;});if(s.length>=3){var bp=Math.round(p(s.filter(function(r){return r.HB;}).length,s.length)),dev=Math.abs(bp-ovbp);if(!best||dev>best.dev)best={label:(ZN[z]||z),bp:bp,n:s.length,dev:dev};}});
-    if(!best)return {summary:'サンプルが少なく、明確な偏りは検出できませんでした。',blocks:[]};
-    return {summary:'最も偏りが大きいのは '+best.label+'：BLITZ '+best.bp+'%（全体 '+ovbp+'%、差 '+(best.bp-ovbp>=0?'+':'')+(best.bp-ovbp)+'pt、N='+best.n+'）。読みやすい局面です。',
+    if(!best)return {summary:'Not enough sample to detect a clear tendency.',blocks:[]};
+    return {summary:'Most predictable situation: '+best.label+' — BLITZ '+best.bp+'% (ALL '+ovbp+'%, '+(best.bp-ovbp>=0?'+':'')+(best.bp-ovbp)+'pt, N='+best.n+').',
       blocks:[
-        {type:'kpi',items:[{label:'局面',value:best.label},{label:'BLITZ',value:best.bp,unit:'%'},{label:'全体比',value:(best.bp-ovbp>=0?'+':'')+(best.bp-ovbp),unit:'pt'},{label:'N',value:best.n}]},
-        {type:'bars',title:'BLITZ% 比較',unit:'%',data:[{label:best.label,value:best.bp},{label:'全体 ALL',value:ovbp}]},
-        {type:'note',text:best.bp>ovbp?'圧力が読めるので、クイック/ドロー/RPOを常備しテンポで的を絞らせない。':'圧力が薄いので、プレイアクション＋縦でビッグプレーを狙う。'}
+        {type:'kpi',items:[{label:'Situation',value:best.label},{label:'BLITZ',value:best.bp,unit:'%'},{label:'vs ALL',value:(best.bp-ovbp>=0?'+':'')+(best.bp-ovbp),unit:'pt'},{label:'N',value:best.n}]},
+        {type:'bars',title:'BLITZ% vs ALL',unit:'%',data:[{label:best.label,value:best.bp},{label:'ALL',value:ovbp}]},
+        {type:'note',text:best.bp>ovbp?'Pressure is readable here — keep quick game / draw / RPO ready and play fast so they cannot tee off.':'Pressure is light here — take play-action and vertical shots for explosives.'}
       ]};
   }
   if(has('縦','vertical','deep','ディープ','少な','低い','薄い','play action','プレイアクション')&&!has('多い')){
     var cells=[];
     [1,2,3,4].forEach(function(d){DO.forEach(function(g){var s=rows.filter(function(r){return r.DN===d&&r.DIST_GRP===g;});if(s.length>=3)cells.push({label:dnLbl(d)+' & '+g,bp:Math.round(p(s.filter(function(r){return r.HB;}).length,s.length)),n:s.length});});});
     cells.sort(function(a,b){return a.bp-b.bp;});var low=cells.slice(0,5);
-    if(!low.length)return {summary:'サンプル不足で局面別の判定ができませんでした。',blocks:[]};
-    return {summary:'ブリッツが少なく縦/プレイアクションを狙いやすい局面（BLITZ%が低い順）。',
+    if(!low.length)return {summary:'Not enough sample for a situation breakdown.',blocks:[]};
+    return {summary:'Situations with the least blitz (best for vertical / play-action shots), lowest BLITZ% first.',
       blocks:[
-        {type:'bars',title:'BLITZ% が低い局面',unit:'%',data:low.map(function(c){return {label:c.label,value:c.bp};})},
-        {type:'table',title:'詳細',headers:['局面','BLITZ%','N'],rows:low.map(function(c){return [c.label,c.bp+'%',c.n];})},
-        {type:'note',text:'これらの局面は5メン保護で縦2段・プレイアクションのショットが有効。'}
+        {type:'bars',title:'Lowest BLITZ% situations',unit:'%',data:low.map(function(c){return {label:c.label,value:c.bp};})},
+        {type:'table',title:'Detail',headers:['Situation','BLITZ%','N'],rows:low.map(function(c){return [c.label,c.bp+'%',c.n];})},
+        {type:'note',text:'These are 5-man-protection downs for two-level verticals and play-action shots.'}
       ]};
   }
   if(has('フォーメーション','formation','隊形')){
     var rws=FO.map(function(fg){var s=rows.filter(function(r){return r.FG===fg;});if(!s.length)return null;var a=analyze(s);return [fg,a.n,a.bp+'%',a.sp+'%',(a.cov[0]?a.cov[0][0]:'—')];}).filter(Boolean);
-    return {summary:'フォーメーション別のディフェンス傾向。',blocks:[{type:'table',title:'by FORMATION',headers:['FORMATION','N','BLITZ%','STUNTS%','TOP COVER'],rows:rws}]};
+    return {summary:'Defensive tendencies by formation.',blocks:[{type:'table',title:'by FORMATION',headers:['FORMATION','N','BLITZ%','STUNTS%','TOP COVER'],rows:rws}]};
   }
 
   var a=analyze(sub);
   if(has('崩','対策','有効','弱点','beat','attack','weakness','突く','攻め','どう攻','パス')){
     var c1=a.cov[0]?a.cov[0][0]:'—';
-    return {summary:label+' を崩す指針：主カバレッジ '+c1+'（'+(a.cov[0]?p(a.cov[0][1],a.n):0)+'%）に対し的を絞れます。',
+    return {summary:'How to beat '+label+': top coverage '+c1+' ('+(a.cov[0]?p(a.cov[0][1],a.n):0)+'%) is keyable.',
       blocks:[
         {type:'bars',title:'COVERAGE %',unit:'%',data:topBars(a.cov,a.n)},
-        {type:'note',text:'① '+c1+' をフォーメーション/モーションで誘発→想定どおりか確認→水平+垂直のストレッチでDBに二択を強いる。'},
-        {type:'note',text:'② '+blitzAdvice(a)},
-        {type:'kpi',items:[{label:'N',value:a.n},{label:'BLITZ',value:a.bp,unit:'%'},{label:'STUNTS',value:a.sp,unit:'%'},{label:'主FRONT',value:(a.front[0]?a.front[0][0]:'—')}]}
+        {type:'note',text:'1) Force '+c1+' with formation / motion → confirm it shows → attack with horizontal + vertical stretches to put the DBs in conflict.'},
+        {type:'note',text:'2) '+blitzAdvice(a)},
+        {type:'kpi',items:[{label:'N',value:a.n},{label:'BLITZ',value:a.bp,unit:'%'},{label:'STUNTS',value:a.sp,unit:'%'},{label:'TOP FRONT',value:(a.front[0]?a.front[0][0]:'—')}]}
       ]};
   }
   if(has('カバ','coverage','cover')){
-    return {summary:label+' の主カバレッジは '+(a.cov[0]?a.cov[0][0]+'（'+p(a.cov[0][1],a.n)+'%）':'—')+'（N='+a.n+'）。',
+    return {summary:'Top coverage in '+label+': '+(a.cov[0]?a.cov[0][0]+' ('+p(a.cov[0][1],a.n)+'%)':'—')+' (N='+a.n+').',
       blocks:[
         {type:'bars',title:'COVERAGE %',unit:'%',data:topBars(a.cov,a.n)},
-        {type:'kpi',items:[{label:'N',value:a.n},{label:'BLITZ',value:a.bp,unit:'%'},{label:'主FRONT',value:(a.front[0]?a.front[0][0]:'—')}]},
-        {type:'note',text:'上位カバーへ水平+垂直のストレッチが有効。'+(a.cov[0]&&p(a.cov[0][1],a.n)>=45?'偏りが大きく的を絞りやすい。':'')}
+        {type:'kpi',items:[{label:'N',value:a.n},{label:'BLITZ',value:a.bp,unit:'%'},{label:'TOP FRONT',value:(a.front[0]?a.front[0][0]:'—')}]},
+        {type:'note',text:'Attack the top coverage with horizontal + vertical stretches.'+(a.cov[0]&&p(a.cov[0][1],a.n)>=45?' It is heavily favored, so you can key on it.':'')}
       ]};
   }
   if(has('フロント','front')){
-    return {summary:label+' の主フロントは '+(a.front[0]?a.front[0][0]:'—')+'。',
+    return {summary:'Base front in '+label+': '+(a.front[0]?a.front[0][0]:'—')+'.',
       blocks:[{type:'bars',title:'FRONT %',unit:'%',data:topBars(a.front,a.n)},{type:'kpi',items:[{label:'N',value:a.n},{label:'BLITZ',value:a.bp,unit:'%'},{label:'STUNTS',value:a.sp,unit:'%'}]}]};
   }
   if(has('スタン','stunt')){
-    return {summary:label+' の STUNTS率は '+a.sp+'%。',blocks:[{type:'bars',title:'STUNTS種別 TOP',unit:'%',data:topBars(a.stunt,a.n)},{type:'note',text:a.sp>=35?'内側ガード/センターの受け渡しを声出しで統一。':'スタンツは少なめ。'}]};
+    return {summary:'Stunt rate in '+label+': '+a.sp+'%.',blocks:[{type:'bars',title:'TOP STUNT TYPES',unit:'%',data:topBars(a.stunt,a.n)},{type:'note',text:a.sp>=35?'Unify the guard/center pass-off out loud.':'Stunts are infrequent.'}]};
   }
   if(has('ブリッツ','blitz','プレッシャー','圧力','pressure')||dn||dg||zs){
-    return {summary:label+'：BLITZ '+a.bp+'% / STUNTS '+a.sp+'%（N='+a.n+'、全体BLITZ '+ovbp+'%）。',
+    return {summary:label+': BLITZ '+a.bp+'% / STUNTS '+a.sp+'% (N='+a.n+', ALL BLITZ '+ovbp+'%).',
       blocks:[
-        {type:'kpi',items:[{label:'N',value:a.n},{label:'BLITZ',value:a.bp,unit:'%'},{label:'STUNTS',value:a.sp,unit:'%'},{label:'主カバレッジ',value:(a.cov[0]?a.cov[0][0]:'—')}]},
-        {type:'bars',title:'BLITZ方向 %',unit:'%',data:[{label:'BOUNDARY',value:p(a.bt.BOUNDARY,a.bn||1)},{label:'FIELD',value:p(a.bt.FIELD,a.bn||1)},{label:'BOTH',value:p(a.bt.BOTH,a.bn||1)}]},
-        {type:'bars',title:'BLITZ種別 TOP',unit:'%',data:topBars(a.blitzRaw,a.n)},
-        {type:'note',text:'対策: '+blitzAdvice(a)}
+        {type:'kpi',items:[{label:'N',value:a.n},{label:'BLITZ',value:a.bp,unit:'%'},{label:'STUNTS',value:a.sp,unit:'%'},{label:'TOP COVERAGE',value:(a.cov[0]?a.cov[0][0]:'—')}]},
+        {type:'bars',title:'BLITZ DIRECTION %',unit:'%',data:[{label:'BOUNDARY',value:p(a.bt.BOUNDARY,a.bn||1)},{label:'FIELD',value:p(a.bt.FIELD,a.bn||1)},{label:'BOTH',value:p(a.bt.BOTH,a.bn||1)}]},
+        {type:'bars',title:'TOP BLITZ TYPES',unit:'%',data:topBars(a.blitzRaw,a.n)},
+        {type:'note',text:'How to attack: '+blitzAdvice(a)}
       ]};
   }
   var A=analyze(rows);
-  return {summary:'全体サマリー：N='+A.n+'、BLITZ '+A.bp+'% / STUNTS '+A.sp+'%、主カバレッジ '+(A.cov[0]?A.cov[0][0]:'—')+'。（例文チップを押すか、ゾーン/ダウン/距離・カバレッジ・フロント・ブリッツ・縦・偏り などのキーワードで質問してください）',
+  return {summary:'Overall: N='+A.n+', BLITZ '+A.bp+'% / STUNTS '+A.sp+'%, top coverage '+(A.cov[0]?A.cov[0][0]:'—')+'. (Tap a preset chip, or ask with keywords: zone / down / distance / coverage / front / blitz / vertical / tendency.)',
     blocks:[
-      {type:'kpi',items:[{label:'N',value:A.n},{label:'BLITZ',value:A.bp,unit:'%'},{label:'STUNTS',value:A.sp,unit:'%'},{label:'主カバレッジ',value:(A.cov[0]?A.cov[0][0]:'—')}]},
+      {type:'kpi',items:[{label:'N',value:A.n},{label:'BLITZ',value:A.bp,unit:'%'},{label:'STUNTS',value:A.sp,unit:'%'},{label:'TOP COVERAGE',value:(A.cov[0]?A.cov[0][0]:'—')}]},
       {type:'bars',title:'COVERAGE %',unit:'%',data:topBars(A.cov,A.n)},
       {type:'bars',title:'FRONT %',unit:'%',data:topBars(A.front,A.n)}
     ]};
@@ -1620,17 +1866,17 @@ function localAskCompare(scout,game,q){
   var keys=mergeKeys(ga.cov,sa.cov,8),sMap={},gMap={};
   sa.cov.forEach(function(x){sMap[x[0]]=x[1];});ga.cov.forEach(function(x){gMap[x[0]]=x[1];});
   var covRows=keys.map(function(k){var pp=p(sMap[k]||0,scout.length),gp=p(gMap[k]||0,game.length);return [k,pp+'%',gp+'%',(gp-pp>=0?'+':'')+(gp-pp)+'pt'];});
-  return {summary:'事前→試合後：BLITZ '+sa.bp+'%→'+ga.bp+'%（'+dl(sa.bp,ga.bp)+'pt）、STUNTS '+sa.sp+'%→'+ga.sp+'%（'+dl(sa.sp,ga.sp)+'pt）、主カバレッジ '+(sa.cov[0]?sa.cov[0][0]:'—')+'→'+(ga.cov[0]?ga.cov[0][0]:'—')+'。',
+  return {summary:'PRE → POST: BLITZ '+sa.bp+'%→'+ga.bp+'% ('+dl(sa.bp,ga.bp)+'pt), STUNTS '+sa.sp+'%→'+ga.sp+'% ('+dl(sa.sp,ga.sp)+'pt), top coverage '+(sa.cov[0]?sa.cov[0][0]:'—')+'→'+(ga.cov[0]?ga.cov[0][0]:'—')+'.',
     blocks:[
-      {type:'kpi',items:[{label:'BLITZ 事→試',value:sa.bp+'→'+ga.bp,unit:'%'},{label:'STUNTS 事→試',value:sa.sp+'→'+ga.sp,unit:'%'},{label:'主COVER(試)',value:(ga.cov[0]?ga.cov[0][0]:'—')},{label:'主FRONT(試)',value:(ga.front[0]?ga.front[0][0]:'—')}]},
-      {type:'table',title:'指標の事前→試合後',headers:['指標','事前','試合後','差分'],rows:[
+      {type:'kpi',items:[{label:'BLITZ PRE→POST',value:sa.bp+'→'+ga.bp,unit:'%'},{label:'STUNTS PRE→POST',value:sa.sp+'→'+ga.sp,unit:'%'},{label:'TOP COVER (POST)',value:(ga.cov[0]?ga.cov[0][0]:'—')},{label:'TOP FRONT (POST)',value:(ga.front[0]?ga.front[0][0]:'—')}]},
+      {type:'table',title:'Metrics: PRE → POST',headers:['Metric','PRE','POST','Δ'],rows:[
         ['BLITZ%',sa.bp+'%',ga.bp+'%',dl(sa.bp,ga.bp)+'pt'],
         ['STUNTS%',sa.sp+'%',ga.sp+'%',dl(sa.sp,ga.sp)+'pt'],
         ['BOUNDARY%',p(sa.bt.BOUNDARY,sa.bn||1)+'%',p(ga.bt.BOUNDARY,ga.bn||1)+'%','—'],
         ['FIELD%',p(sa.bt.FIELD,sa.bn||1)+'%',p(ga.bt.FIELD,ga.bn||1)+'%','—']
       ]},
-      {type:'table',title:'カバレッジ 事前→試合後',headers:['カバレッジ','事前','試合後','差分'],rows:covRows},
-      {type:'note',text:'差分が大きいカバー/圧力に対して次戦のコールを準備。'}
+      {type:'table',title:'Coverage: PRE → POST',headers:['Coverage','PRE','POST','Δ'],rows:covRows},
+      {type:'note',text:'Prepare next-game calls against the coverages / pressures that changed the most.'}
     ]};
 }
 function setupAskChips(chipsId,inputId,presets){
@@ -1717,10 +1963,10 @@ function exportPptx(){
     }
     function cell(t,o){o=o||{};o.fontFace=FONT;return{text:t,options:o};}
     function kick(s,t,y){s.addText(t.toUpperCase(),{x:X0,y:y,w:CW,h:0.25,fontSize:10,bold:true,color:SKY,charSpacing:1,fontFace:FONT});}
-    function tbl(s,header,body,x,y,w,colW){
-      var rws=[header.map(function(h){return cell(h.t,{fill:{color:NAVY},color:WHITE,bold:true,align:h.a||'left',fontSize:10,valign:'middle'});})];
-      body.forEach(function(r,i){var band=i%2?BAND:WHITE;rws.push(r.map(function(c){var o={fill:{color:band},color:c.c||INK,fontSize:10,valign:'middle',align:c.a||'left'};if(c.b)o.bold=true;return cell(c.t,o);}));});
-      s.addTable(rws,{x:x,y:y,w:w,colW:colW,fontFace:FONT,rowH:0.34,valign:'middle',border:{type:'solid',pt:0.5,color:HAIR},margin:[2,5,2,5]});
+    function tbl(s,header,body,x,y,w,colW,rowH){
+      var rws=[header.map(function(h){return cell(h.t,{fill:{color:NAVY},color:WHITE,bold:true,align:h.a||'left',fontSize:9.5,valign:'middle'});})];
+      body.forEach(function(r,i){var band=i%2?BAND:WHITE;rws.push(r.map(function(c){var o={fill:{color:band},color:c.c||INK,fontSize:c.fs||10,valign:'middle',align:c.a||'left'};if(c.b)o.bold=true;return cell(c.t,o);}));});
+      s.addTable(rws,{x:x,y:y,w:w,colW:colW,fontFace:FONT,rowH:rowH||0.34,valign:'middle',border:{type:'solid',pt:0.5,color:HAIR},margin:[2,5,2,5]});
     }
 
     // ---- Slide 1: cover (full-bleed, portrait) ----
@@ -1736,17 +1982,16 @@ function exportPptx(){
 
     // ---- Slide 2: Defensive Profile ----
     var s2=pptx.addSlide({masterName:'BASE'});head(s2,'01 · Profile','Defensive Profile');
-    kpi(s2,X0,1.4,1.73,'Plays',a.n,NAVY,22);
-    kpi(s2,2.34,1.4,1.73,'Top Cover',topc,NAVY,(''+topc).length>6?12:16);
-    kpi(s2,4.18,1.4,1.73,'Top Front',topf,NAVY,(''+topf).length>6?12:16);
-    kpi(s2,6.02,1.4,1.73,'Blitz Dir',dir[0],NAVY,12);
+    kpi(s2,X0,1.4,2.32,'Plays',a.n,NAVY,24);
+    kpi(s2,2.975,1.4,2.32,'Top Cover',topc,NAVY,(''+topc).length>9?13:18);
+    kpi(s2,5.45,1.4,2.32,'Top Front',topf,NAVY,(''+topf).length>9?13:18);
     donutP(s2,1.0,2.95,2.6,a.bp,BLUE,'BLITZ RATE',a.bn+' / '+a.n);
     donutP(s2,4.4,2.95,2.6,a.sp,GREEN,'STUNTS RATE',a.sn+' / '+a.n);
     kick(s2,'Key Takeaways',6.0);
     var tkk=[];
     var d3=rows.filter(function(r){return r.DN===3;});if(d3.length>=3){var d3b=Math.round(p(d3.filter(function(r){return r.HB;}).length,d3.length));tkk.push('3rd Down BLITZ '+d3b+'%（全体比 '+(d3b-a.bp>=0?'+':'')+(d3b-a.bp)+'pt）');}
-    var rz=rows.filter(function(r){return r.ZONE==='HRED'||r.ZONE==='MRED'||r.ZONE==='LRED';});if(rz.length>=3){var rzb=Math.round(p(rz.filter(function(r){return r.HB;}).length,rz.length));tkk.push('レッドゾーン BLITZ '+rzb+'%（全体比 '+(rzb-a.bp>=0?'+':'')+(rzb-a.bp)+'pt）');}
-    tkk.push('BLITZ方向は '+dir[0]+' に偏重（'+Math.round(p(dir[1],bn))+'%）');
+    var rz=rows.filter(function(r){return r.ZONE==='HRED'||r.ZONE==='MRED'||r.ZONE==='LRED';});if(rz.length>=3){var rzb=Math.round(p(rz.filter(function(r){return r.HB;}).length,rz.length));tkk.push('Red Zone BLITZ '+rzb+'%（全体比 '+(rzb-a.bp>=0?'+':'')+(rzb-a.bp)+'pt）');}
+    tkk.push('BLITZ 方向は '+dir[0]+' に偏重（'+Math.round(p(dir[1],bn))+'%）');
     s2.addText(tkk.map(function(t){return{text:t,options:{bullet:{code:'2022'},color:INK,fontSize:12,paraSpaceAfter:9,fontFace:FONT}};}),{x:X0,y:6.35,w:CW,h:4.6,valign:'top'});
 
     // ---- Slide 3: Coverage & Front (dashboard-style bars) ----
@@ -1763,13 +2008,17 @@ function exportPptx(){
     // ---- Slide 5: Down & Distance heatmap (same look as dashboard matrix) ----
     function mfill(bp){if(!bp)return 'F7FAFE';if(bp<=30)return 'FEF9EC';if(bp<=45)return 'FEECC6';if(bp<=60)return 'FDD88A';if(bp<=75)return 'F5A623';return 'C0392B';}
     function mtxt(bp){return bp>75?'FFFFFF':'12243B';}
-    function mc(c){if(!c)return{text:'—',options:{fill:{color:'F7FAFE'},align:'center',valign:'middle',color:GREY,fontSize:9}};
-      var tc2=mtxt(c.bp);return{text:[
-        {text:'COV '+(c.tc||'—'),options:{fontSize:7,color:tc2,breakLine:true,fontFace:FONT}},
-        {text:'FR '+(c.tf||'—'),options:{fontSize:7,color:tc2,breakLine:true,fontFace:FONT}},
-        {text:'BLITZ '+c.bp+'%',options:{fontSize:10,bold:true,color:tc2,breakLine:true,fontFace:FONT}},
-        {text:'STUNT '+c.sp+'%   N='+c.n,options:{fontSize:7,color:tc2,fontFace:FONT}}
-      ],options:{fill:{color:mfill(c.bp)},align:'center',valign:'middle'}};
+    // cell anatomy (clear hierarchy): BLITZ% = hero, then STUNTS%, then top COVERAGE · FRONT, then N
+    function mc(c){if(!c)return{text:'—',options:{fill:{color:'F7FAFE'},align:'center',valign:'middle',color:GREYL,fontSize:10}};
+      var dark=c.bp>75, hero=dark?'FFFFFF':'0A1F3C', sub=dark?'EAF1FA':'1E2F4A', lbl=dark?'CFE0F5':'5A6678', lo=c.n<3;
+      var cov1=(c.tc||'—').split('/')[0], fr1=(c.tf||'—').split('/')[0];
+      return{text:[
+        {text:'BLITZ ',options:{fontSize:8,color:lbl,fontFace:FONT}},
+        {text:c.bp+'%',options:{fontSize:16,bold:true,color:hero,fontFace:FONT,breakLine:true}},
+        {text:'STUNTS '+c.sp+'%',options:{fontSize:8.5,color:sub,fontFace:FONT,breakLine:true}},
+        {text:cov1+'  ·  '+fr1,options:{fontSize:8,color:lbl,fontFace:FONT,breakLine:true}},
+        {text:'N='+c.n+(lo?' ⚠':''),options:{fontSize:7.5,color:lbl,fontFace:FONT}}
+      ],options:{fill:{color:mfill(c.bp)},align:'center',valign:'middle',margin:[2,2,2,2]}};
     }
     var s5=pptx.addSlide({masterName:'BASE'});head(s5,'04 · Situational','Down & Distance — Heatmap');
     var hh=[cell('DOWN \\ DIST',{fill:{color:NAVY},color:WHITE,bold:true,fontSize:9,valign:'middle'})];
@@ -1785,17 +2034,18 @@ function exportPptx(){
     var allr=[cell('ALL',{fill:{color:'1B3A63'},color:WHITE,bold:true,fontSize:10,valign:'middle'})];
     DO.forEach(function(dg){allr.push(mc(mCell(rows.filter(function(x){return x.DIST_GRP===dg;}))));});
     allr.push(mc(mCell(rows)));mRows.push(allr);
-    s5.addTable(mRows,{x:X0,y:1.4,w:CW,colW:[1.27,1.15,1.15,1.15,1.15,1.4],rowH:1.2,valign:'middle',border:{type:'solid',pt:1,color:WHITE},margin:[1,2,1,2]});
-    s5.addText('セル背景=BLITZ率の濃淡（〜30/〜45/〜60/〜75/76+）。各セル: COVERAGE / FRONT / BLITZ% / STUNT% ・ N。',{x:X0,y:10.5,w:CW,h:0.3,fontSize:8,italic:true,color:GREYL,fontFace:FONT});
+    s5.addTable(mRows,{x:X0,y:1.4,w:CW,colW:[1.27,1.15,1.15,1.15,1.15,1.4],rowH:1.32,valign:'middle',border:{type:'solid',pt:1.5,color:WHITE},margin:[2,2,2,2]});
+    s5.addText('セル背景の濃淡＝BLITZ率（〜30 / 〜45 / 〜60 / 〜75 / 75%+）。各セル: BLITZ%（大）→ STUNTS% → 最多 COVERAGE · FRONT → N。',{x:X0,y:10.55,w:CW,h:0.3,fontSize:8,italic:true,color:GREYL,fontFace:FONT});
 
-    // ---- Slides 6/7: segment summaries ----
+    // ---- Slides 6/7: segment summaries (TOP3 coverage & front with %) ----
+    function top3pct(arr,total){if(!arr||!arr.length)return '—';return arr.slice(0,3).map(function(x){return x[0]+'  '+Math.round(p(x[1],total))+'%';}).join('\n');}
     function summarySlide(kicker,title,pairs){
       var s=pptx.addSlide({masterName:'BASE'});head(s,kicker,title);
       var body=[];
       pairs.forEach(function(pr){var sub=pr[1];if(!sub.length)return;var za=analyze(sub);
-        body.push([{t:pr[0],b:true},{t:''+za.n,a:'center'},{t:za.bp+'%',a:'center',c:(za.bp>=45?RED:INK),b:true},{t:za.sp+'%',a:'center'},{t:za.cov[0]?za.cov[0][0]:'—'},{t:za.front[0]?za.front[0][0]:'—'}]);});
+        body.push([{t:pr[0],b:true},{t:top3pct(za.cov,za.n),fs:9},{t:top3pct(za.front,za.n),fs:9},{t:za.bp+'%',a:'center',c:(za.bp>=45?RED:INK),b:true},{t:za.sp+'%',a:'center'},{t:''+za.n,a:'center'}]);});
       if(!body.length)body=[[{t:'—'},{t:''},{t:''},{t:''},{t:''},{t:''}]];
-      tbl(s,[{t:'区分 / Segment'},{t:'N',a:'center'},{t:'BLITZ%',a:'center'},{t:'STUNTS%',a:'center'},{t:'TOP COVERAGE'},{t:'TOP FRONT'}],body,X0,1.45,CW,[2.1,0.7,1.05,1.05,1.2,1.17]);
+      tbl(s,[{t:'区分 / Segment'},{t:'TOP3 COVERAGE'},{t:'TOP3 FRONT'},{t:'BLITZ%',a:'center'},{t:'STUNTS%',a:'center'},{t:'N',a:'center'}],body,X0,1.45,CW,[1.75,1.6,1.6,0.78,0.78,0.76],0.82);
     }
     summarySlide('05 · Field Zone','by Field Zone',ZO.filter(function(z){return z!=='ALL';}).map(function(z){return[ZN[z]||z,zd[z]||[]];}));
     summarySlide('06 · Formation','by Formation',FO.map(function(fg){return[fg,rows.filter(function(r){return r.FG===fg;})];}));
@@ -1806,8 +2056,16 @@ function exportPptx(){
     var fbody=topN(ffc,10).map(function(x){var fr=x[0],sub=rows.filter(function(r){return r['DEF FRONT']===fr;}),za=analyze(sub),fbn=za.bn||1;
       return [{t:fr,b:true},{t:''+za.n,a:'center'},{t:za.bp+'%',a:'center',c:(za.bp>=45?RED:INK),b:true},{t:za.sp+'%',a:'center'},{t:Math.round(p(za.bt.BOUNDARY,fbn))+'%',a:'center'},{t:Math.round(p(za.bt.FIELD,fbn))+'%',a:'center'},{t:Math.round(p(za.bt.BOTH,fbn))+'%',a:'center'}];});
     if(!fbody.length)fbody=[[{t:'—'},{t:''},{t:''},{t:''},{t:''},{t:''},{t:''}]];
-    tbl(sFr,[{t:'FRONT'},{t:'N',a:'center'},{t:'BLITZ%',a:'center'},{t:'STUNTS%',a:'center'},{t:'BOUNDARY%',a:'center'},{t:'FIELD%',a:'center'},{t:'BOTH%',a:'center'}],fbody,X0,1.45,CW,[1.95,0.7,1.0,1.0,0.9,0.9,0.82]);
-    sFr.addText('BOUNDARY/FIELD/BOTH はブリッツ時の方向内訳（BLITZ件数に対する%）。',{x:X0,y:10.5,w:CW,h:0.3,fontSize:8,italic:true,color:GREYL,fontFace:FONT});
+    // two-tier header: BOUNDARY / FIELD / BOTH grouped under "BLITZ DIRECTION"
+    function hC(t,sp){var o={fill:{color:NAVY},color:WHITE,bold:true,fontSize:9.5,valign:'middle',align:(sp&&sp.align)||'center'};if(sp&&sp.colspan)o.colspan=sp.colspan;if(sp&&sp.rowspan)o.rowspan=sp.rowspan;return cell(t,o);}
+    function hC2(t){var o={fill:{color:'1B3A63'},color:WHITE,bold:true,fontSize:9,valign:'middle',align:'center'};return cell(t,o);}
+    var fRows=[
+      [hC('FRONT',{rowspan:2,align:'left'}),hC('N',{rowspan:2}),hC('BLITZ%',{rowspan:2}),hC('STUNTS%',{rowspan:2}),hC('BLITZ DIRECTION',{colspan:3})],
+      [hC2('BOUNDARY%'),hC2('FIELD%'),hC2('BOTH%')]
+    ];
+    fbody.forEach(function(r,i){var band=i%2?BAND:WHITE;fRows.push(r.map(function(c){var o={fill:{color:band},color:c.c||INK,fontSize:c.fs||10,valign:'middle',align:c.a||'left'};if(c.b)o.bold=true;return cell(c.t,o);}));});
+    sFr.addTable(fRows,{x:X0,y:1.45,w:CW,colW:[1.95,0.7,1.0,1.0,0.9,0.9,0.82],fontFace:FONT,rowH:0.34,valign:'middle',border:{type:'solid',pt:0.5,color:HAIR},margin:[2,5,2,5]});
+    sFr.addText('BOUNDARY / FIELD / BOTH = BLITZ 時の方向内訳（BLITZ 件数に対する %）。',{x:X0,y:10.5,w:CW,h:0.3,fontSize:8,italic:true,color:GREYL,fontFace:FONT});
 
     pptx.writeFile({fileName:'IMPULSE_scouting_'+new Date().toISOString().slice(0,10)+'.pptx'});
   }catch(e){console.error(e);alert('PPTX生成でエラー: '+e.message);}
@@ -1832,33 +2090,47 @@ document.addEventListener('DOMContentLoaded',function(){
     reader.readAsText(file,'UTF-8');
   }
 
-  function setupDrop(zoneId,inputId,cb){
+  // 複数ファイルを並行読み込み（全完了後に done([{name,rows|error}]) を呼ぶ）
+  function readFiles(fileList,done){
+    var files=Array.prototype.slice.call(fileList||[]); if(!files.length)return;
+    var results=[],pending=files.length;
+    files.forEach(function(file,idx){
+      var reader=new FileReader();
+      reader.onload=function(e){var text=e.target.result;if(text&&text.charCodeAt(0)===0xFEFF)text=text.slice(1);try{results[idx]={name:file.name,rows:parseCSV(text)};}catch(err){results[idx]={name:file.name,error:err.message};}if(--pending===0)done(results);};
+      reader.onerror=function(){results[idx]={name:file.name,error:'読み込み失敗'};if(--pending===0)done(results);};
+      reader.readAsText(file,'UTF-8');
+    });
+  }
+
+  function setupDrop(zoneId,inputId,cb,multi){
     var zone=document.getElementById(zoneId),input=document.getElementById(inputId);
     if(!zone||!input)return;
     zone.addEventListener('dragover',function(e){e.preventDefault();zone.classList.add('drag');});
     zone.addEventListener('dragleave',function(){zone.classList.remove('drag');});
-    zone.addEventListener('drop',function(e){e.preventDefault();zone.classList.remove('drag');var f=e.dataTransfer.files[0];if(f)readFile(f,cb);});
-    input.addEventListener('change',function(){var f=input.files[0];if(f)readFile(f,cb);});
+    if(multi){
+      zone.addEventListener('drop',function(e){e.preventDefault();zone.classList.remove('drag');if(e.dataTransfer.files.length)readFiles(e.dataTransfer.files,cb);});
+      input.addEventListener('change',function(){if(input.files.length)readFiles(input.files,cb);});
+    }else{
+      zone.addEventListener('drop',function(e){e.preventDefault();zone.classList.remove('drag');var f=e.dataTransfer.files[0];if(f)readFile(f,cb);});
+      input.addEventListener('change',function(){var f=input.files[0];if(f)readFile(f,cb);});
+    }
   }
 
-  function loadScout(rows,name){
-    try{
-      var p2=processData(rows);
-      var valid=p2.filter(function(r){return r.ZONE!=='UNKNOWN';});
-      if(!valid.length){showErr('有効なディフェンスデータが見つかりません。');return;}
-      scoutData=valid;
-      __scoutDataGlobal=valid;
-      document.getElementById('err-box').style.display='none';
-      document.getElementById('scout-filename').textContent='✅ '+name+' ('+valid.length+' Play)';
-      boot(rows,name);
-    }catch(e){showErr(e.message);console.error(e);}
+  // スカウティング：複数CSV（=複数試合）をまとめて読み込み
+  function onScoutFiles(results){
+    var ok=results.filter(function(r){return r&&r.rows;}),bad=results.filter(function(r){return r&&r.error;});
+    if(bad.length)showErr(bad.map(function(b){return b.name+': '+b.error;}).join('<br>'));
+    if(!ok.length)return;
+    document.getElementById('scout-filename').textContent='✅ '+ok.length+' 試合: '+ok.map(function(r){return gameName(r.name);}).join(' / ');
+    loadGames(ok);
   }
 
   function loadGame(rows,name){
     try{
-      var p2=processData(rows);
+      var oRows=odkRows(rows,'O'); // 試合後データは ODK=O 行のみ集計
+      var p2=processData(oRows);
       var valid=p2.filter(function(r){return r.ZONE!=='UNKNOWN';});
-      if(!valid.length){showErr('有効なディフェンスデータが見つかりません。');return;}
+      if(!valid.length){showErr('ODK=O の行から有効なデータが見つかりません（試合後は ODK=O 行を集計します）。');return;}
       gameData=valid;
       document.getElementById('err-box').style.display='none';
       document.getElementById('game-filename').textContent='✅ '+name+' ('+valid.length+' Play)';
@@ -1867,11 +2139,12 @@ document.addEventListener('DOMContentLoaded',function(){
     }catch(e){showErr(e.message);console.error(e);}
   }
 
-  setupDrop('drop-zone-scout','input-scout',function(rows,name){loadScout(rows,name);});
+  setupDrop('drop-zone-scout','input-scout',onScoutFiles,true);
   setupDrop('drop-zone-game','input-game',function(rows,name){loadGame(rows,name);});
 
   document.getElementById('tt-overview').addEventListener('click',function(){showTab('overview');});
   document.getElementById('tt-overview2').addEventListener('click',function(){showTab('overview2');});
+  document.getElementById('tt-report').addEventListener('click',function(){showTab('report');});
   document.getElementById('tt-zone').addEventListener('click',function(){showTab('zone');});
   document.getElementById('tt-form').addEventListener('click',function(){showTab('form');});
   document.getElementById('tt-ask').addEventListener('click',function(){showTab('ask');});
@@ -1889,6 +2162,9 @@ document.addEventListener('DOMContentLoaded',function(){
   document.getElementById('btn-print').addEventListener('click',function(){window.print();});
 
   document.getElementById('btn-back').addEventListener('click',function(){
+    __games=[];__activeGame=0;
+    var si=document.getElementById('input-scout');if(si)si.value='';
+    var sf=document.getElementById('scout-filename');if(sf)sf.textContent='';
     document.getElementById('start-screen').style.display='block';
     document.getElementById('dashboard').style.display='none';
     document.getElementById('compare-screen').style.display='none';
