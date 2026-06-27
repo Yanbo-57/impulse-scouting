@@ -289,6 +289,135 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
 .rep-en{color:var(--g400);font-size:10.5px}
 .rep-n{color:var(--g400);font-size:10px;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
 @media(max-width:720px){.rk{grid-template-columns:1fr;gap:5px}.rk-arrow{display:none}.rep-grid{grid-template-columns:1fr}}
+/* OVERVIEW combined FIELD ZONE × FORMATION filter (not sticky — scrolls with content) */
+.combo-row{display:flex;align-items:flex-start;gap:10px;padding:7px 0;border-top:1px dashed var(--g100)}
+.combo-row:first-of-type{border-top:none}
+.combo-lbl{flex:0 0 110px;font-size:11px;font-weight:800;color:var(--navy);letter-spacing:.03em;padding-top:6px}
+.combo-pills{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.combo-pills .zt{padding:5px 12px;font-size:11.5px}
+.combo-pills .mcnt{font-size:9px;color:var(--g400);font-weight:700}
+.combo-pills .zt.on .mcnt{color:rgba(255,255,255,.85)}
+/* simple line yard bar (combo) */
+.ybar{margin:6px 0 2px;padding:0 10px}
+.ybar-ends{display:flex;justify-content:space-between;font-size:9px;font-weight:800;color:var(--g400);letter-spacing:.06em;margin-bottom:8px}
+.ybar-track{position:relative;height:12px;background:var(--g100);border-radius:7px;user-select:none;touch-action:none;margin:6px 0 22px}
+.ybar-tick{position:absolute;top:-2px;bottom:-2px;width:1px;background:var(--g200);transform:translateX(-.5px)}
+.ybar-num{position:absolute;top:15px;transform:translateX(-50%);font-size:9px;color:var(--g400);font-weight:700;font-variant-numeric:tabular-nums}
+.ybar-sel{position:absolute;top:0;bottom:0;background:rgba(0,85,164,.20);border-left:2px solid var(--blue);border-right:2px solid var(--blue);border-radius:5px;pointer-events:none}
+.ybar-h{position:absolute;top:50%;width:20px;height:20px;transform:translate(-50%,-50%);display:flex;align-items:center;justify-content:center;background:#fff;border:2px solid var(--navy);border-radius:50%;cursor:ew-resize;box-shadow:var(--sh2);z-index:4;touch-action:none}
+.ybar-h::after{content:'';width:6px;height:6px;border-radius:50%;background:var(--navy)}
+.ybar-read{text-align:center;font-size:11px;font-weight:800;color:var(--navy);font-variant-numeric:tabular-nums}
+/* ===== 条件検索：追尾ボタン + 条件バー + ポップアップ + カード ===== */
+.cb-fab{position:fixed;right:0;top:42%;z-index:60;display:flex;flex-direction:column;align-items:center;gap:4px;background:var(--navy);color:#fff;border:none;border-radius:12px 0 0 12px;padding:14px 9px;font:inherit;font-weight:800;cursor:pointer;box-shadow:-3px 3px 16px rgba(0,0,0,.25);transition:all .15s ease}
+.cb-fab:hover{background:var(--blue);padding-right:13px}
+.cb-fab-ic{font-size:17px}
+.cb-fab-t{font-size:12px;writing-mode:vertical-rl;letter-spacing:.18em}
+.cb-active{display:flex;align-items:center;flex-wrap:wrap;gap:7px;background:#fff;border:1px solid var(--g200);border-left:4px solid var(--blue);border-radius:var(--r);padding:9px 12px;margin-bottom:14px;cursor:pointer;box-shadow:var(--sh);font-size:12px}
+.cb-active:hover{border-color:var(--blue)}
+.cb-active-lbl{font-size:11px;font-weight:800;color:var(--navy)}
+.cb-active-n{font-weight:700;color:var(--g600)}.cb-active-n b{color:var(--navy)}
+.cb-active-edit{margin-left:auto;font-size:11px;font-weight:800;color:var(--blue)}
+.cb-chip{display:inline-flex;align-items:center;gap:5px;background:var(--blue-pale);border:1px solid var(--g100);border-radius:16px;padding:4px 10px;font-size:11.5px;color:var(--g600)}
+.cb-chip b{color:var(--navy)}.cb-chip-ic{font-size:11px}
+.cb-chip-x{cursor:pointer;color:var(--g400);font-weight:800;margin-left:2px;border-radius:50%;width:15px;height:15px;display:inline-flex;align-items:center;justify-content:center;line-height:1}
+.cb-chip-x:hover{background:var(--red);color:#fff}
+.cb-pop{position:fixed;inset:0;z-index:70;display:none}
+.cb-pop.on{display:block}
+.cb-pop-back{position:absolute;inset:0;background:rgba(12,24,48,.5);backdrop-filter:blur(2px)}
+.cb-pop-card{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(980px,94vw);max-height:90vh;overflow:auto;background:#fff;border-radius:16px;box-shadow:0 24px 70px rgba(0,0,0,.4);display:flex;flex-direction:column}
+.cb-pop-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:15px 20px;border-bottom:1px solid var(--g100);position:sticky;top:0;background:#fff;z-index:2}
+.cb-pop-title{font-size:14px;font-weight:800;color:var(--navy)}
+.cb-sub2{font-size:11px;font-weight:600;color:var(--g400)}
+.cb-pop-x{font:inherit;font-size:15px;font-weight:800;color:var(--g400);background:var(--g50);border:none;border-radius:8px;width:32px;height:32px;cursor:pointer;flex-shrink:0}
+.cb-pop-x:hover{background:var(--red);color:#fff}
+.cb-pop-body{padding:14px 20px}
+.cb-seclbl{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:800;color:var(--navy);margin:16px 0 8px;text-transform:uppercase;letter-spacing:.04em}
+.cb-ico{font-size:14px}
+.cb-sub{font-size:10px;font-weight:600;color:var(--g400);text-transform:none;letter-spacing:0}
+.cb-zone-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:2px}
+.cb-zone-row .cb-seclbl{margin:0;flex:0 0 auto}
+.cb-yard{flex:1;min-width:240px;margin:0}
+.cb-yard .ybar{margin:0}
+.cb-cards{display:flex;flex-wrap:wrap;gap:8px}
+.zcard{display:flex;flex-direction:column;align-items:center;text-align:center;gap:3px;min-width:100px;flex:0 0 auto;padding:9px 11px;border:1.5px solid var(--g200);border-radius:11px;background:#fff;cursor:pointer;transition:all .14s ease}
+.zcard:hover{border-color:var(--blue);box-shadow:var(--sh)}
+.zcard.on{border-color:var(--blue);background:var(--blue-pale);box-shadow:0 0 0 1.5px var(--blue) inset}
+.zcard-ic{font-size:16px;line-height:1}
+.zcard-name{font-size:11.5px;font-weight:800;color:var(--navy);white-space:nowrap}
+.zcard-yd{font-size:10px;color:var(--g400);font-variant-numeric:tabular-nums}
+.zcard-n{font-size:14px;font-weight:800;color:var(--navy);font-variant-numeric:tabular-nums;margin-top:1px}
+.cb-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:14px 20px;border-top:1px solid var(--g100);position:sticky;bottom:0;background:#fff}
+.cb-foot-sel{display:flex;align-items:center;flex-wrap:wrap;gap:6px;font-size:12px;color:var(--g600)}
+.cb-foot-tag{font-size:10px;font-weight:800;color:#fff;background:var(--navy);border-radius:5px;padding:3px 8px;letter-spacing:.03em}
+.cb-foot-btn{font:inherit;font-size:13px;font-weight:800;color:#fff;background:var(--blue);border:none;border-radius:9px;padding:9px 20px;cursor:pointer;transition:all .15s ease}
+.cb-foot-btn:hover{background:var(--navy)}
+@media(max-width:720px){.cb-fab-t{font-size:11px}.cb-zone-row{flex-direction:column;align-items:stretch}.cb-active-edit{margin-left:0}}
+/* ASSOCIATION RULES table */
+.assoc-wrap{overflow-x:auto}
+.assoc{width:100%;border-collapse:collapse;font-size:12px}
+.assoc th{text-align:left;font-size:10px;font-weight:800;color:var(--g400);text-transform:uppercase;letter-spacing:.04em;padding:6px 8px;border-bottom:2px solid var(--g100);white-space:nowrap}
+.assoc th:nth-child(n+4){text-align:right}
+.assoc td{padding:7px 8px;border-bottom:1px solid var(--g100);vertical-align:middle}
+.assoc tr:hover td{background:var(--g50)}
+.assoc-a{font-weight:700;color:var(--navy);font-size:11.5px}
+.assoc-arrow{color:var(--blue);font-weight:800;text-align:center;width:18px}
+.assoc-c{font-weight:800}
+.assoc-c-blz{color:var(--red)}.assoc-c-cov{color:var(--navy)}
+.assoc-num{text-align:right;font-variant-numeric:tabular-nums;color:var(--g600);white-space:nowrap}
+.assoc-num.assoc-warm{color:var(--amber);font-weight:800}
+.assoc-num.assoc-hot{color:var(--red);font-weight:800}
+/* FLOW & SPLITS tables */
+.flow-h{font-size:11px;font-weight:800;color:var(--blue);text-transform:uppercase;letter-spacing:.04em;margin:12px 0 5px}
+.flow-tbl{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:4px}
+.flow-tbl th{text-align:left;font-size:10px;font-weight:800;color:var(--g400);text-transform:uppercase;letter-spacing:.03em;padding:5px 8px;border-bottom:2px solid var(--g100);white-space:nowrap}
+.flow-tbl th:nth-child(2),.flow-tbl th:nth-child(3),.flow-tbl th:nth-child(4){text-align:right}
+.flow-tbl td{padding:6px 8px;border-bottom:1px solid var(--g100);font-variant-numeric:tabular-nums}
+.flow-tbl td:first-child{font-weight:800;color:var(--navy)}
+.flow-tbl td:nth-child(2),.flow-tbl td:nth-child(3),.flow-tbl td:nth-child(4){text-align:right}
+.flow-tbl td.flow-up{color:var(--red);font-weight:800}
+.flow-tbl td.flow-dn{color:#0A357E;font-weight:800}
+/* ASSOCIATION RULES — mockup design (numbered rows, icons, CONF/LIFT bars) */
+.atable{display:flex;flex-direction:column}
+.arule{display:grid;grid-template-columns:36px minmax(180px,1fr) 18px 164px 150px 150px 74px;align-items:center;gap:12px;padding:9px 6px;border-bottom:1px solid var(--g100);font-size:12.5px}
+.arule:hover:not(.ar-head){background:var(--g50)}
+.arule.ar-head{border-bottom:2px solid var(--g100);font-size:10px;font-weight:800;color:var(--g400);text-transform:uppercase;letter-spacing:.03em;align-items:end;padding-bottom:7px}
+.ar-head .ar-sub{display:block;font-size:9px;font-weight:700;color:var(--g300);margin-top:1px;text-transform:none;letter-spacing:0}
+.ar-no{font-size:12px;font-weight:800;color:var(--blue);font-variant-numeric:tabular-nums;text-align:center}
+.ar-cond{display:flex;align-items:center;gap:5px;flex-wrap:wrap;min-width:0}
+.ar-item{display:inline-flex;align-items:center;gap:4px;font-weight:800;color:var(--navy);white-space:nowrap;font-size:12px}
+.ar-dn{border:1px solid var(--g200);border-radius:6px;padding:2px 7px;font-size:11px;background:var(--g50);color:var(--g600)}
+.ar-icw{display:inline-flex;width:15px;height:15px;flex-shrink:0;color:var(--g400)}
+.ar-icw.zone{color:#C0392B}.ar-icw.front{color:var(--navy)}.ar-icw.dist{color:#0891B2}.ar-icw.form{color:#7C3AED}.ar-icw.motion{color:#059669}
+.ar-icw.resp-cov{color:var(--navy)}.ar-icw.resp-blz{color:var(--red)}
+.ar-ic{width:15px;height:15px;fill:currentColor}
+.ar-sep{color:var(--g300);font-size:10px;font-weight:800}
+.ar-to{color:var(--blue);font-weight:800;text-align:center;font-size:13px}
+.ar-respwrap{display:flex;align-items:center;gap:6px;font-weight:800;min-width:0;font-size:12.5px}
+.ar-respwrap.is-cov{color:var(--navy)}.ar-respwrap.is-blz{color:var(--red)}
+.ar-resp-t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ar-m{display:flex;align-items:center;gap:8px}
+.ar-mv{font-size:12px;font-weight:800;color:var(--navy);font-variant-numeric:tabular-nums;min-width:44px}
+.ar-mv.red{color:var(--red)}
+.ar-track{flex:1;height:7px;background:var(--g100);border-radius:4px;overflow:hidden}
+.ar-fill{display:block;height:100%;border-radius:4px}
+.ar-fill.blue{background:var(--blue)}.ar-fill.red{background:#E0564B}
+.ar-n{font-size:11px;color:var(--g400);font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+.ar-other{opacity:.55;font-style:normal}.ar-other .ar-cond{color:var(--g400);font-weight:700}
+.ar-foot{font-size:10px;color:var(--g400);margin-top:9px}
+.ar-mv.navy{color:#0A357E}
+.ar-fill.green{background:var(--green)}
+/* FLOW rows (same bar style) */
+.ftable{display:flex;flex-direction:column;margin-bottom:6px}
+.frow{display:grid;grid-template-columns:120px 40px 1.25fr 1.25fr 64px 68px;align-items:center;gap:10px;padding:8px 4px;border-bottom:1px solid var(--g100);font-size:12.5px}
+.frow:hover:not(.fr-head){background:var(--g50)}
+.frow.fr-head{font-size:10px;font-weight:800;color:var(--g400);text-transform:uppercase;letter-spacing:.03em;border-bottom:2px solid var(--g100)}
+.fr-lbl{font-weight:800;color:var(--navy)}
+.fr-n{font-variant-numeric:tabular-nums;color:var(--g400);font-weight:700;text-align:right}
+.fr-cov{font-size:11.5px;color:var(--g600);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fr-v{font-size:12.5px;font-weight:800;color:var(--navy);font-variant-numeric:tabular-nums;text-align:right}
+.frow.fr-head .fr-v,.frow.fr-head .fr-n{font-weight:800}
+@media(max-width:600px){.frow{grid-template-columns:74px 26px 1fr 52px 52px;gap:6px}.frow .fr-cov:nth-child(4){display:none}}
+@media(max-width:860px){.arule{grid-template-columns:28px 1.4fr 14px 110px 84px 84px;gap:7px}.arule .ar-n{display:none}.ar-mv{min-width:38px}}
 
 /* GAME PLAN PRIORITIES */
 .prio{display:flex;align-items:center;gap:14px;padding:12px 6px;border-top:1px solid var(--g100)}
@@ -542,15 +671,11 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
       <div class="tt on" id="tt-overview">📊 OVERVIEW</div>
       <div class="tt" id="tt-overview2">🗒️ SUMMARY</div>
       <div class="tt" id="tt-report">🔍 SCOUTING REPORT</div>
-      <div class="tt" id="tt-zone">📍 FIELD ZONE</div>
-      <div class="tt" id="tt-form">📋 FORMATION</div>
       <div class="tt" id="tt-ask">🧠 ASK AI</div>
     </div>
     <div class="tp vis" id="tab-overview"><div id="overview-body"></div></div>
     <div class="tp" id="tab-overview2"><div id="overview2-body"></div></div>
     <div class="tp" id="tab-report"><div id="report-body"></div></div>
-    <div class="tp" id="tab-zone"><div id="zone-fieldbar"></div><div class="ztabs" id="zone-tabs"></div><div id="zone-body"></div></div>
-    <div class="tp" id="tab-form"><div class="ztabs" id="form-tabs"></div><div id="form-body"></div></div>
     <div class="tp" id="tab-ask">
       <div class="card">
         <div class="sec">ASK AI — 自由分析 / Custom Analysis</div>
@@ -636,13 +761,14 @@ var BP={W:1,F:1,C:1}, FP={M:1,S:1};
 // FIELD ZONE（コールシート準拠）: GREEN / ORANGE(31-50) / HIGH RED(21-30) / MIDDLE RED(11-20) / LOW RED(1-10) / KNOCKOUT(-1〜-5) / YELLOW(-6〜-20)
 var ZCS={ALL:'#002B5C',GREEN:'#059669',ORANGE:'#EA580C',HRED:'#E0564B',MRED:'#C0392B',LRED:'#8B1E14',KNOCK:'#374151',YELLOW:'#D97706'};
 var ZE={ALL:'📊',GREEN:'🟢',ORANGE:'🟠',HRED:'🔴',MRED:'🔴',LRED:'🔴',KNOCK:'🏁',YELLOW:'🟡'};
-var ZN={ALL:'ALL',GREEN:'GREEN ZONE / ORANGE ZONE',ORANGE:'ORANGE ZONE',HRED:'HIGH RED ZONE',MRED:'MIDDLE RED ZONE',LRED:'LOW RED ZONE',KNOCK:'KNOCKOUT ZONE',YELLOW:'YELLOW ZONE'};
-var ZR={ALL:'',GREEN:'-20〜20y',ORANGE:'31-50y',HRED:'21-30y',MRED:'11-20y',LRED:'1-10y',KNOCK:'-1〜-5y',YELLOW:'-6〜-20y'};
+var ZN={ALL:'ALL',GREEN:'GREEN ZONE',ORANGE:'ORANGE ZONE',HRED:'HIGH RED ZONE',MRED:'MIDDLE RED ZONE',LRED:'LOW RED ZONE',KNOCK:'KNOCKOUT ZONE',YELLOW:'YELLOW ZONE'};
+// ヤード表記ルール：自陣=負(-1〜-50) / 敵陣=正(50〜1)
+var ZR={ALL:'',GREEN:'-20〜-49',ORANGE:'50〜31',HRED:'30〜21',MRED:'20〜11',LRED:'10〜1',KNOCK:'-1〜-5',YELLOW:'-6〜-19'};
 var DO=['SHORT(1-3)','MID(4-6)','LONG(7-10)','X-LONG(11+)'];
 // FIELD ZONE タブ順: 自陣ゴール(-1)→敵陣ゴール(1) の順
 var ZO=['ALL','KNOCK','YELLOW','GREEN','ORANGE','HRED','MRED','LRED'];
 // FIELD ZONE プリセット（フィールド位置 0=自陣ゴール 〜 100=敵陣ゴール, 50=ミッド）
-var ZYARD={KNOCK:[0,5],YELLOW:[6,20],GREEN:[20,80],ORANGE:[50,69],HRED:[70,79],MRED:[80,89],LRED:[90,100]};
+var ZYARD={KNOCK:[0,5],YELLOW:[6,19],GREEN:[20,50],ORANGE:[50,69],HRED:[70,79],MRED:[80,89],LRED:[90,100]};
 // FORMATION（コールシート準拠）
 var FO=['DOUBLE','SUPER/TPER/XPER','STRONG','WEAK','WING','WEAPON','FIB BUNDLE'];
 var FC={'DOUBLE':'#059669','WEAK':'#0891B2','WING':'#7C3AED','WEAPON':'#DB2777','SUPER/TPER/XPER':'#EA580C','STRONG':'#C0392B','FIB BUNDLE':'#6366F1'};
@@ -672,13 +798,14 @@ function normalizeVal(v){
 function getZone(y){
   if(y===''||y===null||y===undefined) return 'UNKNOWN';
   y=parseFloat(y); if(isNaN(y)) return 'UNKNOWN';
-  if(y>=-5&&y<=-1) return 'KNOCK';    // KNOCKOUT -1〜-5
-  if(y>=-20&&y<=-6) return 'YELLOW';  // -6〜-20
-  if(y>=1&&y<=10) return 'LRED';      // LOW RED 1-10
-  if(y>=11&&y<=20) return 'MRED';     // MIDDLE RED 11-20
-  if(y>=21&&y<=30) return 'HRED';     // HIGH RED 21-30
-  if(y>=31&&y<=50) return 'ORANGE';   // ORANGE 31-50
-  return 'GREEN';                      // 自陣21以深（y<=-21）など
+  if(y>=-5&&y<=-1) return 'KNOCK';    // KNOCKOUT 自1-5（-1〜-5）
+  if(y>=-19&&y<=-6) return 'YELLOW';  // YELLOW 自6-19（-6〜-19）
+  if(y<=-20) return 'GREEN';          // GREEN 自20-50（-20〜-49/-50）
+  if(y>=1&&y<=10) return 'LRED';      // LOW RED 敵1-10（10〜1）
+  if(y>=11&&y<=20) return 'MRED';     // MIDDLE RED 敵11-20（20〜11）
+  if(y>=21&&y<=30) return 'HRED';     // HIGH RED 敵21-30（30〜21）
+  if(y>=31&&y<=50) return 'ORANGE';   // ORANGE 敵31-50（50〜31）
+  return 'GREEN';                      // 端（y=0 等）
 }
 function getDist(d){
   if(d===''||d===null) return 'UNKNOWN';
@@ -695,7 +822,8 @@ function parseBlitz(s){
   });
   return res;
 }
-function bSide(p2,n){return BP[p2]?'B':FP[p2]?'F':n%2===0?'B':'F'}
+// 方向はギャップ番号で決定：奇数=FIELD、偶数=BOUNDARY（両方含む call は BOTH）。LB文字は方向に使わない
+function bSide(p2,n){return n%2===0?'B':'F';}
 function bType(entries,front){
   if(front==='ALL GAP') return 'BOTH';
   if(!entries.length) return null;
@@ -1003,15 +1131,100 @@ function buildReadKeys(rows){
   return keys.map(function(c){
     var head,hcls;
     if(c.sB>=c.sC&&c.sB>=c.sS){head='BLITZ '+c.bp+'% <span class="rk-diff">'+(c.bp-ov>=0?'+':'')+(c.bp-ov)+'pt</span>';hcls=c.bp>=ov?'rk-up':'rk-down';}
-    else if(c.sC>=c.sS&&c.cov){head=c.cov.n+' '+c.cov.s+'%';hcls='rk-cov';}
+    else if(c.sC>=c.sS&&c.cov){head='COVERAGE '+c.cov.n+'（'+c.cov.s+'%）';hcls='rk-cov';}
     else{head='STUNTS '+c.sp+'%';hcls='rk-stunt';}
     var conf=c.n>=12?'hi':c.n>=6?'mid':'low',dots=conf==='hi'?'●●●':conf==='mid'?'●●○':'●○○';
-    var metrics='BLITZ <b>'+c.bp+'%</b> · '+(c.cov?c.cov.n+' '+c.cov.s+'%':'COV —')+' · FR '+(c.fr?c.fr.n:'—')+' · STUNTS '+c.sp+'%';
-    return'<div class="rk"><div class="rk-when"><span class="rk-if">IF</span><span class="rk-x">'+esc(c.xjp)+'</span></div>'
+    var metrics='BLITZ <b>'+c.bp+'%</b> · '+(c.cov?'COVERAGE '+c.cov.n+' '+c.cov.s+'%':'COVERAGE —')+' · STUNTS '+c.sp+'%';
+    return'<div class="rk"><div class="rk-when"><span class="rk-x">'+esc(c.xjp)+'</span></div>'
       +'<div class="rk-arrow">▸</div>'
       +'<div class="rk-then"><div class="rk-head '+hcls+'">'+head+'</div><div class="rk-metrics">'+metrics+'</div></div>'
       +'<div class="rk-meta"><span class="rk-n">N='+c.n+'</span><span class="rk-conf '+conf+'" title="信頼度 / confidence (sample size)">'+dots+'</span></div></div>';
   }).join('');
+}
+// ===== ASSOCIATION ANALYSIS (アソシエーション分析 / Apriori-lite) =====
+// 状況・隊形・front（=オフェンスから見える前提）→ ディフェンスの反応 を support/confidence/lift で抽出
+function mineAssociations(rows){
+  var n=rows.length; if(n<10)return [];
+  function dl(dn){return dn===1?'1st':dn===2?'2nd':dn===3?'3rd':dn===4?'4th':null;}
+  var anteSets=[],consSets=[],consCount={};
+  rows.forEach(function(r){
+    var A=[],C=[];
+    if(r.DN){var d=dl(r.DN);if(d)A.push('DN='+d);}
+    if(r.DIST_GRP)A.push('DIST='+r.DIST_GRP);
+    if(r.ZONE&&r.ZONE!=='UNKNOWN')A.push('ZONE='+r.ZONE);
+    if(r.FG&&r.FG!=='OTHER')A.push('FORM='+r.FG);
+    if(r['DEF FRONT'])A.push('FRONT='+r['DEF FRONT']);
+    if(r.HM)A.push('MOTION');
+    C.push(r.HB?'BLITZ':'NO-BLITZ');
+    if(r.HS)C.push('STUNT');
+    if(r.COVERAGE)C.push('COV='+r.COVERAGE);
+    if(r.HB&&r.BT)C.push('DIR='+r.BT);
+    anteSets.push(A);consSets.push(C);
+    C.forEach(function(c){consCount[c]=(consCount[c]||0)+1;});
+  });
+  var anteCount={},joint={};
+  anteSets.forEach(function(A,i){
+    var subs=[],x,y;
+    for(x=0;x<A.length;x++){subs.push([A[x]]);for(y=x+1;y<A.length;y++)subs.push([A[x],A[y]]);}
+    subs.forEach(function(s){var ak=s.join(' and ');anteCount[ak]=(anteCount[ak]||0)+1;
+      consSets[i].forEach(function(c){var jk=ak+' => '+c;joint[jk]=(joint[jk]||0)+1;});});
+  });
+  var rules=[];
+  Object.keys(joint).forEach(function(jk){
+    var p=jk.split(' => '),ak=p[0],c=p[1],supp=joint[jk],ac=anteCount[ak],conf=supp/ac,bse=consCount[c]/n,lift=bse?conf/bse:0;
+    if(c==='NO-BLITZ')return;
+    if(supp<4||conf<0.6||lift<1.25)return;
+    rules.push({ant:ak,cons:c,supp:supp,conf:conf,lift:lift,ac:ac});
+  });
+  rules.sort(function(x,y){return (y.lift*y.supp)-(x.lift*x.supp);});
+  var seen={},out=[];
+  rules.forEach(function(r){var k=r.ant+'=>'+r.cons;if(seen[k])return;seen[k]=1;out.push(r);});
+  return out;
+}
+// ---- 表記はデータのまま（LRED 等を訳さない）。カテゴリ別アイコン＋ CAT=VALUE ----
+var ARI={ZONE:'<path d="M8 1.5C5.5 1.5 3.5 3.5 3.5 6c0 3.2 4.5 8 4.5 8s4.5-4.8 4.5-8c0-2.5-2-4.5-4.5-4.5zm0 6.2A1.7 1.7 0 118 4.3a1.7 1.7 0 010 3.4z"/>',FRONT:'<path d="M8 1.3l4.7 1.9v3.6c0 3.3-2.1 6.1-4.7 7.5-2.6-1.4-4.7-4.2-4.7-7.5V3.2L8 1.3z"/>',DIST:'<path d="M1.5 8l2.7-2.7v1.8h7.6V5.3L14.5 8l-2.7 2.7V8.9H4.2v1.8L1.5 8z"/>',FORM:'<path d="M2.2 2.2h5v5h-5zM8.8 2.2h5v5h-5zM2.2 8.8h5v5h-5zM8.8 8.8h5v5h-5z"/>',MOTION:'<path d="M3 8a5 5 0 019-3V3.5L14.2 6l-3.2 1.1V5.9A3.4 3.4 0 005 8H3z"/>'};
+function aIc(cat){var p=ARI[cat];return p?'<svg class="ar-ic" viewBox="0 0 16 16" aria-hidden="true">'+p+'</svg>':'';}
+var AR_BOLT='<svg class="ar-ic" viewBox="0 0 16 16" aria-hidden="true"><path d="M9.3 1L3.4 9h3.7l-1 6 6.5-8.5H8.8L9.3 1z"/></svg>';
+function aCondItem(it){var i=it.indexOf('=');if(i<0)return'<span class="ar-item"><span class="ar-icw motion">'+aIc('MOTION')+'</span>'+esc(it)+'</span>';var cat=it.slice(0,i);if(cat==='DN')return'<span class="ar-item ar-dn">'+esc(it)+'</span>';return'<span class="ar-item"><span class="ar-icw '+cat.toLowerCase()+'">'+aIc(cat)+'</span>'+esc(it)+'</span>';}
+function aCond(ak){return ak.split(' and ').map(aCondItem).join('<span class="ar-sep">▸</span>');}
+function consLabel(c){return c==='BLITZ'?'BLITZ':c==='STUNT'?'STUNTS':c.indexOf('COV=')===0?('COVERAGE '+c.slice(4)):c.indexOf('DIR=')===0?('BLITZ─'+c.slice(4)):c;}
+function aResp(c){var blz=c==='BLITZ'||c==='STUNT'||c.indexOf('DIR=')===0;return'<span class="ar-icw '+(blz?'resp-blz':'resp-cov')+'">'+(blz?AR_BOLT:aIc('FRONT'))+'</span><span class="ar-resp-t">'+esc(consLabel(c))+'</span>';}
+function buildAssociation(rows){
+  var all=mineAssociations(rows);
+  if(!all.length)return'<div class="rk-empty">アソシエーション分析に十分なサンプルがありません（N≥10・条件の同時出現が必要）。/ Not enough data.</div>';
+  var rules=all.slice(0,14),more=all.length-rules.length;
+  var maxLift=Math.max.apply(null,rules.map(function(r){return r.lift;}))||1;
+  var head='<div class="arule ar-head"><span class="ar-no">№</span><div class="ar-cond">条件 / Condition <span class="ar-sub">(A AND B)</span></div><span class="ar-to"></span><div class="ar-respwrap">反応 / RESPONSE</div><div class="ar-m">CONF<span class="ar-sub">発生率</span></div><div class="ar-m">LIFT<span class="ar-sub">全体比</span></div><span class="ar-n">N<span class="ar-sub">該当/条件</span></span></div>';
+  var body=rules.map(function(r,idx){
+    var no=('0'+(idx+1)).slice(-2),confW=Math.round(r.conf*100),liftW=Math.max(6,Math.round(r.lift/maxLift*100));
+    var blz=r.cons==='BLITZ'||r.cons==='STUNT'||r.cons.indexOf('DIR=')===0;
+    return'<div class="arule"><span class="ar-no">'+no+'</span><div class="ar-cond">'+aCond(r.ant)+'</div><span class="ar-to">▸</span>'
+      +'<div class="ar-respwrap '+(blz?'is-blz':'is-cov')+'">'+aResp(r.cons)+'</div>'
+      +'<div class="ar-m"><span class="ar-mv">'+confW+'%</span><span class="ar-track"><i class="ar-fill blue" style="width:'+confW+'%"></i></span></div>'
+      +'<div class="ar-m"><span class="ar-mv red">'+r.lift.toFixed(2)+'×</span><span class="ar-track"><i class="ar-fill red" style="width:'+liftW+'%"></i></span></div>'
+      +'<span class="ar-n">'+r.supp+' / '+r.ac+'</span></div>';
+  }).join('');
+  var other=more>0?'<div class="arule ar-other"><span class="ar-no"></span><div class="ar-cond">その他の条件 '+more+' 件</div><span class="ar-to">▸</span><div class="ar-respwrap">—</div><div class="ar-m">—</div><div class="ar-m">—</div><span class="ar-n">—</span></div>':'';
+  return'<div class="atable">'+head+body+other+'</div><div class="ar-foot">ⓘ ソート：lift × 件数 の降順（同率は N の多い順）。語はデータ表記のまま（LRED 等）。</div>';
+}
+// ===== FLOW & SPLITS：クォーター/前後半/試合ごとの推移 =====
+function buildFlow(rows){
+  function rate(s){return s.length?Math.round(p(s.filter(function(r){return r.HB;}).length,s.length)):0;}
+  function srate(s){return s.length?Math.round(p(s.filter(function(r){return r.HS;}).length,s.length)):0;}
+  function top1(s,key){var c={};s.forEach(function(r){if(r[key])c[r[key]]=(c[r[key]]||0)+1;});var t=topN(c,1)[0];return t?esc(t[0])+' '+Math.round(p(t[1],s.length))+'%':'—';}
+  function frow(lbl,s){return'<div class="frow"><span class="fr-lbl">'+lbl+'</span><span class="fr-n">'+s.length+'</span><span class="fr-cov">'+top1(s,'COVERAGE')+'</span><span class="fr-cov">'+top1(s,'DEF FRONT')+'</span><span class="fr-v">'+rate(s)+'%</span><span class="fr-v">'+srate(s)+'%</span></div>';}
+  function fhead(h){return'<div class="frow fr-head"><span class="fr-lbl">'+h+'</span><span class="fr-n">N</span><span class="fr-cov">COVERAGE</span><span class="fr-cov">FRONT</span><span class="fr-v">BLITZ%</span><span class="fr-v">STUNTS%</span></div>';}
+  function block(title,head,body){return'<div class="flow-h">'+title+'</div><div class="ftable">'+fhead(head)+body+'</div>';}
+  var out='';
+  var games={};rows.forEach(function(r){var g=r.__game||'';if(g)(games[g]=games[g]||[]).push(r);});
+  var gKeys=Object.keys(games);
+  if(gKeys.length>1)out+=block('試合別 / by Game','GAME',gKeys.map(function(g){return frow(esc(g),games[g]);}).join(''));
+  var qr=[1,2,3,4].map(function(qt){return {q:qt,s:rows.filter(function(r){return parseInt(r.QTR,10)===qt;})};}).filter(function(x){return x.s.length;});
+  if(qr.length>=2)out+=block('クォーター別 / by Quarter','QTR',qr.map(function(x){return frow('Q'+x.q,x.s);}).join(''));
+  var h1=rows.filter(function(r){var q=parseInt(r.QTR,10);return q===1||q===2;}),h2=rows.filter(function(r){var q=parseInt(r.QTR,10);return q===3||q===4;});
+  if(h1.length&&h2.length)out+=block('前後半 / by Half','HALF',frow('1st Half',h1)+frow('2nd Half',h2));
+  if(!out)return'';
+  return'<div class="card"><div class="sec">🌊 FLOW & SPLITS — 流れ・試合別の傾向</div><div class="rk-note">クォーター・前後半・試合ごとの 主カバー / フロント / BLITZ% / STUNTS%。</div>'+out+'</div>';
 }
 function buildScoutingReport(rows){
   if(!rows||!rows.length)return'<div class="card"><div style="color:var(--g400);padding:8px">データがありません / No data.</div></div>';
@@ -1021,10 +1234,11 @@ function buildScoutingReport(rows){
     if(!ts.length)return'';
     return'<div class="rep-cat"><div class="rep-cat-h">'+c[1]+'</div><ul class="rep-list">'+ts.map(function(t){return'<li>'+t.jp+' <span class="rep-en">/ '+t.en+'</span> <span class="rep-n">N='+t.n+(t.n<6?' ⚠':'')+'</span></li>';}).join('')+'</ul></div>';
   }).join('')||'<div style="color:var(--g400);font-size:12px">—</div>';
-  return'<div class="rep-intro">対象 <b>'+esc(activeLabel())+'</b>（'+a.n+' Play）— データから抽出した <b>事前リード(READ KEYS)</b> と <b>傾向</b>。％＝割合 / N＝サンプル数（N&lt;6 は参考）。</div>'
-    +'<div class="card"><div class="sec">🔍 READ KEYS — 事前リード / If you see X ▸ expect Y</div>'
-    +'<div class="rk-note">オフェンスから見える状況（ダウン・距離・ゾーン・フォーメーション・モーション・相手のfront）に対する反応傾向を、強い順に。●＝信頼度(N)。</div>'
-    +'<div class="rk-list">'+buildReadKeys(rows)+'</div></div>'
+  return'<div class="rep-intro">対象 <b>'+esc(activeLabel())+'</b>（'+a.n+' Play）— データから抽出した <b>傾向</b>。％＝割合 / N＝サンプル数（N&lt;6 は参考）。</div>'
+    +'<div class="card"><div class="sec">🔗 ASSOCIATION RULES — アソシエーション分析</div>'
+    +'<div class="rk-note">条件（最大2つの組合せ：ダウン/距離/ゾーン/フォーメーション/相手front/モーション）→ ディフェンスの反応。<b>conf</b>＝その条件での発生率、<b>lift</b>＝全体比（1.0超で「その条件で起きやすい」）、<b>N</b>＝該当数/条件数。lift×件数の順。語はデータ表記のまま（LRED 等）。</div>'
+    +buildAssociation(rows)+'</div>'
+    +buildFlow(rows)
     +'<div class="card"><div class="sec">📋 TENDENCY SUMMARY — カテゴリ別の癖</div><div class="rep-grid">'+blocks+'</div></div>';
 }
 // SPECIAL SITUATIONS は OVERVIEW / SUMMARY 共通で buildSpecial2（クリックで詳細）を使用
@@ -1048,14 +1262,22 @@ function buildNextSteps(rows,a){
 }
 function buildOverview(rows){
   var a=analyze(rows);
-  // DEFENSIVE IDENTITY 直下のアコーディオン：FIELD ZONE / FORMATION の選択UIを内蔵（ov- 接頭辞IDで別インスタンス）
-  var acc='<div class="ov-acc-wrap">'
-    +'<details class="ov-acc"><summary><span class="ov-acc-ico">📍</span>FIELD ZONE 別に見る <span class="ov-acc-en">/ Explore by Field Zone</span><span class="ov-acc-chev">▾</span></summary>'
-      +'<div class="ov-acc-body"><div id="ov-zone-fieldbar"></div><div class="ztabs" id="ov-zone-tabs"></div><div id="ov-zone-body"></div></div></details>'
-    +'<details class="ov-acc"><summary><span class="ov-acc-ico">📋</span>FORMATION 別に見る <span class="ov-acc-en">/ Explore by Formation</span><span class="ov-acc-chev">▾</span></summary>'
-      +'<div class="ov-acc-body"><div class="ztabs" id="ov-form-tabs"></div><div id="ov-form-body"></div></div></details>'
-    +'</div>';
-  return buildIdentityInsights(rows,a,{limit:5,cta:true})+acc+overviewBody(rows,'ALL',null,'',true)+buildNextSteps(rows,a);
+  // 条件検索：右側の追尾ボタン → ポップアップで FIELD ZONE × FORMATION を組み合わせ絞り込み（setupCombo が描画）
+  var pop='<div class="cb-pop" id="cb-pop"><div class="cb-pop-back" id="cb-pop-back"></div><div class="cb-pop-card">'
+    +'<div class="cb-pop-head"><span class="cb-pop-title">🔍 条件検索 — <b>FIELD ZONE × FORMATION</b> <span class="cb-sub2">組み合わせて絞り込み</span></span><button class="cb-pop-x" id="cb-pop-x" aria-label="close">✕</button></div>'
+    +'<div class="cb-pop-body">'
+      +'<div class="cb-zone-row"><div class="cb-seclbl"><span class="cb-ico">📍</span>FIELD ZONE<span class="cb-sub">フィールドのゾーンを選択</span></div><div id="cb-yard" class="cb-yard"></div></div>'
+      +'<div class="cb-cards" id="cb-zones"></div>'
+      +'<div class="cb-seclbl"><span class="cb-ico">📋</span>FORMATION<span class="cb-sub">オフェンスフォーメーションを選択（複数可）</span></div>'
+      +'<div class="cb-cards" id="cb-forms"></div>'
+    +'</div>'
+    +'<div class="cb-foot" id="cb-foot"></div>'
+  +'</div></div>';
+  var html='<button class="cb-fab" id="cb-fab" aria-label="条件検索"><span class="cb-fab-ic">🔍</span><span class="cb-fab-t">条件検索</span></button>'
+    +'<div class="cb-active" id="cb-active"></div>'
+    +pop
+    +'<div id="cb-body"></div>';
+  return html+buildNextSteps(rows,a);
 }
 
 // ===== OVERVIEW2 (call-sheet style: BLITZ RATE / STUNTS RATE / COVERAGE per item) =====
@@ -1109,7 +1331,8 @@ function buildOverview2(rows){
   var all=ov2Item('ALL / 全体','#002B5C',rows);
   var byF=FO.map(function(fg){return ov2Item(fg,FC[fg],rows.filter(function(r){return r.FG===fg;}));}).join('');
   var zd=byZone(rows);
-  var byZ=ZO.filter(function(z){return z!=='ALL';}).map(function(z){return ov2Item(ZN[z]||z,ZCS[z],zd[z]||[]);}).join('');
+  var byZ=ZO.filter(function(z){return z!=='ALL';}).map(function(z){return ov2Item((ZN[z]||z)+(ZR[z]?'  '+ZR[z]:''),ZCS[z],zd[z]||[]);}).join('');
+  byZ+=ov2Item('GREEN ZONE / ORANGE ZONE  -20〜31','#0E9E6E',(zd.GREEN||[]).concat(zd.ORANGE||[]));
   var fc={};rows.forEach(function(r){if(r['DEF FRONT'])fc[r['DEF FRONT']]=(fc[r['DEF FRONT']]||0)+1;});
   var byFr=topN(fc,8).map(function(x,i){return ov2Item(x[0],CS_FCOL[i%CS_FCOL.length],rows.filter(function(r){return r['DEF FRONT']===x[0];}));}).join('')||'<div style="color:var(--g400);font-size:12px">—</div>';
   var cc={};rows.forEach(function(r){if(r.COVERAGE)cc[r.COVERAGE]=(cc[r.COVERAGE]||0)+1;});
@@ -1156,7 +1379,7 @@ function renderMCell(c,key,dn,dg,allType){
 
 // ===== TAB / PANEL SWITCHING =====
 function showTab(id){
-  ['overview','overview2','report','zone','form','ask'].forEach(function(t){
+  ['overview','overview2','report','ask'].forEach(function(t){
     document.getElementById('tab-'+t).className='tp'+(t===id?' vis':'');
     document.getElementById('tt-'+t).className='tt'+(t===id?' on':'');
   });
@@ -1213,6 +1436,77 @@ function setupMultiTabs(tabsId,bodyId,items,getRows,colorOf,labelOf,base){
     te.appendChild(t);
   });
   paint();render();
+}
+// ===== OVERVIEW: FIELD ZONE × FORMATION 組み合わせフィルタ =====
+function setupCombo(zonesId,formsId,yardId,bodyId,rows,base){
+  var ze=document.getElementById(zonesId),fe=document.getElementById(formsId),ye=document.getElementById(yardId),be=document.getElementById(bodyId);
+  if(!ze||!fe||!ye||!be)return;
+  var ZFULL={KNOCK:'KNOCKOUT ZONE',YELLOW:'YELLOW ZONE',GREEN:'GREEN ZONE',ORANGE:'ORANGE ZONE',HRED:'HIGH RED ZONE',MRED:'MIDDLE RED ZONE',LRED:'LOW RED ZONE'};
+  var ZYD={KNOCK:'-1〜-5',YELLOW:'-6〜-19',GREEN:'-20〜-49',ORANGE:'50〜31',HRED:'30〜21',MRED:'20〜11',LRED:'10〜1'};
+  function ydLbl(fp){return fp===0?'0':fp<50?('-'+fp):fp>50?(''+(100-fp)):'50';}
+  var lo=0,hi=100,selF={};
+  function zoneColor(z){return z==='ALL'?'#002B5C':(ZCS[z]||'#0055A4');}
+  function zoneRange(z){return z==='ALL'?[0,100]:(ZYARD[z]||[0,100]);}
+  function rowsInRange(a,b){return rows.filter(function(r){var fp=fpos(r['YARD LN']);return !isNaN(fp)&&fp>=a&&fp<=b;});}
+  function hasSel(){return (FO||[]).some(function(k){return selF[k];});}
+  function fieldLbl(){return (lo===0&&hi===100)?'全フィールド':(ydLbl(lo)+'〜'+ydLbl(hi)+' yd');}
+  function formArr(){return (FO||[]).filter(function(x){return selF[x];});}
+  function formLbl(){var k=formArr();return k.length?k.join(' + '):'全 FORMATION';}
+  // ---- popup open/close ----
+  var pop=document.getElementById('cb-pop'),fab=document.getElementById('cb-fab'),active=document.getElementById('cb-active');
+  function openPop(){if(pop)pop.classList.add('on');}function closePop(){if(pop)pop.classList.remove('on');}
+  if(fab)fab.onclick=openPop;
+  var px=document.getElementById('cb-pop-x'),pbk=document.getElementById('cb-pop-back');
+  if(px)px.onclick=closePop; if(pbk)pbk.onclick=closePop;
+  // ---- ヤードバー ----
+  var ticks='';for(var fp=10;fp<100;fp+=10){var nl=ydLbl(fp);ticks+='<div class="ybar-tick" style="left:'+fp+'%"></div><div class="ybar-num" style="left:'+fp+'%">'+nl+'</div>';}
+  ye.innerHTML='<div class="ybar"><div class="ybar-ends"><span>◀ 自陣 OWN</span><span>MID 50</span><span>OPP 敵陣 ▶</span></div>'
+    +'<div class="ybar-track" id="cb-trk">'+ticks+'<div class="ybar-sel" id="cb-sel"></div><div class="ybar-h" id="cb-hlo"></div><div class="ybar-h" id="cb-hhi"></div></div>'
+    +'<div class="ybar-read" id="cb-rd"></div></div>';
+  var trk=document.getElementById('cb-trk'),selEl=document.getElementById('cb-sel'),hLo=document.getElementById('cb-hlo'),hHi=document.getElementById('cb-hhi'),rd=document.getElementById('cb-rd');
+  var foot=document.getElementById('cb-foot');
+  if(foot)foot.innerHTML='<div class="cb-foot-sel"><span class="cb-foot-tag">選択中のフィルター</span><span id="cb-chips"></span></div><button class="cb-foot-btn" id="cb-foot-btn">この条件で適用 ▸</button>';
+  var applyBtn=document.getElementById('cb-foot-btn');
+  if(applyBtn)applyBtn.onclick=function(){closePop();if(be.scrollIntoView)be.scrollIntoView({behavior:'smooth',block:'start'});};
+  function chipsHTML(rm){
+    var h='<span class="cb-chip"><span class="cb-chip-ic">📍</span>フィールド: <b>'+esc(fieldLbl())+'</b>'+(rm&&!(lo===0&&hi===100)?'<span class="cb-chip-x" data-clr="field">×</span>':'')+'</span>';
+    var fa=formArr();
+    if(fa.length)fa.forEach(function(k){h+='<span class="cb-chip"><span class="cb-chip-ic">📋</span>'+esc(k)+(rm?'<span class="cb-chip-x" data-clr="form" data-k="'+esc(k)+'">×</span>':'')+'</span>';});
+    else h+='<span class="cb-chip"><span class="cb-chip-ic">📋</span>フォーメーション: <b>ALL</b></span>';
+    return h;
+  }
+  function bindChipX(c){if(!c)return;Array.prototype.forEach.call(c.querySelectorAll('.cb-chip-x'),function(x){x.onclick=function(e){e.stopPropagation();if(x.dataset.clr==='field'){lo=0;hi=100;paintZ('ALL');paintBar();}else{selF[x.dataset.k]=false;paintF();}render();};});}
+  function paintZ(act){Array.prototype.forEach.call(ze.querySelectorAll('.zcard[data-z]'),function(p){p.className='zcard'+(p.dataset.z===act?' on':'');});}
+  function paintF(){Array.prototype.forEach.call(fe.querySelectorAll('.zcard[data-k]'),function(p){var k=p.dataset.k,on=k==='__ALL'?!hasSel():!!selF[k];p.className='zcard'+(on?' on':'');});}
+  function paintBar(){selEl.style.left=lo+'%';selEl.style.width=(hi-lo)+'%';hLo.style.left=lo+'%';hHi.style.left=hi+'%';rd.innerHTML='範囲 <b>'+((lo===0&&hi===100)?'全フィールド (ALL)':ydLbl(lo)+' 〜 '+ydLbl(hi))+'</b>';}
+  function render(){
+    var sub=rowsInRange(lo,hi).filter(function(r){var fk=formArr();return !fk.length||fk.indexOf(r.FG)>=0;});
+    var chips=document.getElementById('cb-chips'); if(chips){chips.innerHTML=chipsHTML(true);bindChipX(chips);}
+    if(active){active.innerHTML='<span class="cb-active-lbl">🔍 条件</span>'+chipsHTML(true)+'<span class="cb-active-n">→ <b>'+sub.length+'</b> Play</span><span class="cb-active-edit">編集 ▸</span>';bindChipX(active);active.onclick=function(e){if(!e.target.classList.contains('cb-chip-x'))openPop();};}
+    be.innerHTML='<div class="msel-note">🔀 '+esc(fieldLbl())+' × '+esc(formLbl())+' / <b>'+sub.length+'</b> Play'+(sub.length<5?'（少数 / small）':'')+'</div>'+overviewBody(sub,'ALL',base,'',true);
+  }
+  function fpFromX(cx){var rc=trk.getBoundingClientRect();return Math.max(0,Math.min(100,Math.round((cx-rc.left)/rc.width*100)));}
+  function drag(which){return function(ev){ev.preventDefault();function mv(e){var cx=(e.touches&&e.touches[0])?e.touches[0].clientX:e.clientX;var fp=fpFromX(cx);if(which==='lo')lo=Math.min(fp,hi);else hi=Math.max(fp,lo);paintZ(null);paintBar();}function up(){document.removeEventListener('mousemove',mv);document.removeEventListener('mouseup',up);document.removeEventListener('touchmove',mv);document.removeEventListener('touchend',up);render();}document.addEventListener('mousemove',mv);document.addEventListener('mouseup',up);document.addEventListener('touchmove',mv,{passive:false});document.addEventListener('touchend',up);};}
+  hLo.addEventListener('mousedown',drag('lo'));hHi.addEventListener('mousedown',drag('hi'));
+  hLo.addEventListener('touchstart',drag('lo'),{passive:false});hHi.addEventListener('touchstart',drag('hi'),{passive:false});
+  // ---- FIELD ZONE カード（縦・件数は下／PDF）----
+  ze.innerHTML='';
+  ['ALL'].concat(ZO.filter(function(z){return z!=='ALL';})).forEach(function(z){
+    if(z!=='ALL'&&!rows.some(function(r){return r.ZONE===z;}))return;
+    var rg=zoneRange(z),cnt=rowsInRange(rg[0],rg[1]).length;
+    var nm=z==='ALL'?'ALL（全域）':(ZFULL[z]||z),yd=z==='ALL'?'全フィールド':(ZYD[z]||'');
+    var t=document.createElement('div');t.className='zcard';t.dataset.z=z;
+    t.innerHTML='<span class="zcard-ic" style="color:'+zoneColor(z)+'">⚑</span><span class="zcard-name">'+esc(nm)+'</span><span class="zcard-yd">'+esc(yd)+'</span><span class="zcard-n">'+cnt+'</span>';
+    t.onclick=function(){lo=rg[0];hi=rg[1];paintZ(z);paintBar();render();};
+    ze.appendChild(t);
+  });
+  // ---- FORMATION カード（縦・件数下・チェックボックス無し）----
+  fe.innerHTML='';
+  var allC=document.createElement('div');allC.className='zcard';allC.dataset.k='__ALL';
+  allC.innerHTML='<span class="zcard-ic" style="color:#002B5C">▦</span><span class="zcard-name">ALL（全件）</span><span class="zcard-n">'+rows.length+'</span>';
+  allC.onclick=function(){selF={};paintF();render();};fe.appendChild(allC);
+  (FO||[]).forEach(function(k){var cnt=rows.filter(function(r){return r.FG===k;}).length;var t=document.createElement('div');t.className='zcard';t.dataset.k=k;t.innerHTML='<span class="zcard-ic" style="color:'+(FC[k]||'#0055A4')+'">▣</span><span class="zcard-name">'+esc(k)+'</span><span class="zcard-n">'+cnt+'</span>';t.onclick=function(){selF[k]=!selF[k];paintF();render();};fe.appendChild(t);});
+  paintZ('ALL');paintBar();paintF();render();
 }
 // FIELD ZONE: YARD LINE 任意指定 + ゾーンプリセットタブ（押すと範囲が入力に反映）（#8）
 // フィールド位置: 0=自陣ゴール … 50=ミッド … 100=敵陣ゴール（自陣=負, 敵陣=正のYARD LNを連続化）
@@ -1379,14 +1673,23 @@ function frontBars(a,key){
 }
 function closeCell(){document.getElementById('cell-modal').classList.remove('on');}
 // ドーナツ（BLITZ/STUNTS RATE）クリックで種別を表示
+// BLITZ 詳細（TYPE / DIRECTION / DOWN）— OVERVIEW モーダルと COMPARE で共用
+function blitzDetail(rows){
+  var a=analyze(rows);
+  var dir=[['BOUNDARY',a.bt.BOUNDARY],['FIELD',a.bt.FIELD],['BOTH',a.bt.BOTH]].filter(function(x){return x[1]>0;});
+  var dirHtml=dir.length?makeBars(dir,a.bn||1):'<div class="cm-no">—</div>';
+  var downHtml=[1,2,3,4].map(function(dn){var sub=rows.filter(function(r){return r.DN===dn;});if(!sub.length)return'';var bc=sub.filter(function(r){return r.HB;}).length,bp=Math.round(p(bc,sub.length));return barRow(dnLbl(dn)+' Down',bp,bp>=45?'var(--blue)':BAR_GREY,bp+'%（'+bc+'/'+sub.length+'）',bp>=45);}).join('')||'<div class="cm-no">—</div>';
+  return'<div class="cm-sec">BLITZ TYPE / 種別</div>'+(a.blitzRaw.length?makeBars(a.blitzRaw,a.n):'<div class="cm-no">—</div>')
+    +'<div class="cm-sec">BLITZ DIRECTION / 方向</div>'+dirHtml
+    +'<div class="cm-sec">BLITZ by DOWN / ダウン別 BLITZ率</div>'+downHtml;
+}
 function showTypeModal(key,kind){
   var rows=(__MTX&&__MTX[key])||[];if(!rows.length)return;
   var a=analyze(rows);
   var isB=kind==='blitz';
-  var title=isB?'BLITZ TYPE / BLITZ種別':'STUNTS TYPE / STUNTS種別';
-  var data=isB?a.blitzRaw:a.stunt;
-  document.getElementById('cm-body').innerHTML='<div class="cm-head"><div><b>'+title+'</b><div class="cm-sub">'+rows.length+' Play ・ '+(isB?'BLITZ '+a.bp:'STUNTS '+a.sp)+'%</div></div><button class="cm-x" onclick="closeCell()">✕</button></div>'
-    +'<div class="cm-sec">'+(isB?'BLITZ TYPE':'STUNTS TYPE')+'</div>'+(data.length?makeBars(data,a.n):'<div class="cm-no">—</div>');
+  var title=isB?'BLITZ 詳細 / BLITZ Detail':'STUNTS TYPE / STUNTS種別';
+  var content=isB?blitzDetail(rows):('<div class="cm-sec">STUNTS TYPE</div>'+(a.stunt.length?makeBars(a.stunt,a.n):'<div class="cm-no">—</div>'));
+  document.getElementById('cm-body').innerHTML='<div class="cm-head"><div><b>'+title+'</b><div class="cm-sub">'+rows.length+' Play ・ '+(isB?'BLITZ '+a.bp:'STUNTS '+a.sp)+'%</div></div><button class="cm-x" onclick="closeCell()">✕</button></div>'+content;
   document.getElementById('cell-modal').classList.add('on');
 }
 
@@ -1483,8 +1786,9 @@ function buildCmpPanel(z,sr,gr,color,byForm){
   var samp='<div class="msel-note" style="display:flex;gap:18px;align-items:center;flex-wrap:wrap">PRE <b>N='+sn+'</b>　→　POST <b>N='+(hasPost?gn:'0')+'</b>　<span style="font-weight:600;color:var(--g400)">数値=POST・矢印=vs PRE / value=POST, arrow=vs PRE</span></div>';
 
   var frontCard='<div class="card"><div class="sec">FRONT</div>'+cmpBars(sa.front,ga.front,sn,gn,FRONT_COLORS)+'</div>';
-  var donutCard='<div class="card"><div class="sec">BLITZ / STUNTS</div><div class="donut-row">'
-    +cmpDonut('BLITZ RATE','var(--blue)',sa.bp,ga.bp,hasPost)
+  var cmpKey='cmp'+(++__mtxSeq);__MTX[cmpKey]=hasPost?gr:sr; // BLITZ RATE クリック→試合後(POST)の詳細
+  var donutCard='<div class="card"><div class="sec">BLITZ / STUNTS <span class="sec-hint">BLITZ RATE クリックで詳細 / tap</span></div><div class="donut-row">'
+    +'<div class="donut-clk" onclick="showTypeModal(\''+cmpKey+'\',\'blitz\')">'+cmpDonut('BLITZ RATE','var(--blue)',sa.bp,ga.bp,hasPost)+'</div>'
     +cmpDonut('STUNTS RATE','var(--green)',sa.sp,ga.sp,hasPost)
     +'</div></div>';
   var covCard='<div class="card"><div class="sec">COVERAGE</div>'+cmpBars(sa.cov,ga.cov,sn,gn)+'</div>';
@@ -1608,19 +1912,8 @@ function renderTabs(valid,label){
   document.getElementById('overview-body').innerHTML=buildOverview(zd.ALL);
   document.getElementById('overview2-body').innerHTML=buildOverview2(valid);
   document.getElementById('report-body').innerHTML=buildScoutingReport(valid);
-  setupZoneYard('zone-tabs','zone-body',valid,base,'zone-fieldbar');
-  setupMultiTabs('form-tabs','form-body',FO,
-    function(fg){return valid.filter(function(r){return r.FG===fg;});},
-    function(fg){return FC[fg];},
-    function(fg){return fg;},
-    base);
-  // OVERVIEW 内アコーディオン（FIELD ZONE / FORMATION の選択UIを内蔵）
-  if(document.getElementById('ov-zone-tabs'))setupZoneYard('ov-zone-tabs','ov-zone-body',valid,base,'ov-zone-fieldbar');
-  if(document.getElementById('ov-form-tabs'))setupMultiTabs('ov-form-tabs','ov-form-body',FO,
-    function(fg){return valid.filter(function(r){return r.FG===fg;});},
-    function(fg){return FC[fg];},
-    function(fg){return fg;},
-    base);
+  // OVERVIEW: FIELD ZONE × FORMATION 組み合わせフィルタ（ヤードバー付き）
+  setupCombo('cb-zones','cb-forms','cb-yard','cb-body',valid,base);
   window.__scoutData=valid; __scoutDataGlobal=valid; // PPTX / ASK AI / Compare はアクティブゲームを参照
 }
 // ゲーム切替バー（2試合以上のときだけ表示）
@@ -1653,7 +1946,7 @@ function odkRows(rows,code){return (rows||[]).filter(function(r){return (''+(r.O
 function loadGames(entries){
   try{
     var games=[],noD=0;
-    entries.forEach(function(e){if(!e||!e.rows)return;var dRows=odkRows(e.rows,'D');if(!dRows.length){noD++;return;}var valid=processData(dRows).filter(function(r){return r.ZONE!=='UNKNOWN';});if(valid.length)games.push({name:gameName(e.name),valid:valid});});
+    entries.forEach(function(e){if(!e||!e.rows)return;var dRows=odkRows(e.rows,'D');if(!dRows.length){noD++;return;}var gn=gameName(e.name);var valid=processData(dRows).filter(function(r){return r.ZONE!=='UNKNOWN';});valid.forEach(function(r){r.__game=gn;});if(valid.length)games.push({name:gn,valid:valid});});
     if(!games.length){showErr((noD?'ODK=D の行が見つかりません（スカウティングは ODK=D 行を集計します）。\n':'')+'有効なディフェンスデータが見つかりません。\nCOVERAGE・DEF FRONT・BLITZ のいずれかに値がある行が必要です。');return;}
     __games=games; __activeGame=games.length>1?-1:0; // 複数なら ALL GAMES から開始
     enterDashboard();
@@ -1818,7 +2111,10 @@ function localAsk(rows,q){
   }
 
   var a=analyze(sub);
-  if(has('崩','対策','有効','弱点','beat','attack','weakness','突く','攻め','どう攻','パス')){
+  var wantBlitz=has('ブリッツ','blitz','プレッシャー','圧力','pressure','ブリツ');
+  var wantStunt=has('スタン','stunt');
+  // 「崩し方/対策」系：ただし BLITZ・STUNTS を明示している場合はそちらを優先（カバー表が返る誤動作を防ぐ）
+  if(has('崩','対策','有効','弱点','beat','attack','weakness','突く','攻め','どう攻','パス')&&!wantBlitz&&!wantStunt){
     var c1=a.cov[0]?a.cov[0][0]:'—';
     return {summary:'How to beat '+label+': top coverage '+c1+' ('+(a.cov[0]?p(a.cov[0][1],a.n):0)+'%) is keyable.',
       blocks:[
@@ -2145,8 +2441,6 @@ document.addEventListener('DOMContentLoaded',function(){
   document.getElementById('tt-overview').addEventListener('click',function(){showTab('overview');});
   document.getElementById('tt-overview2').addEventListener('click',function(){showTab('overview2');});
   document.getElementById('tt-report').addEventListener('click',function(){showTab('report');});
-  document.getElementById('tt-zone').addEventListener('click',function(){showTab('zone');});
-  document.getElementById('tt-form').addEventListener('click',function(){showTab('form');});
   document.getElementById('tt-ask').addEventListener('click',function(){showTab('ask');});
   document.getElementById('btn-ask').addEventListener('click',generateCustom);
   document.getElementById('btn-pptx').addEventListener('click',exportPptx);
