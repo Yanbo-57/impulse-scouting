@@ -757,8 +757,7 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
 
 <script>
 // ===== CONSTANTS =====
-var BP={W:1,F:1,C:1}, FP={M:1,S:1};
-// FIELD ZONE（コールシート準拠）: GREEN / ORANGE(31-50) / HIGH RED(21-30) / MIDDLE RED(11-20) / LOW RED(1-10) / KNOCKOUT(-1〜-5) / YELLOW(-6〜-20)
+// FIELD ZONE（ヤード表記 自陣=負/敵陣=正）: KNOCKOUT 自1-5(-1〜-5) / YELLOW 自6-19(-6〜-19) / GREEN 自20-50(-20〜-49) / ORANGE 敵31-50(50〜31) / HIGH RED 敵21-30(30〜21) / MIDDLE RED 敵11-20(20〜11) / LOW RED 敵1-10(10〜1)
 var ZCS={ALL:'#002B5C',GREEN:'#059669',ORANGE:'#EA580C',HRED:'#E0564B',MRED:'#C0392B',LRED:'#8B1E14',KNOCK:'#374151',YELLOW:'#D97706'};
 var ZE={ALL:'📊',GREEN:'🟢',ORANGE:'🟠',HRED:'🔴',MRED:'🔴',LRED:'🔴',KNOCK:'🏁',YELLOW:'🟡'};
 var ZN={ALL:'ALL',GREEN:'GREEN ZONE',ORANGE:'ORANGE ZONE',HRED:'HIGH RED ZONE',MRED:'MIDDLE RED ZONE',LRED:'LOW RED ZONE',KNOCK:'KNOCKOUT ZONE',YELLOW:'YELLOW ZONE'};
@@ -1085,62 +1084,7 @@ function dcTells(rows,a){
 }
 
 // DEFENSIVE IDENTITY ＋ KEY INSIGHTS（OVERVIEW 用サマリー）
-function buildIdentityInsights(rows,a,opts){
-  opts=opts||{};
-  var topc=a.cov[0]?a.cov[0][0]:'—';
-  var name=(a.bp>=45?'Pressure-Oriented':a.bp>=30?'Balanced-Pressure':'Coverage-Oriented')+' '+topc+'-Based Defense';
-  var tells=dcTells(rows,a).sort(function(x,y){return y.str-x.str;});
-  var lim=opts.limit||8;
-  var lis=tells.slice(0,lim).map(function(t){return'<li>'+t.jp+' <span class="idt-en">/ '+t.en+'</span></li>';}).join('')||'<li>傾向判断にはサンプルが不足 <span class="idt-en">/ Not enough data</span></li>';
-  var cta=opts.cta?'<button class="idt-cta" onclick="showTab(\'report\')">🔍 READ KEYS ＆ 全テルを見る / Full Scouting Report ▸</button>':'';
-  return'<div class="card identity"><div class="idt-watermark">'+MITSU+'</div>'
-    +'<div class="idt-head"><span class="idt-ico">🎯</span><div><div class="idt-label">DEFENSIVE IDENTITY / KEY INSIGHTS</div><div class="idt-name">'+name+'</div></div></div>'
-    +'<div class="idt-sub">データから読める DC の癖（要点）/ Top data-derived tells</div>'
-    +'<ul class="idt-list">'+lis+'</ul>'+cta+'</div>';
-}
 
-// ===== READ KEYS：オフェンスから見える状況 X → ディフェンスの反応 Y（事前リード）=====
-function buildReadKeys(rows){
-  var A=analyze(rows),ov=A.bp,ovsp=A.sp,n0=rows.length||1;
-  var ovCov={};A.cov.forEach(function(x){ovCov[x[0]]=Math.round(p(x[1],n0));});
-  var C=[];
-  function consider(xjp,sub,minN){
-    if(!sub||sub.length<(minN||5))return;
-    var s=analyze(sub),n=s.n;
-    var cov=s.cov[0]?{n:s.cov[0][0],s:Math.round(p(s.cov[0][1],n))}:null;
-    var fr=s.front[0]?{n:s.front[0][0],s:Math.round(p(s.front[0][1],n))}:null;
-    var sB=Math.abs(s.bp-ov),sS=Math.abs(s.sp-ovsp),sC=cov?(cov.s-(ovCov[cov.n]||0)):0;
-    var prim=Math.max(sB,sS*0.85,sC*0.85),wN=Math.min(1,n/12),score=prim*wN;
-    C.push({xjp:xjp,n:n,bp:s.bp,sp:s.sp,cov:cov,fr:fr,sB:sB,sS:sS,sC:sC,score:score});
-  }
-  [1,2,3,4].forEach(function(dn){DO.forEach(function(dg){consider(dnLbl(dn)+' & '+dg,rows.filter(function(r){return r.DN===dn&&r.DIST_GRP===dg;}),4);});});
-  DO.forEach(function(dg){consider(dg,rows.filter(function(r){return r.DIST_GRP===dg;}),6);});
-  [1,2,3,4].forEach(function(dn){consider(dnLbl(dn)+' Down',rows.filter(function(r){return r.DN===dn;}),6);});
-  ['KNOCK','YELLOW','GREEN','ORANGE','HRED','MRED','LRED'].forEach(function(z){consider(ZN[z]||z,rows.filter(function(r){return r.ZONE===z;}),5);});
-  consider('RED ZONE 圏',rows.filter(function(r){return r.ZONE==='HRED'||r.ZONE==='MRED'||r.ZONE==='LRED';}),5);
-  (FO||[]).forEach(function(fg){consider('vs '+fg,rows.filter(function(r){return r.FG===fg;}),5);});
-  var ffc={};rows.forEach(function(r){if(r['DEF FRONT'])ffc[r['DEF FRONT']]=(ffc[r['DEF FRONT']]||0)+1;});
-  topN(ffc,6).forEach(function(x){consider('相手が '+x[0]+' を見せたら',rows.filter(function(r){return r['DEF FRONT']===x[0];}),5);});
-  consider('あなたが MOTION を使うと',rows.filter(function(r){return r.HM;}),6);
-  consider('シリーズ頭（SERIES=1）',rows.filter(function(r){return (''+(r['SERIES']||'')).trim()==='1';}),4);
-  // dedupe + rank
-  var seen={},keys=[];
-  C.sort(function(x,y){return y.score-x.score;}).forEach(function(c){if(seen[c.xjp])return;seen[c.xjp]=1;keys.push(c);});
-  keys=keys.filter(function(c){return c.score>=8;}).slice(0,10);
-  if(!keys.length)return'<div class="rk-empty">サンプルが少なく、明確な事前リードはまだ抽出できません。/ Not enough data for clear read keys yet.</div>';
-  return keys.map(function(c){
-    var head,hcls;
-    if(c.sB>=c.sC&&c.sB>=c.sS){head='BLITZ '+c.bp+'% <span class="rk-diff">'+(c.bp-ov>=0?'+':'')+(c.bp-ov)+'pt</span>';hcls=c.bp>=ov?'rk-up':'rk-down';}
-    else if(c.sC>=c.sS&&c.cov){head='COVERAGE '+c.cov.n+'（'+c.cov.s+'%）';hcls='rk-cov';}
-    else{head='STUNTS '+c.sp+'%';hcls='rk-stunt';}
-    var conf=c.n>=12?'hi':c.n>=6?'mid':'low',dots=conf==='hi'?'●●●':conf==='mid'?'●●○':'●○○';
-    var metrics='BLITZ <b>'+c.bp+'%</b> · '+(c.cov?'COVERAGE '+c.cov.n+' '+c.cov.s+'%':'COVERAGE —')+' · STUNTS '+c.sp+'%';
-    return'<div class="rk"><div class="rk-when"><span class="rk-x">'+esc(c.xjp)+'</span></div>'
-      +'<div class="rk-arrow">▸</div>'
-      +'<div class="rk-then"><div class="rk-head '+hcls+'">'+head+'</div><div class="rk-metrics">'+metrics+'</div></div>'
-      +'<div class="rk-meta"><span class="rk-n">N='+c.n+'</span><span class="rk-conf '+conf+'" title="信頼度 / confidence (sample size)">'+dots+'</span></div></div>';
-  }).join('');
-}
 // ===== ASSOCIATION ANALYSIS (アソシエーション分析 / Apriori-lite) =====
 // 状況・隊形・front（=オフェンスから見える前提）→ ディフェンスの反応 を support/confidence/lift で抽出
 function mineAssociations(rows){
@@ -1162,31 +1106,30 @@ function mineAssociations(rows){
     anteSets.push(A);consSets.push(C);
     C.forEach(function(c){consCount[c]=(consCount[c]||0)+1;});
   });
+  // マップのキーは JSON.stringify で一意化（データ値との衝突なし）。前件は配列のまま rule に保持（文字列の再分割をしない）
   var anteCount={},joint={};
   anteSets.forEach(function(A,i){
     var subs=[],x,y;
     for(x=0;x<A.length;x++){subs.push([A[x]]);for(y=x+1;y<A.length;y++)subs.push([A[x],A[y]]);}
-    subs.forEach(function(s){var ak=s.join(' and ');anteCount[ak]=(anteCount[ak]||0)+1;
-      consSets[i].forEach(function(c){var jk=ak+' => '+c;joint[jk]=(joint[jk]||0)+1;});});
+    subs.forEach(function(s){var ak=JSON.stringify(s);anteCount[ak]=(anteCount[ak]||0)+1;
+      consSets[i].forEach(function(c){var jk=JSON.stringify([s,c]);joint[jk]=(joint[jk]||0)+1;});});
   });
   var rules=[];
   Object.keys(joint).forEach(function(jk){
-    var p=jk.split(' => '),ak=p[0],c=p[1],supp=joint[jk],ac=anteCount[ak],conf=supp/ac,bse=consCount[c]/n,lift=bse?conf/bse:0;
+    var pair=JSON.parse(jk),s=pair[0],c=pair[1],supp=joint[jk],ac=anteCount[JSON.stringify(s)],conf=supp/ac,bse=consCount[c]/n,lift=bse?conf/bse:0;
     if(c==='NO-BLITZ')return;
     if(supp<4||conf<0.6||lift<1.25)return;
-    rules.push({ant:ak,cons:c,supp:supp,conf:conf,lift:lift,ac:ac});
+    rules.push({antArr:s,cons:c,supp:supp,conf:conf,lift:lift,ac:ac});
   });
   rules.sort(function(x,y){return (y.lift*y.supp)-(x.lift*x.supp);});
-  var seen={},out=[];
-  rules.forEach(function(r){var k=r.ant+'=>'+r.cons;if(seen[k])return;seen[k]=1;out.push(r);});
-  return out;
+  return rules;
 }
 // ---- 表記はデータのまま（LRED 等を訳さない）。カテゴリ別アイコン＋ CAT=VALUE ----
 var ARI={ZONE:'<path d="M8 1.5C5.5 1.5 3.5 3.5 3.5 6c0 3.2 4.5 8 4.5 8s4.5-4.8 4.5-8c0-2.5-2-4.5-4.5-4.5zm0 6.2A1.7 1.7 0 118 4.3a1.7 1.7 0 010 3.4z"/>',FRONT:'<path d="M8 1.3l4.7 1.9v3.6c0 3.3-2.1 6.1-4.7 7.5-2.6-1.4-4.7-4.2-4.7-7.5V3.2L8 1.3z"/>',DIST:'<path d="M1.5 8l2.7-2.7v1.8h7.6V5.3L14.5 8l-2.7 2.7V8.9H4.2v1.8L1.5 8z"/>',FORM:'<path d="M2.2 2.2h5v5h-5zM8.8 2.2h5v5h-5zM2.2 8.8h5v5h-5zM8.8 8.8h5v5h-5z"/>',MOTION:'<path d="M3 8a5 5 0 019-3V3.5L14.2 6l-3.2 1.1V5.9A3.4 3.4 0 005 8H3z"/>'};
 function aIc(cat){var p=ARI[cat];return p?'<svg class="ar-ic" viewBox="0 0 16 16" aria-hidden="true">'+p+'</svg>':'';}
 var AR_BOLT='<svg class="ar-ic" viewBox="0 0 16 16" aria-hidden="true"><path d="M9.3 1L3.4 9h3.7l-1 6 6.5-8.5H8.8L9.3 1z"/></svg>';
 function aCondItem(it){var i=it.indexOf('=');if(i<0)return'<span class="ar-item"><span class="ar-icw motion">'+aIc('MOTION')+'</span>'+esc(it)+'</span>';var cat=it.slice(0,i);if(cat==='DN')return'<span class="ar-item ar-dn">'+esc(it)+'</span>';return'<span class="ar-item"><span class="ar-icw '+cat.toLowerCase()+'">'+aIc(cat)+'</span>'+esc(it)+'</span>';}
-function aCond(ak){return ak.split(' and ').map(aCondItem).join('<span class="ar-sep">▸</span>');}
+function aCond(arr){return (arr||[]).map(aCondItem).join('<span class="ar-sep">▸</span>');}
 function consLabel(c){return c==='BLITZ'?'BLITZ':c==='STUNT'?'STUNTS':c.indexOf('COV=')===0?('COVERAGE '+c.slice(4)):c.indexOf('DIR=')===0?('BLITZ─'+c.slice(4)):c;}
 function aResp(c){var blz=c==='BLITZ'||c==='STUNT'||c.indexOf('DIR=')===0;return'<span class="ar-icw '+(blz?'resp-blz':'resp-cov')+'">'+(blz?AR_BOLT:aIc('FRONT'))+'</span><span class="ar-resp-t">'+esc(consLabel(c))+'</span>';}
 function buildAssociation(rows){
@@ -1198,7 +1141,7 @@ function buildAssociation(rows){
   var body=rules.map(function(r,idx){
     var no=('0'+(idx+1)).slice(-2),confW=Math.round(r.conf*100),liftW=Math.max(6,Math.round(r.lift/maxLift*100));
     var blz=r.cons==='BLITZ'||r.cons==='STUNT'||r.cons.indexOf('DIR=')===0;
-    return'<div class="arule"><span class="ar-no">'+no+'</span><div class="ar-cond">'+aCond(r.ant)+'</div><span class="ar-to">▸</span>'
+    return'<div class="arule"><span class="ar-no">'+no+'</span><div class="ar-cond">'+aCond(r.antArr)+'</div><span class="ar-to">▸</span>'
       +'<div class="ar-respwrap '+(blz?'is-blz':'is-cov')+'">'+aResp(r.cons)+'</div>'
       +'<div class="ar-m"><span class="ar-mv">'+confW+'%</span><span class="ar-track"><i class="ar-fill blue" style="width:'+confW+'%"></i></span></div>'
       +'<div class="ar-m"><span class="ar-mv red">'+r.lift.toFixed(2)+'×</span><span class="ar-track"><i class="ar-fill red" style="width:'+liftW+'%"></i></span></div>'
@@ -1405,38 +1348,6 @@ function mkTab(label,active,color,tabsId,bodyId,prefix){
   t.onclick=function(){showZP(label,color,prefix,tabsId,bodyId);};
   return t;
 }
-// 複数選択タブ：選択した区分を合算して overviewBody を再描画
-function setupMultiTabs(tabsId,bodyId,items,getRows,colorOf,labelOf,base){
-  var te=document.getElementById(tabsId),be=document.getElementById(bodyId);
-  te.innerHTML='';
-  var sel={},firstKey=null;
-  items.forEach(function(k){if(firstKey===null&&getRows(k).length)firstKey=k;});
-  if(firstKey)sel[firstKey]=true;
-  function paint(){Array.prototype.forEach.call(te.querySelectorAll('.zt[data-k]'),function(pill){var k=pill.dataset.k,on=!!sel[k];pill.className='zt msel'+(on?' on':'');pill.style.background=on?colorOf(k):'';pill.style.color=on?'#fff':'';pill.style.borderColor=on?'transparent':'';var ck=pill.querySelector('.mck');if(ck)ck.textContent=on?'☑':'☐';});}
-  function render(){
-    var keys=items.filter(function(k){return sel[k];});
-    var union=[];keys.forEach(function(k){union=union.concat(getRows(k));});
-    var note=keys.length>1?'<div class="msel-note">🔀 '+keys.length+'区分を合算 / '+keys.length+' groups combined: '+keys.map(function(k){return labelOf(k);}).join('  +  ')+'</div>':'';
-    be.innerHTML=note+overviewBody(union,keys.length===1?keys[0]:'MULTI',base);
-  }
-  // 操作バー（複数選択ヒント + 全選択 / クリア）
-  var ctl=document.createElement('div');ctl.className='msel-ctl';
-  ctl.innerHTML='<span class="msel-hint">☑ 複数選択できます（クリックで追加/解除）/ tap to multi-select</span>';
-  var bAll=document.createElement('button');bAll.className='msel-btn';bAll.textContent='全選択 All';
-  bAll.onclick=function(){items.forEach(function(k){if(getRows(k).length)sel[k]=true;});paint();render();};
-  var bClr=document.createElement('button');bClr.className='msel-btn';bClr.textContent='クリア Clear';
-  bClr.onclick=function(){items.forEach(function(k){sel[k]=false;});if(firstKey)sel[firstKey]=true;paint();render();};
-  ctl.appendChild(bAll);ctl.appendChild(bClr);te.appendChild(ctl);
-  // 選択ピル
-  items.forEach(function(k){
-    var rows=getRows(k);
-    var t=document.createElement('div');t.className='zt msel';t.dataset.k=k;
-    t.innerHTML='<span class="mck">☐</span> '+labelOf(k)+' <span class="mcnt">('+rows.length+')</span>';
-    t.onclick=function(){sel[k]=!sel[k];if(!items.some(function(x){return sel[x];}))sel[k]=true;paint();render();};
-    te.appendChild(t);
-  });
-  paint();render();
-}
 // ===== OVERVIEW: FIELD ZONE × FORMATION 組み合わせフィルタ =====
 function setupCombo(zonesId,formsId,yardId,bodyId,rows,base){
   var ze=document.getElementById(zonesId),fe=document.getElementById(formsId),ye=document.getElementById(yardId),be=document.getElementById(bodyId);
@@ -1508,48 +1419,9 @@ function setupCombo(zonesId,formsId,yardId,bodyId,rows,base){
   (FO||[]).forEach(function(k){var cnt=rows.filter(function(r){return r.FG===k;}).length;var t=document.createElement('div');t.className='zcard';t.dataset.k=k;t.innerHTML='<span class="zcard-ic" style="color:'+(FC[k]||'#0055A4')+'">▣</span><span class="zcard-name">'+esc(k)+'</span><span class="zcard-n">'+cnt+'</span>';t.onclick=function(){selF[k]=!selF[k];paintF();render();};fe.appendChild(t);});
   paintZ('ALL');paintBar();paintF();render();
 }
-// FIELD ZONE: YARD LINE 任意指定 + ゾーンプリセットタブ（押すと範囲が入力に反映）（#8）
-// フィールド位置: 0=自陣ゴール … 50=ミッド … 100=敵陣ゴール（自陣=負, 敵陣=正のYARD LNを連続化）
+// フィールド位置 fpos: 0=自陣ゴール … 50=ミッド … 100=敵陣ゴール（自陣=負, 敵陣=正の YARD LN を連続化）
 function fpos(y){y=parseFloat(y);return isNaN(y)?NaN:(y<=0?-y:100-y);}
 function fpLbl(fp){return fp<=50?('自'+fp):('敵'+(100-fp));}
-function setupZoneYard(tabsId,bodyId,rows,base,fbId){
-  var te=document.getElementById(tabsId),be=document.getElementById(bodyId),fe=document.getElementById(fbId||tabsId);
-  te.innerHTML='';fe.innerHTML='';
-  var lo=0,hi=100;
-  var zones=ZO.filter(function(z){return z!=='ALL';});
-  var lines='',nums='';
-  for(var fp=0;fp<=100;fp+=10){
-    lines+='<div class="fb-yl" style="left:'+fp+'%"></div>';
-    if(fp>0&&fp<100){var lbl=(fp<=50?fp:100-fp);nums+='<div class="fb-num t" style="left:'+fp+'%">'+lbl+'</div><div class="fb-num" style="left:'+fp+'%">'+lbl+'</div>';}
-  }
-  var hashes='<div class="fb-hash" style="top:4px"></div><div class="fb-hash" style="top:36px"></div><div class="fb-hash" style="top:64px"></div><div class="fb-hash" style="bottom:4px"></div>';
-  fe.innerHTML='<div class="fieldbar">'
-    +'<div class="fb-ends"><span>◀ 自陣 OWN</span><span>MID 50</span><span>OPP 敵陣 ▶</span></div>'
-    +'<div class="fb-field">'
-      +'<div class="fb-ez l">END ZONE</div>'
-      +'<div class="fb-track" id="'+tabsId+'-trk">'
-        +'<div class="fb-turf">'+lines+hashes+nums+'</div>'
-        +'<div class="fb-sel" id="'+tabsId+'-sel"></div><div class="fb-h" id="'+tabsId+'-hlo"></div><div class="fb-h" id="'+tabsId+'-hhi"></div>'
-      +'</div>'
-      +'<div class="fb-ez r">END ZONE</div>'
-    +'</div>'
-    +'<div class="fb-read" id="'+tabsId+'-rd"></div></div>'
-    +'<div class="msel-ctl"><span class="msel-hint">ハンドルをドラッグ、またはゾーンをタップ / drag handles or tap a zone</span><button class="msel-btn" id="'+tabsId+'-all">ALL</button></div>';
-  var trk=document.getElementById(tabsId+'-trk'),sel=document.getElementById(tabsId+'-sel'),hLo=document.getElementById(tabsId+'-hlo'),hHi=document.getElementById(tabsId+'-hhi'),rd=document.getElementById(tabsId+'-rd');
-  function paintZ(active){Array.prototype.forEach.call(te.querySelectorAll('.zt[data-z]'),function(pz){var z=pz.dataset.z,on=z===active;pz.className='zt'+(on?' on':'');pz.style.background=on?ZCS[z]:'';pz.style.color=on?'#fff':'';pz.style.borderColor=on?'transparent':'';});}
-  function paintBar(){sel.style.left=lo+'%';sel.style.width=(hi-lo)+'%';hLo.style.left=lo+'%';hHi.style.left=hi+'%';rd.innerHTML='範囲 <b>'+fpLbl(lo)+'</b> 〜 <b>'+fpLbl(hi)+'</b>'+((lo===0&&hi===100)?' (ALL)':'');}
-  function render(){var sub=rows.filter(function(r){var fp=fpos(r['YARD LN']);return !isNaN(fp)&&fp>=lo&&fp<=hi;});be.innerHTML='<div class="msel-note">フィールド位置 <b>'+fpLbl(lo)+'〜'+fpLbl(hi)+'</b> / '+sub.length+' Play</div>'+overviewBody(sub,'YARD',base);}
-  function fpFromX(cx){var rc=trk.getBoundingClientRect();return Math.max(0,Math.min(100,Math.round((cx-rc.left)/rc.width*100)));}
-  function drag(which){return function(ev){ev.preventDefault();
-    function mv(e){var cx=(e.touches&&e.touches[0])?e.touches[0].clientX:e.clientX;var fp=fpFromX(cx);if(which==='lo')lo=Math.min(fp,hi);else hi=Math.max(fp,lo);paintZ(null);paintBar();}
-    function up(){document.removeEventListener('mousemove',mv);document.removeEventListener('mouseup',up);document.removeEventListener('touchmove',mv);document.removeEventListener('touchend',up);render();}
-    document.addEventListener('mousemove',mv);document.addEventListener('mouseup',up);document.addEventListener('touchmove',mv,{passive:false});document.addEventListener('touchend',up);};}
-  hLo.addEventListener('mousedown',drag('lo'));hHi.addEventListener('mousedown',drag('hi'));
-  hLo.addEventListener('touchstart',drag('lo'),{passive:false});hHi.addEventListener('touchstart',drag('hi'),{passive:false});
-  document.getElementById(tabsId+'-all').onclick=function(){lo=0;hi=100;paintZ(null);paintBar();render();};
-  zones.forEach(function(z){var t=document.createElement('div');t.className='zt';t.dataset.z=z;t.innerHTML=(ZE[z]||'')+' '+(ZN[z]||z)+(ZR[z]?' <span class="zt-yd">'+ZR[z]+'</span>':'');t.onclick=function(){var r=ZYARD[z];if(r){lo=r[0];hi=r[1];paintZ(z);paintBar();render();}};te.appendChild(t);});
-  paintBar();render();
-}
 
 
 // ===== KEY INSIGHTS (facts only, NFL-coach level — no recommendations) =====
