@@ -707,8 +707,7 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
       <div class="ttabs" id="cmp-mode" style="max-width:760px;margin-bottom:14px">
         <div class="tt on" id="cmp-mode-overview">📊 OVERVIEW</div>
         <div class="tt" id="cmp-mode-summary">🗒️ SUMMARY</div>
-        <div class="tt" id="cmp-mode-zone">📍 FIELD ZONE</div>
-        <div class="tt" id="cmp-mode-form">📋 FORMATION</div>
+        <div class="tt" id="cmp-mode-report">🔍 SCOUTING REPORT</div>
         <div class="tt" id="cmp-mode-ask">🧠 ASK AI</div>
       </div>
       <div id="cmp-overview-wrap">
@@ -717,13 +716,8 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
       <div id="cmp-summary-wrap" style="display:none">
         <div id="cmp-summary-body"></div>
       </div>
-      <div id="cmp-zone-wrap" style="display:none">
-        <div class="ztabs" id="cmp-zone-tabs"></div>
-        <div id="cmp-zone-body"></div>
-      </div>
-      <div id="cmp-form-wrap" style="display:none">
-        <div class="ztabs" id="cmp-form-tabs"></div>
-        <div id="cmp-form-body"></div>
+      <div id="cmp-report-wrap" style="display:none">
+        <div id="cmp-report-body"></div>
       </div>
       <div id="cmp-ask-wrap" style="display:none">
         <div class="card">
@@ -1164,7 +1158,7 @@ function buildFlowSplits(rows){
   if(h1.length&&h2.length)out+=sect('前後半 / by Half',ov2Item('1st Half','#0055A4',h1)+ov2Item('2nd Half','#C0392B',h2));
   return out?'<div class="sec" style="margin-top:22px">🌊 FLOW &amp; SPLITS — 流れ・試合別の傾向</div><div style="font-size:10px;color:var(--g400);margin:-4px 0 8px">※ クォーター・前後半・試合ごとの カバー / フロント / BLITZ% / STUNTS%（カードをクリックで詳細）</div>'+out:'';
 }
-function buildScoutingReport(rows){
+function buildScoutingReport(rows,label){
   if(!rows||!rows.length)return'<div class="card"><div style="color:var(--g400);padding:8px">データがありません / No data.</div></div>';
   var a=analyze(rows),tells=dcTells(rows,a);
   var cats=[['PRESSURE','PRESSURE / 圧力'],['COVERAGE','COVERAGE / カバー'],['FRONT','FRONT &amp; STUNTS'],['SITUATIONAL','SITUATIONAL / 状況別'],['SEQUENCING','SEQUENCING / 連続・配列']];
@@ -1172,9 +1166,9 @@ function buildScoutingReport(rows){
     if(!ts.length)return'';
     return'<div class="rep-cat"><div class="rep-cat-h">'+c[1]+'</div><ul class="rep-list">'+ts.map(function(t){return'<li>'+t.jp+' <span class="rep-en">/ '+t.en+'</span> <span class="rep-n">N='+t.n+(t.n<6?' ⚠':'')+'</span></li>';}).join('')+'</ul></div>';
   }).join('')||'<div style="color:var(--g400);font-size:12px">—</div>';
-  return'<div class="rep-intro">対象 <b>'+esc(activeLabel())+'</b>（'+a.n+' Play）— データから抽出した <b>傾向</b>。％＝割合 / N＝サンプル数（N&lt;6 は参考）。</div>'
+  return'<div class="rep-intro">対象 <b>'+esc(label||activeLabel())+'</b>（'+a.n+' Play）— データから抽出した <b>傾向</b>。％＝割合 / N＝サンプル数（N&lt;6 は参考）。</div>'
     +'<div class="card"><div class="sec">🔗 ASSOCIATION RULES — アソシエーション分析</div>'
-    +'<div class="rk-note">条件（最大2つの組合せ：ダウン/距離/ゾーン/フォーメーション/相手front/モーション）→ ディフェンスの反応。<b>conf</b>＝その条件での発生率、<b>lift</b>＝全体比（1.0超で「その条件で起きやすい」）、<b>N</b>＝該当数/条件数。lift×件数の順。語はデータ表記のまま（LRED 等）。</div>'
+    +'<div class="rk-note">条件（最大2つの組合せ：ダウン/距離/ゾーン/フォーメーション/相手front）→ ディフェンスの反応。<b>conf</b>＝その条件での発生率、<b>lift</b>＝全体比（1.0超で「その条件で起きやすい」）、<b>N</b>＝該当数/条件数。lift×件数の順。語はデータ表記のまま（LRED 等）。</div>'
     +buildAssociation(rows)+'</div>'
     +'<div class="card"><div class="sec">📋 TENDENCY SUMMARY — カテゴリ別の癖</div><div class="rep-grid">'+blocks+'</div></div>';
 }
@@ -1587,45 +1581,20 @@ function showTypeModal(key,kind){
 
 // ===== COMPARE PANEL =====
 function renderCompare(scout,game){
-  var te=document.getElementById('cmp-zone-tabs'),be=document.getElementById('cmp-zone-body');
-  te.innerHTML='';be.innerHTML='';
   document.getElementById('compare-result').style.display='block';
-  var sd=byZone(scout),gd=byZone(game);
-  var zfirst=true;
-  ZO.filter(function(z){return z!=='ALL';}).forEach(function(z){ // ALL は OVERVIEW タブで表示
-    var sr=sd[z],gr=gd[z]||[];
-    if(!sr||!sr.length)return;
-    var color=ZCS[z];var active=zfirst;zfirst=false;
-    te.appendChild(mkTab(z,active,color,'cmp-zone-tabs','cmp-zone-body','cmp-p-'));
-    var panel=document.createElement('div');
-    panel.className='zp'+(active?' vis':'');
-    panel.id='cmp-p-'+z;
-    panel.innerHTML=buildCmpPanel(z,sr,gr,color);
-    be.appendChild(panel);
-  });
-  // フォーメーション別比較
-  var fte=document.getElementById('cmp-form-tabs'),fbe=document.getElementById('cmp-form-body');
-  fte.innerHTML='';fbe.innerHTML='';
-  var ffirst=true;
-  FO.forEach(function(fg){
-    var sr=scout.filter(function(r){return r.FG===fg;}),gr=game.filter(function(r){return r.FG===fg;});
-    if(!sr.length)return;
-    var color=FC[fg];var active=ffirst;ffirst=false;
-    fte.appendChild(mkTab(fg,active,color,'cmp-form-tabs','cmp-form-body','cmp-fp-'));
-    var panel=document.createElement('div');
-    panel.className='zp'+(active?' vis':'');
-    panel.id='cmp-fp-'+fg;
-    panel.innerHTML=buildCmpPanel(fg,sr,gr,color,true);
-    fbe.appendChild(panel);
-  });
-  // OVERVIEW（全体 ALL の事前→試合後）と SUMMARY（区分別カード）
+  // 通常ダッシュボードと同じ構成: OVERVIEW / SUMMARY / SCOUTING REPORT / ASK AI
+  // OVERVIEW（全体 ALL の事前→試合後）・SUMMARY（区分別カード・FORMATION/ZONE/FRONT/SPECIAL を内包）
   document.getElementById('cmp-overview-body').innerHTML=buildCmpPanel('ALL',scout,game,ZCS.ALL);
   document.getElementById('cmp-summary-body').innerHTML=buildCmpSummary(scout,game);
+  // SCOUTING REPORT は試合後データ（実際の試合）をスカウティングと同じ項目で分析
+  document.getElementById('cmp-report-body').innerHTML=
+    '<div class="msel-note">これは<b>試合後データ（実際の試合）</b>の SCOUTING REPORT。事前スカウティングの傾向と見比べてください。</div>'
+    +buildScoutingReport(game,'試合後データ / POST-GAME');
   // 既定モードは OVERVIEW
   cmpMode('overview');
 }
 function cmpMode(m){
-  ['overview','summary','zone','form','ask'].forEach(function(x){
+  ['overview','summary','report','ask'].forEach(function(x){
     document.getElementById('cmp-mode-'+x).className='tt'+(x===m?' on':'');
     document.getElementById('cmp-'+x+'-wrap').style.display=x===m?'':'none';
   });
@@ -2405,8 +2374,7 @@ document.addEventListener('DOMContentLoaded',function(){
   setupAskChips();
   document.getElementById('cmp-mode-overview').addEventListener('click',function(){cmpMode('overview');});
   document.getElementById('cmp-mode-summary').addEventListener('click',function(){cmpMode('summary');});
-  document.getElementById('cmp-mode-zone').addEventListener('click',function(){cmpMode('zone');});
-  document.getElementById('cmp-mode-form').addEventListener('click',function(){cmpMode('form');});
+  document.getElementById('cmp-mode-report').addEventListener('click',function(){cmpMode('report');});
   document.getElementById('cmp-mode-ask').addEventListener('click',function(){cmpMode('ask');});
   document.getElementById('btn-cmp-ask').addEventListener('click',generateCustomCompare);
   setupAskChips('cmp-ask-chips','cmp-ask-input',['スカウティングと実際で最も変わった点は？','相手が試合中に修正してきた点は？','次戦に向けた具体的な修正点は？','読みが当たった部分・外れた部分は？']);
