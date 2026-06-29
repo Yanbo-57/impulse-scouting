@@ -34,8 +34,10 @@ export default async function handler(req, res) {
       const st = stats || {};
       const q = String(question).slice(0, 2000);
       const ctx = context ? String(context).slice(0, 6000) : '';
-      prompt = `あなたはアメリカンフットボールの優秀なオフェンスコーチ兼データアナリストです。
-以下の相手ディフェンスのスカウティングデータ要約に基づき、ユーザーの質問に答えます。
+      prompt = `あなたはアメリカンフットボール（アメフト）の超一流オフェンス・コーディネーター兼データアナリストです。チームは「IMPULSE」（攻撃側）。以下は IMPULSE が相手ディフェンスを偵察したデータ要約（スキーマ解説・クロス集計・アソシエーション分析つき）です。これを基に、相手ディフェンスの偏り・弱点と、それを突く具体的な攻め方をコーチ目線で示し、ユーザーの質問に答えます。
+重要な前提:
+- OFF FORMATION（DOUBLE/SUPER/STRONG/WEAK 等）は IMPULSE 自軍の隊形です。COVERAGE/DEF FRONT/BLITZ/STUNT や OSSAN 等のコール名は各チーム独自の呼称（ラベル）。名前の意味を勝手に創作せず、「どの状況でどのコールが増減するか」という出現パターンと数値から相手の癖を読み取ってください。
+- 数値は必ずデータ要約に存在する値のみ使用。Nが小さい(<6)傾向は note で「サンプル少」と断る。
 出力は「JSONのみ」とし、前後に文章・説明・コードフェンス(\`\`\`)を一切付けないでください。
 
 JSONスキーマ:
@@ -53,7 +55,8 @@ JSONスキーマ:
 - 数値は必ず下記データに存在する値のみを使う。データに無い数値は作らず、必要なら note で「データ範囲外」と明示。
 - 質問に最も答える形式を選ぶ（順位・比較は bars、内訳一覧は table、要点は kpi、補足は note）。
 - blocks は1〜4個。ラベルは日本語可。bars/table の value は数値のみ（単位は unit や見出しで表現）。
-- 具体的なプレーコール／スキーム提案がある場合は note か summary に含める。
+- コール名（OSSAN等）の意味は創作しない。状況×コールの偏り（フォーメーション/ダウン距離/ゾーン別の反応差）から相手の癖を読む。
+- 提案は具体的に：どの局面で相手の何の偏りを、どう突くか（例: 特定フォーメーションでブリッツ増→hot/quick game・max protect、特定カバレッジ偏重→その弱点を突くコンセプト、フロント偏り→ランの方向やプロテクション調整）。summary か note に含める。
 
 【データ要約】
 ${ctx}
@@ -134,7 +137,7 @@ ${q}`;
 
     // ===== LLM 呼び出し =====
     const wantJson = !!(isCustom && question); // ASK AI は JSON で返す
-    const maxTokens = isCustom ? 1500 : 800;
+    const maxTokens = isCustom ? 2048 : 800;
     let text = '';
 
     if (geminiKey) {

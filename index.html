@@ -2093,16 +2093,46 @@ function generateCustom(){
   if(!rows||!rows.length){out.innerHTML='<span style="color:var(--red)">スカウティングデータが読み込まれていません</span>';return;}
   renderAskObj(out,localAsk(rows,q));
 }
-// ASK AI 深掘り：アソシエーション分析＋傾向サマリーを LLM（Groq・無料）に渡して解説させる
+// ASK AI 深掘り：スキーマ解説＋クロス集計＋アソシエーション＋傾向を LLM に渡す（知識を厚く）
 function buildAIContext(rows){
+  function seg(label,sub){
+    if(!sub||!sub.length)return '- '+label+': データなし';
+    var s=analyze(sub);
+    var cov=s.cov.slice(0,2).map(function(x){return x[0]+'('+x[1]+')';}).join('/')||'—';
+    var fr=s.front.slice(0,2).map(function(x){return x[0]+'('+x[1]+')';}).join('/')||'—';
+    return '- '+label+': N='+sub.length+' / BLITZ '+s.bp+'% / STUNT '+s.sp+'% / COVERAGE '+cov+' / FRONT '+fr;
+  }
   var a=analyze(rows);
+  var dl={1:'1st',2:'2nd',3:'3rd',4:'4th'};
+  var byForm=(FO||[]).map(function(fg){return seg('FORM '+fg,rows.filter(function(r){return r.FG===fg;}));}).join('\n');
+  var byDown=[1,2,3,4].map(function(d){return seg(dl[d]+' down',rows.filter(function(r){return r.DN===d;}));}).join('\n');
+  var key3=['SHORT(1-3)','MID(4-6)','LONG(7-10)','X-LONG(11+)'].map(function(dg){return seg('3rd & '+dg,rows.filter(function(r){return r.DN===3&&r.DIST_GRP===dg;}));}).join('\n');
+  var zd=byZone(rows);
+  var byZ=ZO.filter(function(z){return z!=='ALL';}).map(function(z){var sub=zd[z]||[];return sub.length?seg((ZN[z]||z)+(ZR[z]?'('+ZR[z]+')':''),sub):null;}).filter(Boolean).join('\n');
   var rules=mineAssociations(rows).slice(0,18).map(function(r,i){
     return (i+1)+'. IF '+r.antArr.join(' & ')+' → '+consLabel(r.cons)+'（conf '+Math.round(r.conf*100)+'% / lift '+r.lift.toFixed(2)+' / N '+r.supp+'/'+r.ac+'）';
   }).join('\n');
   var tells=dcTells(rows,a).slice(0,12).map(function(t){return '・'+t.jp+'（N='+t.n+'）';}).join('\n');
-  return 'アソシエーション分析（条件→反応, conf=その条件での発生率, lift=全体比, 上位）:\n'+(rules||'（該当なし）')
-    +'\n\n傾向サマリー:\n'+(tells||'（該当なし）')
-    +'\n\nブリッツ方向: BOUNDARY '+a.bt.BOUNDARY+' / FIELD '+a.bt.FIELD+' / BOTH '+a.bt.BOTH;
+  var gloss=[
+    '【データの見方】各行＝1プレー。これは IMPULSE（自軍オフェンス）が相手ディフェンスを偵察した記録。',
+    '- OFF FORMATION（FORM）＝IMPULSE自軍オフェンスの隊形グループ（DOUBLE/SUPER・TPER・XPER/STRONG/WEAK/WING/WEAPON/FIB BUNDLE 等。チーム独自の呼称なので意味を断定せず、ラベル＝カテゴリとして扱い、各隊形に対する相手の反応の差を読む）。',
+    '- 相手ディフェンスのコール（すべてチーム独自呼称＝ラベルとして扱い、名前の意味を創作しない）: COVERAGE＝カバレッジ/ローテーション、DEF FRONT＝DLフロント配置、BLITZ＝ブリッツコール、STUNT＝DLの入替え。',
+    '- ブリッツ表記: 文字=LB位置（W/F/C=バウンダリー側, M/S=フィールド側）、数字=ギャップ。偶数=バウンダリー方向, 奇数=フィールド方向, 両サイド含む=BOTH。',
+    '- FIELD ZONE（自陣=マイナス/敵陣=プラスのヤード）: KNOCKOUT -1〜-5 / YELLOW -6〜-19 / GREEN -20〜-49 / ORANGE 50〜31 / HIGH RED 30〜21 / MIDDLE RED 20〜11 / LOW RED 10〜1（数字が敵陣ゴールに近いほど RED 系）。',
+    '- DOWN=1〜4、DISTANCE= SHORT(1-3)/MID(4-6)/LONG(7-10)/X-LONG(11+)。',
+    '- 指標: conf=その条件での発生率, lift=全体比(1.0超で平均より起きやすい), N=サンプル数（N<6 は参考程度）。'
+  ].join('\n');
+  return gloss
+    +'\n\n【全体】N='+a.n+' / ブリッツ率 '+a.bp+'% / スタント率 '+a.sp+'% / ブリッツ方向 BOUNDARY '+a.bt.BOUNDARY+'・FIELD '+a.bt.FIELD+'・BOTH '+a.bt.BOTH
+    +'\n主要カバレッジ: '+(a.cov.slice(0,5).map(function(x){return x[0]+'('+x[1]+')';}).join(', ')||'—')
+    +'\n主要フロント: '+(a.front.slice(0,5).map(function(x){return x[0]+'('+x[1]+')';}).join(', ')||'—')
+    +'\n主要ブリッツ: '+(a.blitzRaw.slice(0,5).map(function(x){return x[0]+'('+x[1]+')';}).join(', ')||'—')
+    +'\n\n【自軍フォーメーション別 → 相手ディフェンスの反応】\n'+(byForm||'—')
+    +'\n\n【ダウン別】\n'+byDown
+    +'\n\n【3rdダウンの距離別（勝負所）】\n'+key3
+    +'\n\n【フィールドゾーン別】\n'+(byZ||'—')
+    +'\n\n【アソシエーション分析（条件→反応・上位）】\n'+(rules||'（該当なし）')
+    +'\n\n【傾向サマリー】\n'+(tells||'（該当なし）');
 }
 function generateCustomAI(){
   var inp=document.getElementById('ask-input'),out=document.getElementById('ask-output');
