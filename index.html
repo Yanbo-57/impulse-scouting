@@ -307,12 +307,13 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
 .ybar-h{position:absolute;top:50%;width:20px;height:20px;transform:translate(-50%,-50%);display:flex;align-items:center;justify-content:center;background:#fff;border:2px solid var(--navy);border-radius:50%;cursor:ew-resize;box-shadow:var(--sh2);z-index:4;touch-action:none}
 .ybar-h::after{content:'';width:6px;height:6px;border-radius:50%;background:var(--navy)}
 .ybar-read{text-align:center;font-size:11px;font-weight:800;color:var(--navy);font-variant-numeric:tabular-nums}
-/* ===== 条件検索：追尾ボタン + 条件バー + ポップアップ + カード ===== */
-.cb-fab{position:fixed;right:0;top:42%;z-index:60;display:flex;flex-direction:column;align-items:center;gap:4px;background:var(--navy);color:#fff;border:none;border-radius:12px 0 0 12px;padding:14px 9px;font:inherit;font-weight:800;cursor:pointer;box-shadow:-3px 3px 16px rgba(0,0,0,.25);transition:all .15s ease}
-.cb-fab:hover{background:var(--blue);padding-right:13px}
-.cb-fab-ic{font-size:17px}
-.cb-fab-t{font-size:12px;writing-mode:vertical-rl;letter-spacing:.18em}
-.cb-active{display:flex;align-items:center;flex-wrap:wrap;gap:7px;background:#fff;border:1px solid var(--g200);border-left:4px solid var(--blue);border-radius:var(--r);padding:9px 12px;margin-bottom:14px;cursor:pointer;box-shadow:var(--sh);font-size:12px}
+/* ===== 条件検索：スクロール追従バー（info-bar/game-switch の直下に固定）+ ポップアップ + カード ===== */
+.cb-bar{position:sticky;top:60px;z-index:18;display:flex;align-items:center;gap:10px;margin-bottom:14px;padding:6px 0;background:rgba(255,255,255,.92);backdrop-filter:blur(8px)}
+.cb-fab{flex:0 0 auto;display:inline-flex;align-items:center;gap:7px;background:var(--navy);color:#fff;border:none;border-radius:10px;padding:10px 16px;font:inherit;font-weight:800;cursor:pointer;box-shadow:var(--sh2);transition:all .15s ease;white-space:nowrap}
+.cb-fab:hover{background:var(--blue)}
+.cb-fab-ic{font-size:16px}
+.cb-fab-t{font-size:12.5px;letter-spacing:.04em}
+.cb-active{flex:1;min-width:0;display:flex;align-items:center;flex-wrap:wrap;gap:7px;background:#fff;border:1px solid var(--g200);border-left:4px solid var(--blue);border-radius:var(--r);padding:9px 12px;cursor:pointer;box-shadow:var(--sh);font-size:12px}
 .cb-active:hover{border-color:var(--blue)}
 .cb-active-lbl{font-size:11px;font-weight:800;color:var(--navy)}
 .cb-active-n{font-weight:700;color:var(--g600)}.cb-active-n b{color:var(--navy)}
@@ -324,28 +325,29 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
 .cb-pop{position:fixed;inset:0;z-index:70;display:none}
 .cb-pop.on{display:block}
 .cb-pop-back{position:absolute;inset:0;background:rgba(12,24,48,.5);backdrop-filter:blur(2px)}
-.cb-pop-card{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(980px,94vw);max-height:90vh;overflow:auto;background:#fff;border-radius:16px;box-shadow:0 24px 70px rgba(0,0,0,.4);display:flex;flex-direction:column}
+.cb-pop-card{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(1120px,96vw);max-height:94vh;overflow:auto;background:#fff;border-radius:14px;box-shadow:0 22px 60px rgba(0,0,0,.38);display:flex;flex-direction:column}
 .cb-pop-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:15px 20px;border-bottom:1px solid var(--g100);position:sticky;top:0;background:#fff;z-index:2}
 .cb-pop-title{font-size:14px;font-weight:800;color:var(--navy)}
 .cb-sub2{font-size:11px;font-weight:600;color:var(--g400)}
 .cb-pop-x{font:inherit;font-size:15px;font-weight:800;color:var(--g400);background:var(--g50);border:none;border-radius:8px;width:32px;height:32px;cursor:pointer;flex-shrink:0}
 .cb-pop-x:hover{background:var(--red);color:#fff}
 .cb-pop-body{padding:14px 20px}
-.cb-seclbl{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:800;color:var(--navy);margin:16px 0 8px;text-transform:uppercase;letter-spacing:.04em}
+.cb-seclbl{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:800;color:var(--navy);margin:12px 0 6px;text-transform:uppercase;letter-spacing:.04em}
 .cb-ico{font-size:14px}
 .cb-sub{font-size:10px;font-weight:600;color:var(--g400);text-transform:none;letter-spacing:0}
 .cb-zone-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:2px}
 .cb-zone-row .cb-seclbl{margin:0;flex:0 0 auto}
 .cb-yard{flex:1;min-width:240px;margin:0}
 .cb-yard .ybar{margin:0}
-.cb-cards{display:flex;flex-wrap:wrap;gap:8px}
-.zcard{display:flex;flex-direction:column;align-items:center;text-align:center;gap:3px;min-width:100px;flex:0 0 auto;padding:9px 11px;border:1.5px solid var(--g200);border-radius:11px;background:#fff;cursor:pointer;transition:all .14s ease}
+.cb-cards{display:flex;flex-wrap:wrap;gap:6px}
+.zcard{display:flex;flex-direction:column;align-items:center;text-align:center;gap:1px;min-width:76px;flex:0 0 auto;padding:6px 9px;border:1.5px solid var(--g200);border-radius:10px;background:#fff;cursor:pointer;transition:all .14s ease}
 .zcard:hover{border-color:var(--blue);box-shadow:var(--sh)}
 .zcard.on{border-color:var(--blue);background:var(--blue-pale);box-shadow:0 0 0 1.5px var(--blue) inset}
-.zcard-ic{font-size:16px;line-height:1}
-.zcard-name{font-size:11.5px;font-weight:800;color:var(--navy);white-space:nowrap}
-.zcard-yd{font-size:10px;color:var(--g400);font-variant-numeric:tabular-nums}
-.zcard-n{font-size:14px;font-weight:800;color:var(--navy);font-variant-numeric:tabular-nums;margin-top:1px}
+.zcard-top{display:inline-flex;align-items:center;gap:4px;line-height:1}
+.zcard-ic{font-size:15px;line-height:1}
+.zcard-n{font-size:10px;font-weight:800;color:var(--g400);font-variant-numeric:tabular-nums}
+.zcard-name{font-size:11px;font-weight:800;color:var(--navy);white-space:nowrap}
+.zcard-yd{font-size:9.5px;color:var(--g400);font-variant-numeric:tabular-nums}
 .cb-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:14px 20px;border-top:1px solid var(--g100);position:sticky;bottom:0;background:#fff}
 .cb-foot-sel{display:flex;align-items:center;flex-wrap:wrap;gap:6px;font-size:12px;color:var(--g600)}
 .cb-foot-tag{font-size:10px;font-weight:800;color:#fff;background:var(--navy);border-radius:5px;padding:3px 8px;letter-spacing:.03em}
@@ -366,34 +368,30 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
 .assoc-num{text-align:right;font-variant-numeric:tabular-nums;color:var(--g600);white-space:nowrap}
 .assoc-num.assoc-warm{color:var(--amber);font-weight:800}
 .assoc-num.assoc-hot{color:var(--red);font-weight:800}
-/* FLOW & SPLITS tables */
-.flow-h{font-size:11px;font-weight:800;color:var(--blue);text-transform:uppercase;letter-spacing:.04em;margin:12px 0 5px}
-.flow-tbl{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:4px}
-.flow-tbl th{text-align:left;font-size:10px;font-weight:800;color:var(--g400);text-transform:uppercase;letter-spacing:.03em;padding:5px 8px;border-bottom:2px solid var(--g100);white-space:nowrap}
-.flow-tbl th:nth-child(2),.flow-tbl th:nth-child(3),.flow-tbl th:nth-child(4){text-align:right}
-.flow-tbl td{padding:6px 8px;border-bottom:1px solid var(--g100);font-variant-numeric:tabular-nums}
-.flow-tbl td:first-child{font-weight:800;color:var(--navy)}
-.flow-tbl td:nth-child(2),.flow-tbl td:nth-child(3),.flow-tbl td:nth-child(4){text-align:right}
-.flow-tbl td.flow-up{color:var(--red);font-weight:800}
-.flow-tbl td.flow-dn{color:#0A357E;font-weight:800}
+/* FLOW & SPLITS は SUMMARY のカード（.cs-grid / .cs-card）で表示 */
 /* ASSOCIATION RULES — mockup design (numbered rows, icons, CONF/LIFT bars) */
-.atable{display:flex;flex-direction:column}
-.arule{display:grid;grid-template-columns:36px minmax(180px,1fr) 18px 164px 150px 150px 74px;align-items:center;gap:12px;padding:9px 6px;border-bottom:1px solid var(--g100);font-size:12.5px}
+.atable{display:flex;flex-direction:column;min-width:900px}
+.arule{display:grid;grid-template-columns:28px 66px 44px 92px minmax(62px,1fr) minmax(80px,1fr) 16px minmax(116px,148px) 100px 100px 60px;align-items:center;gap:9px;padding:9px 6px;border-bottom:1px solid var(--g100);font-size:12.5px}
 .arule:hover:not(.ar-head){background:var(--g50)}
 .arule.ar-head{border-bottom:2px solid var(--g100);font-size:10px;font-weight:800;color:var(--g400);text-transform:uppercase;letter-spacing:.03em;align-items:end;padding-bottom:7px}
 .ar-head .ar-sub{display:block;font-size:9px;font-weight:700;color:var(--g300);margin-top:1px;text-transform:none;letter-spacing:0}
 .ar-no{font-size:12px;font-weight:800;color:var(--blue);font-variant-numeric:tabular-nums;text-align:center}
-.ar-cond{display:flex;align-items:center;gap:5px;flex-wrap:wrap;min-width:0}
-.ar-item{display:inline-flex;align-items:center;gap:4px;font-weight:800;color:var(--navy);white-space:nowrap;font-size:12px}
-.ar-dn{border:1px solid var(--g200);border-radius:6px;padding:2px 7px;font-size:11px;background:var(--g50);color:var(--g600)}
 .ar-icw{display:inline-flex;width:15px;height:15px;flex-shrink:0;color:var(--g400)}
 .ar-icw.zone{color:#C0392B}.ar-icw.front{color:var(--navy)}.ar-icw.dist{color:#0891B2}.ar-icw.form{color:#7C3AED}.ar-icw.motion{color:#059669}
-.ar-icw.resp-cov{color:var(--navy)}.ar-icw.resp-blz{color:var(--red)}
+.ar-icw.resp-cov{color:#0E7C86}.ar-icw.resp-blz{color:var(--red)}.ar-icw.resp-front{color:#0A357E}
+/* condition columns (FIELD ZONE / DOWN / DIST / FORM / FRONT) */
+.ac-h{display:flex;align-items:center;gap:4px;font-size:9.5px;font-weight:800;color:var(--g400);text-transform:uppercase;letter-spacing:.02em;min-width:0}
+.ac-h .ar-ic{width:12px;height:12px}
+.ac-h .ar-ic[viewBox]{flex-shrink:0}
+.ac-c{font-size:11.5px;font-weight:800;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.ac-c.ac-zone{color:#C0392B}.ac-c.ac-dist{color:#0891B2}.ac-c.ac-form{color:#7C3AED}.ac-c.ac-front{color:#0A357E}
+.ac-c.ac-dn{justify-self:start;border:1px solid var(--g200);border-radius:6px;padding:1px 6px;font-size:10.5px;background:var(--g50);color:var(--g600);font-weight:800}
+.ac-empty{color:var(--g200);font-weight:700;text-align:center}
+.ar-other-row{grid-column:1/-1;padding:9px 8px;color:var(--g400);font-size:11.5px;font-weight:700;border-bottom:1px solid var(--g100)}
 .ar-ic{width:15px;height:15px;fill:currentColor}
-.ar-sep{color:var(--g300);font-size:10px;font-weight:800}
 .ar-to{color:var(--blue);font-weight:800;text-align:center;font-size:13px}
 .ar-respwrap{display:flex;align-items:center;gap:6px;font-weight:800;min-width:0;font-size:12.5px}
-.ar-respwrap.is-cov{color:var(--navy)}.ar-respwrap.is-blz{color:var(--red)}
+.ar-respwrap.is-cov{color:#0E7C86}.ar-respwrap.is-blz{color:var(--red)}.ar-respwrap.is-front{color:#0A357E}
 .ar-resp-t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ar-m{display:flex;align-items:center;gap:8px}
 .ar-mv{font-size:12px;font-weight:800;color:var(--navy);font-variant-numeric:tabular-nums;min-width:44px}
@@ -402,22 +400,10 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
 .ar-fill{display:block;height:100%;border-radius:4px}
 .ar-fill.blue{background:var(--blue)}.ar-fill.red{background:#E0564B}
 .ar-n{font-size:11px;color:var(--g400);font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
-.ar-other{opacity:.55;font-style:normal}.ar-other .ar-cond{color:var(--g400);font-weight:700}
 .ar-foot{font-size:10px;color:var(--g400);margin-top:9px}
 .ar-mv.navy{color:#0A357E}
 .ar-fill.green{background:var(--green)}
-/* FLOW rows (same bar style) */
-.ftable{display:flex;flex-direction:column;margin-bottom:6px}
-.frow{display:grid;grid-template-columns:120px 40px 1.25fr 1.25fr 64px 68px;align-items:center;gap:10px;padding:8px 4px;border-bottom:1px solid var(--g100);font-size:12.5px}
-.frow:hover:not(.fr-head){background:var(--g50)}
-.frow.fr-head{font-size:10px;font-weight:800;color:var(--g400);text-transform:uppercase;letter-spacing:.03em;border-bottom:2px solid var(--g100)}
-.fr-lbl{font-weight:800;color:var(--navy)}
-.fr-n{font-variant-numeric:tabular-nums;color:var(--g400);font-weight:700;text-align:right}
-.fr-cov{font-size:11.5px;color:var(--g600);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.fr-v{font-size:12.5px;font-weight:800;color:var(--navy);font-variant-numeric:tabular-nums;text-align:right}
-.frow.fr-head .fr-v,.frow.fr-head .fr-n{font-weight:800}
-@media(max-width:600px){.frow{grid-template-columns:74px 26px 1fr 52px 52px;gap:6px}.frow .fr-cov:nth-child(4){display:none}}
-@media(max-width:860px){.arule{grid-template-columns:28px 1.4fr 14px 110px 84px 84px;gap:7px}.arule .ar-n{display:none}.ar-mv{min-width:38px}}
+/* 狭い画面では assoc-wrap が横スクロール（列は固定幅のまま）。グリッドは折り畳まない。 */
 
 /* GAME PLAN PRIORITIES */
 .prio{display:flex;align-items:center;gap:14px;padding:12px 6px;border-top:1px solid var(--g100)}
@@ -682,9 +668,10 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
         <div style="font-size:12px;color:var(--g600);margin-bottom:8px">質問を入力すると、読み込み済みデータを自動集計して図表で回答します（<b>無料・オフライン・APIキー不要</b>／ルールベース）。<br><span style="color:var(--g400)">ゾーン・ダウン・距離・カバレッジ・フロント・ブリッツ・縦・偏り などのキーワードに対応。Computed locally — free, no API key.</span></div>
         <div class="ask-chips" id="ask-chips"></div>
         <textarea id="ask-input" placeholder="例: 3rd &amp; long で最も多いブリッツは？ その対策コンセプトも教えて / e.g. What blitz is most common on 3rd & long, and how do we beat it?"></textarea>
-        <div style="margin-top:10px;display:flex;gap:10px;align-items:center">
-          <button class="btn btn-blue" id="btn-ask">🧠 分析する / Analyze</button>
-          <span style="font-size:11px;color:var(--g400)">Enter で改行・送信はボタン / Shift not needed</span>
+        <div style="margin-top:10px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+          <button class="btn btn-blue" id="btn-ask">🧠 分析する / Analyze <span style="font-size:10px;font-weight:700;opacity:.8">無料・即時</span></button>
+          <button class="btn btn-navy" id="btn-ask-ai">🤖 AIで深掘り / Deep-dive <span style="font-size:10px;font-weight:700;opacity:.8">Gemini・無料</span></button>
+          <span style="font-size:11px;color:var(--g400)">深掘りはアソシエーション結果をAIが解説（要 GEMINI_API_KEY）</span>
         </div>
         <div class="ai-body" id="ask-output" style="margin-top:14px"><span class="ai-placeholder">ここに結果が表示されます / Output appears here.</span></div>
       </div>
@@ -1098,11 +1085,11 @@ function mineAssociations(rows){
     if(r.ZONE&&r.ZONE!=='UNKNOWN')A.push('ZONE='+r.ZONE);
     if(r.FG&&r.FG!=='OTHER')A.push('FORM='+r.FG);
     if(r['DEF FRONT'])A.push('FRONT='+r['DEF FRONT']);
-    if(r.HM)A.push('MOTION');
     C.push(r.HB?'BLITZ':'NO-BLITZ');
     if(r.HS)C.push('STUNT');
     if(r.COVERAGE)C.push('COV='+r.COVERAGE);
     if(r.HB&&r.BT)C.push('DIR='+r.BT);
+    if(r['DEF FRONT'])C.push('FRONT='+r['DEF FRONT']); // FRONT は条件にも反応にも入る
     anteSets.push(A);consSets.push(C);
     C.forEach(function(c){consCount[c]=(consCount[c]||0)+1;});
   });
@@ -1118,56 +1105,64 @@ function mineAssociations(rows){
   Object.keys(joint).forEach(function(jk){
     var pair=JSON.parse(jk),s=pair[0],c=pair[1],supp=joint[jk],ac=anteCount[JSON.stringify(s)],conf=supp/ac,bse=consCount[c]/n,lift=bse?conf/bse:0;
     if(c==='NO-BLITZ')return;
+    if(c.indexOf('FRONT=')===0&&s.some(function(it){return it.indexOf('FRONT=')===0;}))return; // FRONT→FRONT の循環は除外
     if(supp<4||conf<0.6||lift<1.25)return;
     rules.push({antArr:s,cons:c,supp:supp,conf:conf,lift:lift,ac:ac});
+  });
+  // 冗長な上位集合ルールを除去：単項サブセット（例 FRONT=POCKY 6）が同じ結論を既に示すなら、
+  // それを内包する2項ルール（例 FRONT=POCKY 6 + ZONE=…）は同じことの繰り返しなので不要
+  var singleKey={};
+  rules.forEach(function(r){if(r.antArr.length===1)singleKey[r.antArr[0]+' => '+r.cons]=1;});
+  rules=rules.filter(function(r){
+    if(r.antArr.length<2)return true;
+    return !r.antArr.some(function(it){return singleKey[it+' => '+r.cons];});
   });
   rules.sort(function(x,y){return (y.lift*y.supp)-(x.lift*x.supp);});
   return rules;
 }
 // ---- 表記はデータのまま（LRED 等を訳さない）。カテゴリ別アイコン＋ CAT=VALUE ----
-var ARI={ZONE:'<path d="M8 1.5C5.5 1.5 3.5 3.5 3.5 6c0 3.2 4.5 8 4.5 8s4.5-4.8 4.5-8c0-2.5-2-4.5-4.5-4.5zm0 6.2A1.7 1.7 0 118 4.3a1.7 1.7 0 010 3.4z"/>',FRONT:'<path d="M8 1.3l4.7 1.9v3.6c0 3.3-2.1 6.1-4.7 7.5-2.6-1.4-4.7-4.2-4.7-7.5V3.2L8 1.3z"/>',DIST:'<path d="M1.5 8l2.7-2.7v1.8h7.6V5.3L14.5 8l-2.7 2.7V8.9H4.2v1.8L1.5 8z"/>',FORM:'<path d="M2.2 2.2h5v5h-5zM8.8 2.2h5v5h-5zM2.2 8.8h5v5h-5zM8.8 8.8h5v5h-5z"/>',MOTION:'<path d="M3 8a5 5 0 019-3V3.5L14.2 6l-3.2 1.1V5.9A3.4 3.4 0 005 8H3z"/>'};
+var ARI={ZONE:'<path d="M8 1.5C5.5 1.5 3.5 3.5 3.5 6c0 3.2 4.5 8 4.5 8s4.5-4.8 4.5-8c0-2.5-2-4.5-4.5-4.5zm0 6.2A1.7 1.7 0 118 4.3a1.7 1.7 0 010 3.4z"/>',FRONT:'<path d="M3 5.4 8 2.7l5 2.7v1.5L8 4.4 3 6.9z"/><path d="M3.7 7.6h1.7v3.1H3.7zm3.45 0h1.7v3.1h-1.7zm3.45 0h1.7v3.1h-1.7z"/><path d="M1.9 11.4h12.2v1.5H1.9z"/>',DIST:'<path d="M1.5 8l2.7-2.7v1.8h7.6V5.3L14.5 8l-2.7 2.7V8.9H4.2v1.8L1.5 8z"/>',FORM:'<path d="M2.2 2.2h5v5h-5zM8.8 2.2h5v5h-5zM2.2 8.8h5v5h-5zM8.8 8.8h5v5h-5z"/>',COV:'<path d="M8 1.7a.85.85 0 00-.85.85v.6A5.4 5.4 0 002.1 8.05a.5.5 0 00.75.46 1.85 1.85 0 011.98 0 1.85 1.85 0 002.02 0 1.85 1.85 0 011.9 0 1.85 1.85 0 002.02 0 1.85 1.85 0 011.98 0 .5.5 0 00.75-.46A5.4 5.4 0 008.85 3.15v-.6A.85.85 0 008 1.7z"/><path d="M7.4 8.4h1.2v3.1a1.45 1.45 0 01-2.9 0 .6.6 0 011.2 0 .25.25 0 00.5 0z"/>'};
 function aIc(cat){var p=ARI[cat];return p?'<svg class="ar-ic" viewBox="0 0 16 16" aria-hidden="true">'+p+'</svg>':'';}
 var AR_BOLT='<svg class="ar-ic" viewBox="0 0 16 16" aria-hidden="true"><path d="M9.3 1L3.4 9h3.7l-1 6 6.5-8.5H8.8L9.3 1z"/></svg>';
-function aCondItem(it){var i=it.indexOf('=');if(i<0)return'<span class="ar-item"><span class="ar-icw motion">'+aIc('MOTION')+'</span>'+esc(it)+'</span>';var cat=it.slice(0,i);if(cat==='DN')return'<span class="ar-item ar-dn">'+esc(it)+'</span>';return'<span class="ar-item"><span class="ar-icw '+cat.toLowerCase()+'">'+aIc(cat)+'</span>'+esc(it)+'</span>';}
-function aCond(arr){return (arr||[]).map(aCondItem).join('<span class="ar-sep">▸</span>');}
-function consLabel(c){return c==='BLITZ'?'BLITZ':c==='STUNT'?'STUNTS':c.indexOf('COV=')===0?('COVERAGE '+c.slice(4)):c.indexOf('DIR=')===0?('BLITZ─'+c.slice(4)):c;}
-function aResp(c){var blz=c==='BLITZ'||c==='STUNT'||c.indexOf('DIR=')===0;return'<span class="ar-icw '+(blz?'resp-blz':'resp-cov')+'">'+(blz?AR_BOLT:aIc('FRONT'))+'</span><span class="ar-resp-t">'+esc(consLabel(c))+'</span>';}
+function consLabel(c){return c==='BLITZ'?'BLITZ':c==='STUNT'?'STUNTS':c.indexOf('COV=')===0?('COVERAGE '+c.slice(4)):c.indexOf('DIR=')===0?('BLITZ─'+c.slice(4)):c.indexOf('FRONT=')===0?('FRONT '+c.slice(6)):c;}
+function respKind(c){return (c==='BLITZ'||c==='STUNT'||c.indexOf('DIR=')===0)?'blz':c.indexOf('FRONT=')===0?'front':'cov';}
+function aResp(c){var k=respKind(c),ic=k==='blz'?AR_BOLT:k==='front'?aIc('FRONT'):aIc('COV');return'<span class="ar-icw resp-'+k+'">'+ic+'</span><span class="ar-resp-t">'+esc(consLabel(c))+'</span>';}
+function acVal(items,cat){for(var i=0;i<items.length;i++){if(items[i].indexOf(cat+'=')===0)return items[i].slice(cat.length+1);}return'';}
+function acCell(items,cat,cls){var v=acVal(items,cat);return v?'<span class="ac-c '+cls+'">'+esc(v)+'</span>':'<span class="ac-c ac-empty">·</span>';}
 function buildAssociation(rows){
   var all=mineAssociations(rows);
   if(!all.length)return'<div class="rk-empty">アソシエーション分析に十分なサンプルがありません（N≥10・条件の同時出現が必要）。/ Not enough data.</div>';
-  var rules=all.slice(0,14),more=all.length-rules.length;
+  var rules=all.slice(0,20),more=all.length-rules.length;
   var maxLift=Math.max.apply(null,rules.map(function(r){return r.lift;}))||1;
-  var head='<div class="arule ar-head"><span class="ar-no">№</span><div class="ar-cond">条件 / Condition <span class="ar-sub">(A AND B)</span></div><span class="ar-to"></span><div class="ar-respwrap">反応 / RESPONSE</div><div class="ar-m">CONF<span class="ar-sub">発生率</span></div><div class="ar-m">LIFT<span class="ar-sub">全体比</span></div><span class="ar-n">N<span class="ar-sub">該当/条件</span></span></div>';
+  var head='<div class="arule ar-head"><span class="ar-no">№</span>'
+    +'<span class="ac-h">'+aIc('ZONE')+'FIELD ZONE</span><span class="ac-h">DOWN</span><span class="ac-h">'+aIc('DIST')+'DIST</span><span class="ac-h">'+aIc('FORM')+'FORM</span><span class="ac-h">'+aIc('FRONT')+'FRONT</span>'
+    +'<span class="ar-to"></span><div class="ar-respwrap">反応 / RESPONSE</div><div class="ar-m">CONF<span class="ar-sub">発生率</span></div><div class="ar-m">LIFT<span class="ar-sub">全体比</span></div><span class="ar-n">N<span class="ar-sub">該当/条件</span></span></div>';
   var body=rules.map(function(r,idx){
     var no=('0'+(idx+1)).slice(-2),confW=Math.round(r.conf*100),liftW=Math.max(6,Math.round(r.lift/maxLift*100));
-    var blz=r.cons==='BLITZ'||r.cons==='STUNT'||r.cons.indexOf('DIR=')===0;
-    return'<div class="arule"><span class="ar-no">'+no+'</span><div class="ar-cond">'+aCond(r.antArr)+'</div><span class="ar-to">▸</span>'
-      +'<div class="ar-respwrap '+(blz?'is-blz':'is-cov')+'">'+aResp(r.cons)+'</div>'
+    return'<div class="arule"><span class="ar-no">'+no+'</span>'
+      +acCell(r.antArr,'ZONE','ac-zone')+acCell(r.antArr,'DN','ac-dn')+acCell(r.antArr,'DIST','ac-dist')+acCell(r.antArr,'FORM','ac-form')+acCell(r.antArr,'FRONT','ac-front')
+      +'<span class="ar-to">▸</span>'
+      +'<div class="ar-respwrap is-'+respKind(r.cons)+'">'+aResp(r.cons)+'</div>'
       +'<div class="ar-m"><span class="ar-mv">'+confW+'%</span><span class="ar-track"><i class="ar-fill blue" style="width:'+confW+'%"></i></span></div>'
       +'<div class="ar-m"><span class="ar-mv red">'+r.lift.toFixed(2)+'×</span><span class="ar-track"><i class="ar-fill red" style="width:'+liftW+'%"></i></span></div>'
       +'<span class="ar-n">'+r.supp+' / '+r.ac+'</span></div>';
   }).join('');
-  var other=more>0?'<div class="arule ar-other"><span class="ar-no"></span><div class="ar-cond">その他の条件 '+more+' 件</div><span class="ar-to">▸</span><div class="ar-respwrap">—</div><div class="ar-m">—</div><div class="ar-m">—</div><span class="ar-n">—</span></div>':'';
-  return'<div class="atable">'+head+body+other+'</div><div class="ar-foot">ⓘ ソート：lift × 件数 の降順（同率は N の多い順）。語はデータ表記のまま（LRED 等）。</div>';
+  var other=more>0?'<div class="ar-other-row">＋ その他の条件 '+more+' 件（しきい値は満たすが上位20件外）</div>':'';
+  return'<div class="assoc-wrap"><div class="atable">'+head+body+other+'</div></div>'
+    +'<div class="ar-foot">ⓘ 条件は FIELD ZONE / DOWN / DIST / FORM / FRONT に分解（空欄＝その条件なし）。FRONT は条件にも反応にも登場。ソート：lift × 件数 の降順。語はデータ表記のまま（LRED 等）。</div>';
 }
-// ===== FLOW & SPLITS：クォーター/前後半/試合ごとの推移 =====
-function buildFlow(rows){
-  function rate(s){return s.length?Math.round(p(s.filter(function(r){return r.HB;}).length,s.length)):0;}
-  function srate(s){return s.length?Math.round(p(s.filter(function(r){return r.HS;}).length,s.length)):0;}
-  function top1(s,key){var c={};s.forEach(function(r){if(r[key])c[r[key]]=(c[r[key]]||0)+1;});var t=topN(c,1)[0];return t?esc(t[0])+' '+Math.round(p(t[1],s.length))+'%':'—';}
-  function frow(lbl,s){return'<div class="frow"><span class="fr-lbl">'+lbl+'</span><span class="fr-n">'+s.length+'</span><span class="fr-cov">'+top1(s,'COVERAGE')+'</span><span class="fr-cov">'+top1(s,'DEF FRONT')+'</span><span class="fr-v">'+rate(s)+'%</span><span class="fr-v">'+srate(s)+'%</span></div>';}
-  function fhead(h){return'<div class="frow fr-head"><span class="fr-lbl">'+h+'</span><span class="fr-n">N</span><span class="fr-cov">COVERAGE</span><span class="fr-cov">FRONT</span><span class="fr-v">BLITZ%</span><span class="fr-v">STUNTS%</span></div>';}
-  function block(title,head,body){return'<div class="flow-h">'+title+'</div><div class="ftable">'+fhead(head)+body+'</div>';}
+// ===== FLOW & SPLITS：クォーター/前後半/試合ごと（SUMMARY と同じカード表現）=====
+function buildFlowSplits(rows){
+  function sect(title,cards){return cards?'<div class="sec" style="margin-top:18px">'+title+'</div><div class="cs-grid">'+cards+'</div>':'';}
   var out='';
   var games={};rows.forEach(function(r){var g=r.__game||'';if(g)(games[g]=games[g]||[]).push(r);});
   var gKeys=Object.keys(games);
-  if(gKeys.length>1)out+=block('試合別 / by Game','GAME',gKeys.map(function(g){return frow(esc(g),games[g]);}).join(''));
+  if(gKeys.length>1)out+=sect('試合別 / by Game',gKeys.map(function(g,i){return ov2Item(g,CS_FCOL[i%CS_FCOL.length],games[g]);}).join(''));
   var qr=[1,2,3,4].map(function(qt){return {q:qt,s:rows.filter(function(r){return parseInt(r.QTR,10)===qt;})};}).filter(function(x){return x.s.length;});
-  if(qr.length>=2)out+=block('クォーター別 / by Quarter','QTR',qr.map(function(x){return frow('Q'+x.q,x.s);}).join(''));
+  if(qr.length>=2)out+=sect('クォーター別 / by Quarter',qr.map(function(x){return ov2Item('Q'+x.q,CS_FCOL[(x.q-1)%CS_FCOL.length],x.s);}).join(''));
   var h1=rows.filter(function(r){var q=parseInt(r.QTR,10);return q===1||q===2;}),h2=rows.filter(function(r){var q=parseInt(r.QTR,10);return q===3||q===4;});
-  if(h1.length&&h2.length)out+=block('前後半 / by Half','HALF',frow('1st Half',h1)+frow('2nd Half',h2));
-  if(!out)return'';
-  return'<div class="card"><div class="sec">🌊 FLOW & SPLITS — 流れ・試合別の傾向</div><div class="rk-note">クォーター・前後半・試合ごとの 主カバー / フロント / BLITZ% / STUNTS%。</div>'+out+'</div>';
+  if(h1.length&&h2.length)out+=sect('前後半 / by Half',ov2Item('1st Half','#0055A4',h1)+ov2Item('2nd Half','#C0392B',h2));
+  return out?'<div class="sec" style="margin-top:22px">🌊 FLOW &amp; SPLITS — 流れ・試合別の傾向</div><div style="font-size:10px;color:var(--g400);margin:-4px 0 8px">※ クォーター・前後半・試合ごとの カバー / フロント / BLITZ% / STUNTS%（カードをクリックで詳細）</div>'+out:'';
 }
 function buildScoutingReport(rows){
   if(!rows||!rows.length)return'<div class="card"><div style="color:var(--g400);padding:8px">データがありません / No data.</div></div>';
@@ -1181,7 +1176,6 @@ function buildScoutingReport(rows){
     +'<div class="card"><div class="sec">🔗 ASSOCIATION RULES — アソシエーション分析</div>'
     +'<div class="rk-note">条件（最大2つの組合せ：ダウン/距離/ゾーン/フォーメーション/相手front/モーション）→ ディフェンスの反応。<b>conf</b>＝その条件での発生率、<b>lift</b>＝全体比（1.0超で「その条件で起きやすい」）、<b>N</b>＝該当数/条件数。lift×件数の順。語はデータ表記のまま（LRED 等）。</div>'
     +buildAssociation(rows)+'</div>'
-    +buildFlow(rows)
     +'<div class="card"><div class="sec">📋 TENDENCY SUMMARY — カテゴリ別の癖</div><div class="rep-grid">'+blocks+'</div></div>';
 }
 // SPECIAL SITUATIONS は OVERVIEW / SUMMARY 共通で buildSpecial2（クリックで詳細）を使用
@@ -1216,8 +1210,10 @@ function buildOverview(rows){
     +'</div>'
     +'<div class="cb-foot" id="cb-foot"></div>'
   +'</div></div>';
-  var html='<button class="cb-fab" id="cb-fab" aria-label="条件検索"><span class="cb-fab-ic">🔍</span><span class="cb-fab-t">条件検索</span></button>'
-    +'<div class="cb-active" id="cb-active"></div>'
+  var html='<div class="cb-bar" id="cb-bar">'
+      +'<div class="cb-active" id="cb-active"></div>'
+      +'<button class="cb-fab" id="cb-fab" aria-label="条件検索"><span class="cb-fab-ic">🔍</span><span class="cb-fab-t">条件検索</span></button>'
+    +'</div>'
     +pop
     +'<div id="cb-body"></div>';
   return html+buildNextSteps(rows,a);
@@ -1285,7 +1281,8 @@ function buildOverview2(rows){
     +'<div class="sec" style="margin-top:18px">FRONT 別 / by Front</div><div class="cs-grid">'+byFr+'</div>'
     +'<div class="sec" style="margin-top:18px">FORMATION 別 / by Formation</div><div class="cs-grid">'+byF+'</div>'
     +'<div class="sec" style="margin-top:18px">FIELD ZONE 別 / by Field Zone</div><div class="cs-grid">'+byZ+'</div>'
-    +buildSpecial2(rows);
+    +buildSpecial2(rows)
+    +buildFlowSplits(rows);
 }
 
 function mCell(rows){
@@ -1348,6 +1345,14 @@ function mkTab(label,active,color,tabsId,bodyId,prefix){
   t.onclick=function(){showZP(label,color,prefix,tabsId,bodyId);};
   return t;
 }
+// 条件検索バーを info-bar（＋表示中の game-switch）の直下にドッキング（スクロール追従）
+function dockCbBar(){
+  var bar=document.getElementById('cb-bar');if(!bar)return;
+  var ib=document.querySelector('.info-bar'),gsw=document.getElementById('game-switch');
+  // offsetHeight は display:none のとき 0 になるので game-switch の表示有無を自動で吸収
+  var t=(ib?ib.offsetHeight:54)+(gsw?gsw.offsetHeight:0);
+  bar.style.top=t+'px';
+}
 // ===== OVERVIEW: FIELD ZONE × FORMATION 組み合わせフィルタ =====
 function setupCombo(zonesId,formsId,yardId,bodyId,rows,base){
   var ze=document.getElementById(zonesId),fe=document.getElementById(formsId),ye=document.getElementById(yardId),be=document.getElementById(bodyId);
@@ -1365,8 +1370,23 @@ function setupCombo(zonesId,formsId,yardId,bodyId,rows,base){
   function formLbl(){var k=formArr();return k.length?k.join(' + '):'全 FORMATION';}
   // ---- popup open/close ----
   var pop=document.getElementById('cb-pop'),fab=document.getElementById('cb-fab'),active=document.getElementById('cb-active');
-  function openPop(){if(pop)pop.classList.add('on');}function closePop(){if(pop)pop.classList.remove('on');}
+  dockCbBar();if(typeof requestAnimationFrame!=='undefined')requestAnimationFrame(dockCbBar);
+  if(!window.__cbResize){window.__cbResize=1;window.addEventListener('resize',dockCbBar);}
+  // ポップアップは「いま見ているビューポートの中央」に表示（position:fixed なのでスクロール位置に追従）。
+  // 縦は画面いっぱいまで使い、内容が収まれば内部スクロール無し。
+  function positionPop(){
+    var card=pop&&pop.querySelector('.cb-pop-card');
+    if(!card)return;
+    var vw=window.innerWidth,vh=window.innerHeight;
+    card.style.width=Math.min(vw-24,1120)+'px';
+    card.style.left='50%';card.style.top='50%';card.style.transform='translate(-50%,-50%)';
+    card.style.maxHeight=Math.round(vh-24)+'px';
+  }
+  function openPop(){if(!pop)return;pop.classList.add('on');positionPop();}
+  function closePop(){if(pop)pop.classList.remove('on');}
   if(fab)fab.onclick=openPop;
+  if(!window.__cbPopResize){window.__cbPopResize=1;window.addEventListener('resize',function(){var p=document.getElementById('cb-pop');if(p&&p.classList.contains('on')&&window.__cbPositionPop)window.__cbPositionPop();});}
+  window.__cbPositionPop=positionPop;
   var px=document.getElementById('cb-pop-x'),pbk=document.getElementById('cb-pop-back');
   if(px)px.onclick=closePop; if(pbk)pbk.onclick=closePop;
   // ---- ヤードバー ----
@@ -1407,16 +1427,16 @@ function setupCombo(zonesId,formsId,yardId,bodyId,rows,base){
     var rg=zoneRange(z),cnt=rowsInRange(rg[0],rg[1]).length;
     var nm=z==='ALL'?'ALL（全域）':(ZFULL[z]||z),yd=z==='ALL'?'全フィールド':(ZYD[z]||'');
     var t=document.createElement('div');t.className='zcard';t.dataset.z=z;
-    t.innerHTML='<span class="zcard-ic" style="color:'+zoneColor(z)+'">⚑</span><span class="zcard-name">'+esc(nm)+'</span><span class="zcard-yd">'+esc(yd)+'</span><span class="zcard-n">'+cnt+'</span>';
+    t.innerHTML='<span class="zcard-top"><span class="zcard-ic" style="color:'+zoneColor(z)+'">⚑</span><span class="zcard-n">'+cnt+'</span></span><span class="zcard-name">'+esc(nm)+'</span><span class="zcard-yd">'+esc(yd)+'</span>';
     t.onclick=function(){lo=rg[0];hi=rg[1];paintZ(z);paintBar();render();};
     ze.appendChild(t);
   });
   // ---- FORMATION カード（縦・件数下・チェックボックス無し）----
   fe.innerHTML='';
   var allC=document.createElement('div');allC.className='zcard';allC.dataset.k='__ALL';
-  allC.innerHTML='<span class="zcard-ic" style="color:#002B5C">▦</span><span class="zcard-name">ALL（全件）</span><span class="zcard-n">'+rows.length+'</span>';
+  allC.innerHTML='<span class="zcard-top"><span class="zcard-ic" style="color:#002B5C">▦</span><span class="zcard-n">'+rows.length+'</span></span><span class="zcard-name">ALL（全件）</span>';
   allC.onclick=function(){selF={};paintF();render();};fe.appendChild(allC);
-  (FO||[]).forEach(function(k){var cnt=rows.filter(function(r){return r.FG===k;}).length;var t=document.createElement('div');t.className='zcard';t.dataset.k=k;t.innerHTML='<span class="zcard-ic" style="color:'+(FC[k]||'#0055A4')+'">▣</span><span class="zcard-name">'+esc(k)+'</span><span class="zcard-n">'+cnt+'</span>';t.onclick=function(){selF[k]=!selF[k];paintF();render();};fe.appendChild(t);});
+  (FO||[]).forEach(function(k){var cnt=rows.filter(function(r){return r.FG===k;}).length;var t=document.createElement('div');t.className='zcard';t.dataset.k=k;t.innerHTML='<span class="zcard-top"><span class="zcard-ic" style="color:'+(FC[k]||'#0055A4')+'">▣</span><span class="zcard-n">'+cnt+'</span></span><span class="zcard-name">'+esc(k)+'</span>';t.onclick=function(){selF[k]=!selF[k];paintF();render();};fe.appendChild(t);});
   paintZ('ALL');paintBar();paintF();render();
 }
 // フィールド位置 fpos: 0=自陣ゴール … 50=ミッド … 100=敵陣ゴール（自陣=負, 敵陣=正の YARD LN を連続化）
@@ -1758,6 +1778,7 @@ function parseCSV(text){
   var lines=text.trim().split(/\r\n|\r|\n/);
   if(lines.length<2)throw new Error('データが少なすぎます');
   var headers=parseCSVLine(lines[0]);
+  if(headers.indexOf('ODK')<0){var di=headers.indexOf('DOK');if(di>=0)headers[di]='ODK';} // 列名のタイプミス DOK を ODK として救済
   if(headers.indexOf('ODK')<0)throw new Error('ODK列が見つかりません。ヘッダー行から貼り付けてください。');
   return lines.slice(1).filter(function(l){return l.trim();}).map(function(line){
     var vals=parseCSVLine(line);
@@ -1791,12 +1812,12 @@ function renderTabs(valid,label){
 // ゲーム切替バー（2試合以上のときだけ表示）
 function buildGameSwitch(){
   var el=document.getElementById('game-switch'); if(!el)return;
-  if(__games.length<=1){el.style.display='none';el.innerHTML='';return;}
+  if(__games.length<=1){el.style.display='none';el.innerHTML='';dockCbBar();return;}
   var tot=0;__games.forEach(function(g){tot+=g.valid.length;});
   var html='<span class="gs-label">対象ゲーム / Game</span>'
     +'<button class="gs-pill gs-all'+(__activeGame<0?' on':'')+'" onclick="switchGame(-1)">ALL GAMES <span class="gs-n">'+tot+'</span></button>';
   __games.forEach(function(g,i){html+='<button class="gs-pill'+(__activeGame===i?' on':'')+'" onclick="switchGame('+i+')">'+esc(g.name)+' <span class="gs-n">'+g.valid.length+'</span></button>';});
-  el.style.display='flex'; el.innerHTML=html;
+  el.style.display='flex'; el.innerHTML=html; dockCbBar();
 }
 function switchGame(idx){__activeGame=idx;renderTabs(activeRows(),activeLabel());buildGameSwitch();showTab('overview');window.scrollTo(0,0);}
 // 初回ロード：スプラッシュ＋画面遷移
@@ -2072,6 +2093,40 @@ function generateCustom(){
   if(!rows||!rows.length){out.innerHTML='<span style="color:var(--red)">スカウティングデータが読み込まれていません</span>';return;}
   renderAskObj(out,localAsk(rows,q));
 }
+// ASK AI 深掘り：アソシエーション分析＋傾向サマリーを LLM（Groq・無料）に渡して解説させる
+function buildAIContext(rows){
+  var a=analyze(rows);
+  var rules=mineAssociations(rows).slice(0,18).map(function(r,i){
+    return (i+1)+'. IF '+r.antArr.join(' & ')+' → '+consLabel(r.cons)+'（conf '+Math.round(r.conf*100)+'% / lift '+r.lift.toFixed(2)+' / N '+r.supp+'/'+r.ac+'）';
+  }).join('\n');
+  var tells=dcTells(rows,a).slice(0,12).map(function(t){return '・'+t.jp+'（N='+t.n+'）';}).join('\n');
+  return 'アソシエーション分析（条件→反応, conf=その条件での発生率, lift=全体比, 上位）:\n'+(rules||'（該当なし）')
+    +'\n\n傾向サマリー:\n'+(tells||'（該当なし）')
+    +'\n\nブリッツ方向: BOUNDARY '+a.bt.BOUNDARY+' / FIELD '+a.bt.FIELD+' / BOTH '+a.bt.BOTH;
+}
+function generateCustomAI(){
+  var inp=document.getElementById('ask-input'),out=document.getElementById('ask-output');
+  var q=(inp.value||'').trim()||'このディフェンスの傾向・弱点と、有効なオフェンスの攻め方を、アソシエーション分析の結果に基づいて深掘りして。';
+  var rows=window.__scoutData;
+  if(!rows||!rows.length){out.innerHTML='<span style="color:var(--red)">スカウティングデータが読み込まれていません</span>';return;}
+  if(location.protocol==='file:'){out.innerHTML='<div class="ins" style="background:#FEF9EC;border-color:var(--amber);color:#7A4F00">⚠️ AI深掘りはサーバ経由でのみ動作します（Vercelプレビュー/本番で利用してください）。ローカル集計（🧠 分析する）はこのまま使えます。</div>';return;}
+  out.innerHTML='<div class="ai-loading"><div class="ai-spinner"></div><span>AIが深掘り中 / Deep-diving…（Gemini・無料）</span></div>';
+  var a=analyze(rows);
+  var payload={isCustom:true,question:q,context:buildAIContext(rows),stats:{
+    n:a.n,bp:a.bp,sp:a.sp,
+    cov:a.cov.slice(0,8).map(function(x){return [x[0],x[1]];}),
+    front:a.front.slice(0,6).map(function(x){return [x[0],x[1]];})
+  }};
+  fetch('/api/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
+    .then(function(res){return res.json();})
+    .then(function(data){
+      if(data.error){out.innerHTML='<span style="color:var(--red)">エラー: '+esc(data.error)+'</span>';return;}
+      var obj=null;try{obj=JSON.parse(data.comment);}catch(e){obj=null;}
+      if(obj&&(obj.summary||obj.blocks)){renderAskObj(out,obj);out.insertAdjacentHTML('beforeend','<div style="font-size:10px;color:var(--g400);margin-top:8px">🤖 AI（Gemini・無料）による解説。数値はローカル集計に基づきます。</div>');}
+      else{out.innerHTML='<div class="ai-result">'+esc(data.comment||'').replace(/\n/g,'<br>')+'</div>';}
+    })
+    .catch(function(err){out.innerHTML='<span style="color:var(--red)">通信エラー: '+esc(err.message)+'<br>VercelにデプロイされGEMINI_API_KEYが設定されているか確認してください。</span>';});
+}
 
 // ===== PPTX EXPORT (editable PowerPoint shapes/charts/tables) =====
 function exportPptx(){
@@ -2315,6 +2370,7 @@ document.addEventListener('DOMContentLoaded',function(){
   document.getElementById('tt-report').addEventListener('click',function(){showTab('report');});
   document.getElementById('tt-ask').addEventListener('click',function(){showTab('ask');});
   document.getElementById('btn-ask').addEventListener('click',generateCustom);
+  document.getElementById('btn-ask-ai').addEventListener('click',generateCustomAI);
   document.getElementById('btn-pptx').addEventListener('click',exportPptx);
   setupAskChips();
   document.getElementById('cmp-mode-overview').addEventListener('click',function(){cmpMode('overview');});

@@ -15,9 +15,12 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) {
-    return res.status(500).json({ error: 'APIキーが設定されていません。Vercelの環境変数を確認してください。' });
+  // 優先順位: Gemini（無料）→ Groq（無料）→ Claude。設定された環境変数のキーを使う。
+  const geminiKey = process.env.GEMINI_API_KEY;
+  const groqKey = process.env.GROQ_API_KEY;
+  const claudeKey = process.env.ANTHROPIC_API_KEY;
+  if (!geminiKey && !groqKey && !claudeKey) {
+    return res.status(500).json({ error: 'APIキーが設定されていません（Vercelの環境変数に GEMINI_API_KEY（推奨・無料）/ GROQ_API_KEY / ANTHROPIC_API_KEY のいずれかを設定してください）。' });
   }
 
   try {
@@ -129,28 +132,72 @@ ${q}`;
 3. 具体的に有効なプレーコールやスキームの提案`;
     }
 
-    // ===== Claude API 呼び出し =====
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01',
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
-        max_tokens: isCustom ? 1500 : 800,
+    // ===== LLM 呼び出し =====
+    const wantJson = !!(isCustom && question); // ASK AI は JSON で返す
+    const maxTokens = isCustom ? 1500 : 800;
+    let text = '';
+
+    if (geminiKey) {
+      // Google Gemini（無料枠）。thinkingBudget:0 で思考トークンを使わせ、出力を回答に充てる。
+      // JSONが要る場合は responseMimeType で強制。
+      const gmodel = 'gemini-2.5-flash';
+      const genCfg = { maxOutputTokens: maxTokens, temperature: 0.3, thinkingConfig: { thinkingBudget: 0 } };
+      if (wantJson) genCfg.responseMimeType = 'application/json';
+      const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/' + gmodel + ':generateContent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-goog-api-key': geminiKey },
+        body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: genCfg }),
+      });
+      if (!response.ok) {
+        const err = await response.text();
+        throw new Error(`Gemini API error: ${response.status} ${err}`);
+      }
+      const data = await response.json();
+      const cand = data.candidates && data.candidates[0];
+      text = (cand && cand.content && cand.content.parts || []).map(p => p.text || '').join('');
+      if (!text && cand && cand.finishReason) throw new Error(`Gemini empty response (finishReason: ${cand.finishReason})`);
+    } else if (groqKey) {
+      // Groq（OpenAI互換・無料枠）。JSONが要る場合は response_format で強制
+      const gbody = {
+        model: 'llama-3.3-70b-versatile',
+        max_tokens: maxTokens,
+        temperature: 0.3,
         messages: [{ role: 'user', content: prompt }],
-      }),
-    });
-
-    if (!response.ok) {
-      const err = await response.text();
-      throw new Error(`Claude API error: ${response.status} ${err}`);
+      };
+      if (wantJson) gbody.response_format = { type: 'json_object' };
+      const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + groqKey },
+        body: JSON.stringify(gbody),
+      });
+      if (!response.ok) {
+        const err = await response.text();
+        throw new Error(`Groq API error: ${response.status} ${err}`);
+      }
+      const data = await response.json();
+      text = (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) || '';
+    } else {
+      // Claude
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': claudeKey,
+          'anthropic-version': '2023-06-01',
+        },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-6',
+          max_tokens: maxTokens,
+          messages: [{ role: 'user', content: prompt }],
+        }),
+      });
+      if (!response.ok) {
+        const err = await response.text();
+        throw new Error(`Claude API error: ${response.status} ${err}`);
+      }
+      const data = await response.json();
+      text = data.content.map(c => c.type === 'text' ? c.text : '').join('');
     }
-
-    const data = await response.json();
-    const text = data.content.map(c => c.type === 'text' ? c.text : '').join('');
 
     return res.status(200).json({ comment: text });
 
