@@ -371,7 +371,7 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
 /* FLOW & SPLITS は SUMMARY のカード（.cs-grid / .cs-card）で表示 */
 /* ASSOCIATION RULES — mockup design (numbered rows, icons, CONF/LIFT bars) */
 .atable{display:flex;flex-direction:column;min-width:900px}
-.arule{display:grid;grid-template-columns:28px 66px 44px 92px minmax(62px,1fr) minmax(80px,1fr) 16px minmax(116px,148px) 100px 100px 60px;align-items:center;gap:9px;padding:9px 6px;border-bottom:1px solid var(--g100);font-size:12.5px}
+.arule{display:grid;grid-template-columns:28px repeat(5,minmax(68px,1fr)) 16px minmax(120px,150px) 100px 100px 60px;align-items:center;gap:9px;padding:9px 6px;border-bottom:1px solid var(--g100);font-size:12.5px}
 .arule:hover:not(.ar-head){background:var(--g50)}
 .arule.ar-head{border-bottom:2px solid var(--g100);font-size:10px;font-weight:800;color:var(--g400);text-transform:uppercase;letter-spacing:.03em;align-items:end;padding-bottom:7px}
 .ar-head .ar-sub{display:block;font-size:9px;font-weight:700;color:var(--g300);margin-top:1px;text-transform:none;letter-spacing:0}
@@ -557,6 +557,14 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
 .btn-ai:hover{background:rgba(255,255,255,.25)}
 .ai-body{padding:16px 18px;min-height:80px;font-size:13px;line-height:1.8;color:var(--g600)}
 .ai-placeholder{color:var(--g400);font-size:12px}
+/* ASK AI 会話スレッド */
+.chat-row{display:flex;margin:10px 0}
+.chat-row-u{justify-content:flex-end}
+.chat-u{background:var(--navy);color:#fff;border-radius:13px 13px 4px 13px;padding:8px 13px;font-size:12.5px;font-weight:600;line-height:1.6;max-width:82%;box-shadow:var(--sh)}
+.chat-ai{background:#fff;border:1px solid var(--g200);border-radius:13px 13px 13px 4px;padding:11px 13px;width:100%;box-shadow:var(--sh)}
+.chat-tag{display:block;font-size:9.5px;font-weight:800;letter-spacing:.04em;color:var(--g400);margin-bottom:5px}
+.chat-tag-ai{color:var(--blue)}
+.chat-ai .ins:last-child,.chat-ai .card:last-child{margin-bottom:0}
 .ai-result{color:var(--g900);font-size:13px;line-height:1.9}
 .ai-loading{display:flex;align-items:center;gap:10px;color:var(--g400);font-size:12px}
 .ai-spinner{width:18px;height:18px;border:2px solid var(--g200);border-top-color:var(--blue);border-radius:50%;animation:spin .8s linear infinite;flex-shrink:0}
@@ -665,15 +673,15 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
     <div class="tp" id="tab-ask">
       <div class="card">
         <div class="sec">ASK AI — 自由分析 / Custom Analysis</div>
-        <div style="font-size:12px;color:var(--g600);margin-bottom:8px">質問を入力すると、読み込み済みデータを自動集計して図表で回答します（<b>無料・オフライン・APIキー不要</b>／ルールベース）。<br><span style="color:var(--g400)">ゾーン・ダウン・距離・カバレッジ・フロント・ブリッツ・縦・偏り などのキーワードに対応。Computed locally — free, no API key.</span></div>
+        <div style="font-size:12px;color:var(--g600);margin-bottom:8px"><b>🧠 分析する</b>＝読み込み済みデータを自動集計して図表で即答（無料・オフライン）。<b>🤖 AIに聞く</b>＝Geminiが解説、<b>会話の続き（フォローアップ）も文脈を保持</b>（要 GEMINI_API_KEY）。<br><span style="color:var(--g400)">Local instant analysis + conversational AI follow-ups.</span></div>
         <div class="ask-chips" id="ask-chips"></div>
-        <textarea id="ask-input" placeholder="例: 3rd &amp; long で最も多いブリッツは？ その対策コンセプトも教えて / e.g. What blitz is most common on 3rd & long, and how do we beat it?"></textarea>
+        <textarea id="ask-input" placeholder="例: 3rd &amp; long で最も多いブリッツは？ → その後「その対策は？」と続けて聞けます / Ask, then follow up."></textarea>
         <div style="margin-top:10px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
           <button class="btn btn-blue" id="btn-ask">🧠 分析する / Analyze <span style="font-size:10px;font-weight:700;opacity:.8">無料・即時</span></button>
-          <button class="btn btn-navy" id="btn-ask-ai">🤖 AIで深掘り / Deep-dive <span style="font-size:10px;font-weight:700;opacity:.8">Gemini・無料</span></button>
-          <span style="font-size:11px;color:var(--g400)">深掘りはアソシエーション結果をAIが解説（要 GEMINI_API_KEY）</span>
+          <button class="btn btn-navy" id="btn-ask-ai">🤖 AIに聞く / Ask AI <span style="font-size:10px;font-weight:700;opacity:.8">Gemini・会話</span></button>
+          <button class="btn btn-ghost" id="btn-ask-clear" style="font-size:12px">🗑️ 会話クリア</button>
         </div>
-        <div class="ai-body" id="ask-output" style="margin-top:14px"><span class="ai-placeholder">ここに結果が表示されます / Output appears here.</span></div>
+        <div class="ai-body" id="ask-output" style="margin-top:14px"><span class="ai-placeholder">質問を入力して送信。会話の続きも文脈を保持します / Output appears here.</span></div>
       </div>
     </div>
   </div>
@@ -722,11 +730,15 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
       <div id="cmp-ask-wrap" style="display:none">
         <div class="card">
           <div class="sec">ASK AI — 事前 vs 試合後 自由分析 / Pre-vs-Post Custom Analysis</div>
-          <div style="font-size:12px;color:var(--g600);margin-bottom:8px">事前と試合後の差を自動集計して図表で表示します（<b>無料・オフライン・APIキー不要</b>）。質問を入力して実行してください。<br><span style="color:var(--g400)">Pre-vs-post diff, computed locally — free, no API key.</span></div>
+          <div style="font-size:12px;color:var(--g600);margin-bottom:8px"><b>🧠 分析する</b>＝事前と試合後の差を自動集計（無料）。<b>🤖 AIに聞く</b>＝Geminiが PRE→POST の変化を解説、<b>会話の続きも文脈を保持</b>（要 GEMINI_API_KEY）。<br><span style="color:var(--g400)">Pre-vs-post diff + conversational AI follow-ups.</span></div>
           <div class="ask-chips" id="cmp-ask-chips"></div>
-          <textarea id="cmp-ask-input" placeholder="例: スカウティングと実際で最も変わったのは？ 次戦への修正点は？ / e.g. What changed most vs the scout, and what should we adjust?"></textarea>
-          <div style="margin-top:10px"><button class="btn btn-blue" id="btn-cmp-ask">🧠 分析する / Analyze</button></div>
-          <div class="ai-body" id="cmp-ask-output" style="margin-top:14px"><span class="ai-placeholder">ここに結果が表示されます / Output appears here.</span></div>
+          <textarea id="cmp-ask-input" placeholder="例: スカウティングと実際で最も変わったのは？ → 続けて「次戦の修正点は？」と聞けます / Ask, then follow up."></textarea>
+          <div style="margin-top:10px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+            <button class="btn btn-blue" id="btn-cmp-ask">🧠 分析する / Analyze <span style="font-size:10px;font-weight:700;opacity:.8">無料・即時</span></button>
+            <button class="btn btn-navy" id="btn-cmp-ask-ai">🤖 AIに聞く / Ask AI <span style="font-size:10px;font-weight:700;opacity:.8">Gemini・会話</span></button>
+            <button class="btn btn-ghost" id="btn-cmp-ask-clear" style="font-size:12px">🗑️ 会話クリア</button>
+          </div>
+          <div class="ai-body" id="cmp-ask-output" style="margin-top:14px"><span class="ai-placeholder">質問を入力して送信。会話の続きも文脈を保持します / Output appears here.</span></div>
         </div>
       </div>
     </div>
@@ -1903,8 +1915,9 @@ function generateAnalysis(zone, isCompare, byForm) {
 // ===== ASK (free-text → local rule-based analysis, no API) =====
 function esc(s){return (''+s).replace(/[&<>]/g,function(c){return c==='&'?'&amp;':c==='<'?'&lt;':'&gt;';});}
 // 集計結果 {summary, blocks:[kpi|bars|table|note]} をダッシュボード風に描画
-function renderAskObj(out,obj){
-  if(!obj){out.innerHTML='<span style="color:var(--g400)">該当する分析が見つかりませんでした。</span>';return;}
+function renderAskObj(out,obj){out.innerHTML=obj?askObjHTML(obj):'<span style="color:var(--g400)">該当する分析が見つかりませんでした。</span>';}
+function askObjHTML(obj){
+  if(!obj)return'<span style="color:var(--g400)">該当する分析が見つかりませんでした。</span>';
   var h='';
   if(obj.summary)h+='<div class="ins" style="margin-bottom:12px">'+esc(obj.summary)+'</div>';
   (obj.blocks||[]).forEach(function(b){
@@ -1919,7 +1932,7 @@ function renderAskObj(out,obj){
       h+='<div class="ins" style="background:#FEF9EC;border-color:var(--amber);color:#7A4F00;margin:10px 0">'+esc(b.text)+'</div>';
     }
   });
-  out.innerHTML=h||'<span style="color:var(--g400)">—</span>';
+  return h||'<span style="color:var(--g400)">—</span>';
 }
 // ===== ローカル自動分析（LLM不使用・無料・オフライン） =====
 function topBars(arr,n){return (arr||[]).slice(0,6).map(function(x){return {label:x[0],value:p(x[1],n)};});}
@@ -2045,22 +2058,59 @@ function setupAskChips(chipsId,inputId,presets){
   Array.prototype.forEach.call(el.querySelectorAll('.ask-chip'),function(c,i){c.textContent=presets[i];c.onclick=function(){var t=document.getElementById(inId);t.value=presets[i];t.focus();};});
 }
 // 比較画面用 ASK（事前 vs 試合後をローカル集計）
-function generateCustomCompare(){
-  var inp=document.getElementById('cmp-ask-input'),out=document.getElementById('cmp-ask-output');
-  var q=(inp.value||'').trim();
-  if(!q){out.innerHTML='<span style="color:var(--red)">質問を入力してください / Please enter a question.</span>';return;}
-  var scout=__scoutDataGlobal,game=__gameDataGlobal;
-  if(!scout||!scout.length){out.innerHTML='<span style="color:var(--red)">スカウティングデータが読み込まれていません</span>';return;}
-  if(!game||!game.length){out.innerHTML='<span style="color:var(--red)">試合後データが読み込まれていません</span>';return;}
-  renderAskObj(out,localAskCompare(scout,game,q));
+// ===== ASK AI（会話対応）：ローカル即時 + AI(Gemini)会話。メイン(ask)と比較(cmp)で共通 =====
+var __ASK={
+  ask:{thread:[],inputId:'ask-input',outId:'ask-output',
+    ready:function(){return !!(window.__scoutData&&window.__scoutData.length);},
+    local:function(q){return localAsk(window.__scoutData||[],q);},
+    ctx:function(){return buildAIContext(window.__scoutData||[]);},
+    stats:function(){return askStats(window.__scoutData||[]);}},
+  cmp:{thread:[],inputId:'cmp-ask-input',outId:'cmp-ask-output',
+    ready:function(){return !!(__scoutDataGlobal&&__scoutDataGlobal.length&&__gameDataGlobal&&__gameDataGlobal.length);},
+    local:function(q){return localAskCompare(__scoutDataGlobal,__gameDataGlobal,q);},
+    ctx:function(){return buildAIContextCompare(__scoutDataGlobal,__gameDataGlobal);},
+    stats:function(){return askStats(__gameDataGlobal||[]);}}
+};
+function askStats(rows){var a=analyze(rows);return{n:a.n,bp:a.bp,sp:a.sp,cov:a.cov.slice(0,8).map(function(x){return[x[0],x[1]];}),front:a.front.slice(0,6).map(function(x){return[x[0],x[1]];})};}
+function askThreadHTML(cfg,loading){
+  if(!cfg.thread.length&&!loading)return'<span class="ai-placeholder">質問を入力して送信。<b>会話の続き（フォローアップ）も文脈を保持</b>します。/ Ask a question — follow-ups keep context.</span>';
+  var h=cfg.thread.map(function(t){
+    if(t.role==='user')return'<div class="chat-row chat-row-u"><div class="chat-u">'+esc(t.text)+'</div></div>';
+    var tag=t.src==='ai'?'<span class="chat-tag chat-tag-ai">🤖 AI（Gemini）</span>':'<span class="chat-tag">🧠 ローカル集計</span>';
+    return'<div class="chat-row"><div class="chat-ai">'+tag+askObjHTML(t.obj)+'</div></div>';
+  }).join('');
+  if(loading)h+='<div class="chat-row"><div class="chat-ai"><div class="ai-loading"><div class="ai-spinner"></div><span>AIが考え中… / Thinking…（Gemini）</span></div></div></div>';
+  return h;
 }
-function generateCustom(){
-  var inp=document.getElementById('ask-input'),out=document.getElementById('ask-output');
-  var q=(inp.value||'').trim();
-  if(!q){out.innerHTML='<span style="color:var(--red)">質問を入力してください / Please enter a question.</span>';return;}
-  var rows=window.__scoutData;
-  if(!rows||!rows.length){out.innerHTML='<span style="color:var(--red)">スカウティングデータが読み込まれていません</span>';return;}
-  renderAskObj(out,localAsk(rows,q));
+function renderAskThread(cfg,loading){var out=document.getElementById(cfg.outId);out.innerHTML=askThreadHTML(cfg,loading);out.scrollTop=out.scrollHeight;}
+function askClear(key){__ASK[key].thread=[];renderAskThread(__ASK[key]);}
+function askLocal(key){
+  var cfg=__ASK[key],inp=document.getElementById(cfg.inputId),q=(inp.value||'').trim();
+  if(!q){inp.focus();return;}
+  if(!cfg.ready()){cfg.thread.push({role:'ai',obj:{summary:'データが読み込まれていません。'},src:'local'});renderAskThread(cfg);return;}
+  cfg.thread.push({role:'user',text:q});inp.value='';
+  cfg.thread.push({role:'ai',obj:cfg.local(q)||{summary:'該当する分析が見つかりませんでした。'},src:'local'});
+  renderAskThread(cfg);
+}
+function askHistory(cfg){return cfg.thread.slice(-8).map(function(t){return t.role==='user'?('Q: '+t.text):('A: '+((t.obj&&t.obj.summary)||'(図表回答)'));}).join('\n');}
+function askAI(key){
+  var cfg=__ASK[key],inp=document.getElementById(cfg.inputId);
+  var q=(inp.value||'').trim()||'このデータの要点と、有効な攻め方を深掘りして。';
+  if(!cfg.ready()){cfg.thread.push({role:'ai',obj:{summary:'データが読み込まれていません。'},src:'ai'});renderAskThread(cfg);return;}
+  if(location.protocol==='file:'){cfg.thread.push({role:'ai',obj:{summary:'AI会話はサーバ経由でのみ動作します（Vercelで利用してください）。ローカル集計（🧠）はこのまま使えます。'},src:'ai'});renderAskThread(cfg);return;}
+  cfg.thread.push({role:'user',text:q});inp.value='';
+  renderAskThread(cfg,true);
+  var multi=cfg.thread.filter(function(t){return t.role;}).length>1;
+  var question=multi?('これまでの会話（最後が最新の質問）:\n'+askHistory(cfg)+'\n\n会話の流れを踏まえ、最新の質問に答えてください。'):q;
+  fetch('/api/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({isCustom:true,question:question,context:cfg.ctx(),stats:cfg.stats()})})
+    .then(function(res){return res.json();})
+    .then(function(data){
+      var obj;
+      if(data.error){obj={summary:'エラー: '+data.error};}
+      else{try{obj=JSON.parse(data.comment);}catch(e){obj=null;}if(!obj||!(obj.summary||obj.blocks))obj={summary:data.comment||'(空の応答)'};}
+      cfg.thread.push({role:'ai',obj:obj,src:'ai'});renderAskThread(cfg);
+    })
+    .catch(function(err){cfg.thread.push({role:'ai',obj:{summary:'通信エラー: '+err.message+'（VercelデプロイとGEMINI_API_KEY設定を確認）'},src:'ai'});renderAskThread(cfg);});
 }
 // ASK AI 深掘り：スキーマ解説＋クロス集計＋アソシエーション＋傾向を LLM に渡す（知識を厚く）
 function buildAIContext(rows){
@@ -2103,28 +2153,22 @@ function buildAIContext(rows){
     +'\n\n【アソシエーション分析（条件→反応・上位）】\n'+(rules||'（該当なし）')
     +'\n\n【傾向サマリー】\n'+(tells||'（該当なし）');
 }
-function generateCustomAI(){
-  var inp=document.getElementById('ask-input'),out=document.getElementById('ask-output');
-  var q=(inp.value||'').trim()||'このディフェンスの傾向・弱点と、有効なオフェンスの攻め方を、アソシエーション分析の結果に基づいて深掘りして。';
-  var rows=window.__scoutData;
-  if(!rows||!rows.length){out.innerHTML='<span style="color:var(--red)">スカウティングデータが読み込まれていません</span>';return;}
-  if(location.protocol==='file:'){out.innerHTML='<div class="ins" style="background:#FEF9EC;border-color:var(--amber);color:#7A4F00">⚠️ AI深掘りはサーバ経由でのみ動作します（Vercelプレビュー/本番で利用してください）。ローカル集計（🧠 分析する）はこのまま使えます。</div>';return;}
-  out.innerHTML='<div class="ai-loading"><div class="ai-spinner"></div><span>AIが深掘り中 / Deep-diving…（Gemini・無料）</span></div>';
-  var a=analyze(rows);
-  var payload={isCustom:true,question:q,context:buildAIContext(rows),stats:{
-    n:a.n,bp:a.bp,sp:a.sp,
-    cov:a.cov.slice(0,8).map(function(x){return [x[0],x[1]];}),
-    front:a.front.slice(0,6).map(function(x){return [x[0],x[1]];})
-  }};
-  fetch('/api/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
-    .then(function(res){return res.json();})
-    .then(function(data){
-      if(data.error){out.innerHTML='<span style="color:var(--red)">エラー: '+esc(data.error)+'</span>';return;}
-      var obj=null;try{obj=JSON.parse(data.comment);}catch(e){obj=null;}
-      if(obj&&(obj.summary||obj.blocks)){renderAskObj(out,obj);out.insertAdjacentHTML('beforeend','<div style="font-size:10px;color:var(--g400);margin-top:8px">🤖 AI（Gemini・無料）による解説。数値はローカル集計に基づきます。</div>');}
-      else{out.innerHTML='<div class="ai-result">'+esc(data.comment||'').replace(/\n/g,'<br>')+'</div>';}
-    })
-    .catch(function(err){out.innerHTML='<span style="color:var(--red)">通信エラー: '+esc(err.message)+'<br>VercelにデプロイされGEMINI_API_KEYが設定されているか確認してください。</span>';});
+// 比較(試合後)AIチャット用コンテキスト：事前(PRE)→試合後(POST)の差分中心
+function buildAIContextCompare(scout,game){
+  if(!scout||!scout.length)return buildAIContext(game||[]);
+  if(!game||!game.length)return buildAIContext(scout);
+  var sa=analyze(scout),ga=analyze(game);
+  function ov(a){return 'BLITZ '+a.bp+'% / STUNT '+a.sp+'% / 主カバー '+(a.cov[0]?a.cov[0][0]:'—')+' / 主フロント '+(a.front[0]?a.front[0][0]:'—')+' / 方向 BOUNDARY '+a.bt.BOUNDARY+'・FIELD '+a.bt.FIELD+'・BOTH '+a.bt.BOTH;}
+  function seg(lbl,ss,gs){if(!ss.length&&!gs.length)return null;var s=analyze(ss),g=analyze(gs);return '- '+lbl+': BLITZ '+s.bp+'%→'+g.bp+'%（'+(g.bp-s.bp>=0?'+':'')+(g.bp-s.bp)+'pt） / STUNT '+s.sp+'%→'+g.sp+'%';}
+  var byForm=(FO||[]).map(function(fg){return seg('FORM '+fg,scout.filter(function(r){return r.FG===fg;}),game.filter(function(r){return r.FG===fg;}));}).filter(Boolean).join('\n');
+  var sz=byZone(scout),gz=byZone(game);
+  var byZ=ZO.filter(function(z){return z!=='ALL';}).map(function(z){return ((sz[z]&&sz[z].length)||(gz[z]&&gz[z].length))?seg((ZN[z]||z),sz[z]||[],gz[z]||[]):null;}).filter(Boolean).join('\n');
+  var rules=mineAssociations(game).slice(0,12).map(function(r,i){return (i+1)+'. IF '+r.antArr.join(' & ')+' → '+consLabel(r.cons)+'（conf '+Math.round(r.conf*100)+'% / N '+r.supp+'）';}).join('\n');
+  return '【データの見方】PRE＝事前スカウティングの予想傾向、POST＝実際の試合で出た傾向。OFF FORMATION は自軍の隊形、COVERAGE/FRONT/BLITZ/STUNT 等は相手チーム独自のコール名（ラベル扱い・意味は創作しない）。数字は%(割合)。コーチとして「予想とどう違ったか」「相手が試合中に修正した点」「次戦に向けた具体的な攻め筋」を読む。'
+    +'\n\n【全体 PRE → POST】\n- 事前(PRE): '+ov(sa)+'\n- 試合後(POST): '+ov(ga)
+    +'\n\n【自軍フォーメーション別 PRE→POST】\n'+(byForm||'—')
+    +'\n\n【ゾーン別 PRE→POST】\n'+(byZ||'—')
+    +'\n\n【試合後(POST)データのアソシエーション（上位）】\n'+(rules||'（該当なし）');
 }
 
 // ===== PPTX EXPORT (editable PowerPoint shapes/charts/tables) =====
@@ -2368,15 +2412,18 @@ document.addEventListener('DOMContentLoaded',function(){
   document.getElementById('tt-overview2').addEventListener('click',function(){showTab('overview2');});
   document.getElementById('tt-report').addEventListener('click',function(){showTab('report');});
   document.getElementById('tt-ask').addEventListener('click',function(){showTab('ask');});
-  document.getElementById('btn-ask').addEventListener('click',generateCustom);
-  document.getElementById('btn-ask-ai').addEventListener('click',generateCustomAI);
+  document.getElementById('btn-ask').addEventListener('click',function(){askLocal('ask');});
+  document.getElementById('btn-ask-ai').addEventListener('click',function(){askAI('ask');});
+  document.getElementById('btn-ask-clear').addEventListener('click',function(){askClear('ask');});
   document.getElementById('btn-pptx').addEventListener('click',exportPptx);
   setupAskChips();
   document.getElementById('cmp-mode-overview').addEventListener('click',function(){cmpMode('overview');});
   document.getElementById('cmp-mode-summary').addEventListener('click',function(){cmpMode('summary');});
   document.getElementById('cmp-mode-report').addEventListener('click',function(){cmpMode('report');});
   document.getElementById('cmp-mode-ask').addEventListener('click',function(){cmpMode('ask');});
-  document.getElementById('btn-cmp-ask').addEventListener('click',generateCustomCompare);
+  document.getElementById('btn-cmp-ask').addEventListener('click',function(){askLocal('cmp');});
+  document.getElementById('btn-cmp-ask-ai').addEventListener('click',function(){askAI('cmp');});
+  document.getElementById('btn-cmp-ask-clear').addEventListener('click',function(){askClear('cmp');});
   setupAskChips('cmp-ask-chips','cmp-ask-input',['スカウティングと実際で最も変わった点は？','相手が試合中に修正してきた点は？','次戦に向けた具体的な修正点は？','読みが当たった部分・外れた部分は？']);
 
   document.getElementById('btn-print').addEventListener('click',function(){window.print();});
