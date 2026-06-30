@@ -691,7 +691,7 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
 <div id="compare-screen" style="display:none">
   <div class="info-bar">
     <div class="i-stat"><b>⚡ 事前スカウティング vs 試合後 / Pre-Scouting vs Post-Game</b></div>
-    <div class="i-actions"><button class="btn btn-ghost" id="btn-compare-back">← ダッシュボードに戻る / Back</button></div>
+    <div class="i-actions"><button class="btn btn-ghost" id="btn-cmp-pptx" style="font-size:12px;padding:7px 14px">📊 PPTX出力（試合後）/ Export</button><button class="btn btn-ghost" id="btn-compare-back">← ダッシュボードに戻る / Back</button></div>
   </div>
   <div class="main">
     <div id="compare-upload" style="max-width:600px;margin:0 auto 18px">
@@ -2172,9 +2172,9 @@ function buildAIContextCompare(scout,game){
 }
 
 // ===== PPTX EXPORT (editable PowerPoint shapes/charts/tables) =====
-function exportPptx(){
+function exportPptx(rows,labelText){
   if(typeof PptxGenJS==='undefined'){alert('PPTXライブラリを読み込めませんでした。オンライン環境で再度お試しください。\nPPTX library failed to load (needs internet).');return;}
-  var rows=window.__scoutData;
+  rows=(rows&&rows.length)?rows:window.__scoutData; // 引数が無い/イベント時はアクティブ・スカウティングデータ
   if(!rows||!rows.length){alert('データがありません / No data loaded.');return;}
   try{
     // ---- palette / type ----
@@ -2183,7 +2183,7 @@ function exportPptx(){
     var a=analyze(rows),zd=byZone(rows),bn=a.bn||1;
     var W=8.27,H=11.69,CW=7.27,X0=0.5;
     var pptx=new PptxGenJS();pptx.defineLayout({name:'A4P',width:W,height:H});pptx.layout='A4P';
-    var label=((document.getElementById('i-file')||{}).textContent||'IMPULSE Scouting').replace(/\s+/g,' ').trim();
+    var label=labelText||((document.getElementById('i-file')||{}).textContent||'IMPULSE Scouting').replace(/\s+/g,' ').trim();
     var dateStr=new Date().toLocaleDateString('ja-JP');
     function pctv(v){return Math.round(p(v,a.n));}
     var topc=a.cov[0]?a.cov[0][0]:'—',topf=a.front[0]?a.front[0][0]:'—';
@@ -2265,6 +2265,18 @@ function exportPptx(){
     kick(s3,'Coverage',1.45);bars(s3,X0,1.85,CW,a.cov,a.n,BARC);
     kick(s3,'Front',4.55);bars(s3,X0,4.95,CW,a.front,a.n,FRC);
 
+    // ---- Slide: Association Rules (SCOUTING REPORT の中心。条件→反応, conf/lift/N) ----
+    var arr=(typeof mineAssociations==='function')?mineAssociations(rows).slice(0,12):[];
+    if(arr.length){
+      var sAR=pptx.addSlide({masterName:'BASE'});head(sAR,'03 · Association','Association Rules');
+      var arBody=arr.map(function(r,i){
+        var resp=consLabel(r.cons),isP=/BLITZ|STUNT/.test(resp);
+        return [{t:String(i+1),a:'center'},{t:r.antArr.join('  &  '),fs:9,b:true},{t:resp,fs:9,c:(isP?RED:BLUE),b:true},{t:Math.round(r.conf*100)+'%',a:'center',c:(r.conf>=0.8?RED:INK),b:true},{t:r.lift.toFixed(1)+'×',a:'center',c:(r.lift>=2?RED:INK),b:true},{t:r.supp+'/'+r.ac,a:'center',fs:9}];
+      });
+      tbl(sAR,[{t:'#',a:'center'},{t:'条件 / CONDITION'},{t:'反応 / RESPONSE'},{t:'CONF',a:'center'},{t:'LIFT',a:'center'},{t:'N',a:'center'}],arBody,X0,1.45,CW,[0.4,3.0,1.7,0.72,0.72,0.73],0.5);
+      sAR.addText('条件（最大2項: ダウン/距離/ゾーン/フォーメーション/相手フロント）→ ディフェンスの反応。CONF=その条件での発生率, LIFT=全体比(1超で起きやすい), N=該当/条件。lift×件数の順。',{x:X0,y:10.5,w:CW,h:0.4,fontSize:8,italic:true,color:GREYL,fontFace:FONT});
+    }
+
     // ---- Slide 4: Pressure detail ----
     var s4=pptx.addSlide({masterName:'BASE'});head(s4,'03 · Pressure','Blitz Direction & Types');
     kick(s4,'Blitz Direction',1.45);bars(s4,X0,1.85,CW,[['BOUNDARY',a.bt.BOUNDARY],['FIELD',a.bt.FIELD],['BOTH',a.bt.BOTH]],bn,BARC);
@@ -2313,7 +2325,7 @@ function exportPptx(){
       if(!body.length)body=[[{t:'—'},{t:''},{t:''},{t:''},{t:''},{t:''}]];
       tbl(s,[{t:'区分 / Segment'},{t:'TOP3 COVERAGE'},{t:'TOP3 FRONT'},{t:'BLITZ%',a:'center'},{t:'STUNTS%',a:'center'},{t:'N',a:'center'}],body,X0,1.45,CW,[1.75,1.6,1.6,0.78,0.78,0.76],0.82);
     }
-    summarySlide('05 · Field Zone','by Field Zone',ZO.filter(function(z){return z!=='ALL';}).map(function(z){return[ZN[z]||z,zd[z]||[]];}));
+    summarySlide('05 · Field Zone','by Field Zone',ZO.filter(function(z){return z!=='ALL';}).map(function(z){return[(ZN[z]||z)+(ZR[z]?' ('+ZR[z]+')':''),zd[z]||[]];}));
     summarySlide('06 · Formation','by Formation',FO.map(function(fg){return[fg,rows.filter(function(r){return r.FG===fg;})];}));
 
     // ---- Slide 7: by Front (BLITZ direction per front) ----
@@ -2424,6 +2436,7 @@ document.addEventListener('DOMContentLoaded',function(){
   document.getElementById('btn-cmp-ask').addEventListener('click',function(){askLocal('cmp');});
   document.getElementById('btn-cmp-ask-ai').addEventListener('click',function(){askAI('cmp');});
   document.getElementById('btn-cmp-ask-clear').addEventListener('click',function(){askClear('cmp');});
+  document.getElementById('btn-cmp-pptx').addEventListener('click',function(){exportPptx(__gameDataGlobal,'試合後 POST-GAME');});
   setupAskChips('cmp-ask-chips','cmp-ask-input',['スカウティングと実際で最も変わった点は？','相手が試合中に修正してきた点は？','次戦に向けた具体的な修正点は？','読みが当たった部分・外れた部分は？']);
 
   document.getElementById('btn-print').addEventListener('click',function(){window.print();});
