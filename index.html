@@ -565,6 +565,11 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
 .chat-tag{display:block;font-size:9.5px;font-weight:800;letter-spacing:.04em;color:var(--g400);margin-bottom:5px}
 .chat-tag-ai{color:var(--blue)}
 .chat-ai .ins:last-child,.chat-ai .card:last-child{margin-bottom:0}
+/* AIが提案する「次に聞く」チップ */
+.ask-follows{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:11px;padding-top:9px;border-top:1px dashed var(--g200)}
+.ask-follows-lbl{font-size:10px;font-weight:800;color:var(--g400);letter-spacing:.03em}
+.ask-follow{font-size:11.5px;padding:5px 11px;border-radius:16px;border:1px solid var(--blue);background:var(--blue-pale);color:var(--navy);cursor:pointer;transition:all .14s;font-weight:600}
+.ask-follow:hover{background:var(--blue);color:#fff}
 .ai-result{color:var(--g900);font-size:13px;line-height:1.9}
 .ai-loading{display:flex;align-items:center;gap:10px;color:var(--g400);font-size:12px}
 .ai-spinner{width:18px;height:18px;border:2px solid var(--g200);border-top-color:var(--blue);border-radius:50%;animation:spin .8s linear infinite;flex-shrink:0}
@@ -2060,29 +2065,42 @@ function setupAskChips(chipsId,inputId,presets){
 // 比較画面用 ASK（事前 vs 試合後をローカル集計）
 // ===== ASK AI（会話対応）：ローカル即時 + AI(Gemini)会話。メイン(ask)と比較(cmp)で共通 =====
 var __ASK={
-  ask:{thread:[],inputId:'ask-input',outId:'ask-output',
+  ask:{key:'ask',thread:[],inputId:'ask-input',outId:'ask-output',
     ready:function(){return !!(window.__scoutData&&window.__scoutData.length);},
     local:function(q){return localAsk(window.__scoutData||[],q);},
     ctx:function(){return buildAIContext(window.__scoutData||[]);},
     stats:function(){return askStats(window.__scoutData||[]);}},
-  cmp:{thread:[],inputId:'cmp-ask-input',outId:'cmp-ask-output',
+  cmp:{key:'cmp',thread:[],inputId:'cmp-ask-input',outId:'cmp-ask-output',
     ready:function(){return !!(__scoutDataGlobal&&__scoutDataGlobal.length&&__gameDataGlobal&&__gameDataGlobal.length);},
     local:function(q){return localAskCompare(__scoutDataGlobal,__gameDataGlobal,q);},
     ctx:function(){return buildAIContextCompare(__scoutDataGlobal,__gameDataGlobal);},
     stats:function(){return askStats(__gameDataGlobal||[]);}}
 };
 function askStats(rows){var a=analyze(rows);return{n:a.n,bp:a.bp,sp:a.sp,cov:a.cov.slice(0,8).map(function(x){return[x[0],x[1]];}),front:a.front.slice(0,6).map(function(x){return[x[0],x[1]];})};}
+function escAttr(s){return esc(s).replace(/"/g,'&quot;');}
 function askThreadHTML(cfg,loading){
-  if(!cfg.thread.length&&!loading)return'<span class="ai-placeholder">質問を入力して送信。<b>会話の続き（フォローアップ）も文脈を保持</b>します。/ Ask a question — follow-ups keep context.</span>';
-  var h=cfg.thread.map(function(t){
+  if(!cfg.thread.length&&!loading)return'<span class="ai-placeholder">質問を入力して送信。<b>会話の続き（フォローアップ）も文脈を保持</b>します。AIは回答に加えて<b>次の一手の提案や問いかけ</b>もしてきます。/ Ask — the AI also suggests next questions.</span>';
+  var last=cfg.thread.length-1;
+  var h=cfg.thread.map(function(t,i){
     if(t.role==='user')return'<div class="chat-row chat-row-u"><div class="chat-u">'+esc(t.text)+'</div></div>';
     var tag=t.src==='ai'?'<span class="chat-tag chat-tag-ai">🤖 AI（Gemini）</span>':'<span class="chat-tag">🧠 ローカル集計</span>';
-    return'<div class="chat-row"><div class="chat-ai">'+tag+askObjHTML(t.obj)+'</div></div>';
+    var follow='';
+    // 最新のAI回答にだけ、AIが提案した「次に聞く質問」をチップ表示（押すとそのまま会話継続）
+    if(i===last&&t.obj&&t.obj.followups&&t.obj.followups.length){
+      follow='<div class="ask-follows"><span class="ask-follows-lbl">続けて聞く ▸</span>'+t.obj.followups.slice(0,3).map(function(q){return'<span class="ask-follow" data-key="'+cfg.key+'" data-q="'+escAttr(q)+'">'+esc(q)+'</span>';}).join('')+'</div>';
+    }
+    return'<div class="chat-row"><div class="chat-ai">'+tag+askObjHTML(t.obj)+follow+'</div></div>';
   }).join('');
   if(loading)h+='<div class="chat-row"><div class="chat-ai"><div class="ai-loading"><div class="ai-spinner"></div><span>AIが考え中… / Thinking…（Gemini）</span></div></div></div>';
   return h;
 }
-function renderAskThread(cfg,loading){var out=document.getElementById(cfg.outId);out.innerHTML=askThreadHTML(cfg,loading);out.scrollTop=out.scrollHeight;}
+function renderAskThread(cfg,loading){
+  var out=document.getElementById(cfg.outId);
+  out.innerHTML=askThreadHTML(cfg,loading);
+  Array.prototype.forEach.call(out.querySelectorAll('.ask-follow'),function(c){c.onclick=function(){askFollow(c.getAttribute('data-key'),c.getAttribute('data-q'));};});
+  out.scrollTop=out.scrollHeight;
+}
+function askFollow(key,q){var cfg=__ASK[key];if(!cfg)return;var inp=document.getElementById(cfg.inputId);inp.value=q;askAI(key);}
 function askClear(key){__ASK[key].thread=[];renderAskThread(__ASK[key]);}
 function askLocal(key){
   var cfg=__ASK[key],inp=document.getElementById(cfg.inputId),q=(inp.value||'').trim();
