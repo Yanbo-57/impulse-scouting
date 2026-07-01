@@ -6,6 +6,10 @@
       "use": "@vercel/node"
     },
     {
+      "src": "api/log.js",
+      "use": "@vercel/node"
+    },
+    {
       "src": "index.html",
       "use": "@vercel/static"
     }
@@ -14,6 +18,10 @@
     {
       "src": "/api/analyze",
       "dest": "/api/analyze.js"
+    },
+    {
+      "src": "/api/log",
+      "dest": "/api/log.js"
     },
     {
       "src": "/(.*)",

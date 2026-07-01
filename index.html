@@ -2077,6 +2077,10 @@ var __ASK={
     stats:function(){return askStats(__gameDataGlobal||[]);}}
 };
 function askStats(rows){var a=analyze(rows);return{n:a.n,bp:a.bp,sp:a.sp,cov:a.cov.slice(0,8).map(function(x){return[x[0],x[1]];}),front:a.front.slice(0,6).map(function(x){return[x[0],x[1]];})};}
+// 会話ログ（裏でオーナーだけが閲覧）：端末ごとの匿名ID＋質問/回答を /api/log へ fire-and-forget 送信。
+// アプリ上には一切表示しない。LOG_WEBHOOK_URL 未設定なら送っても no-op（何も起きない）。
+function __visitorId(){try{var k='__impulse_vid',v=localStorage.getItem(k);if(!v){v=Math.random().toString(36).slice(2,10)+'-'+Date.now().toString(36).slice(-4);localStorage.setItem(k,v);}return v;}catch(e){return 'na';}}
+function logAsk(screen,question,answer){try{fetch('/api/log',{method:'POST',headers:{'Content-Type':'application/json'},keepalive:true,body:JSON.stringify({screen:screen,question:String(question||''),answer:String(answer||'').slice(0,2000),visitor:__visitorId()})}).catch(function(){});}catch(e){}}
 function escAttr(s){return esc(s).replace(/"/g,'&quot;');}
 function askThreadHTML(cfg,loading){
   if(!cfg.thread.length&&!loading)return'<span class="ai-placeholder">質問を入力して送信。<b>会話の続き（フォローアップ）も文脈を保持</b>します。AIは回答に加えて<b>次の一手の提案や問いかけ</b>もしてきます。/ Ask — the AI also suggests next questions.</span>';
@@ -2107,8 +2111,10 @@ function askLocal(key){
   if(!q){inp.focus();return;}
   if(!cfg.ready()){cfg.thread.push({role:'ai',obj:{summary:'データが読み込まれていません。'},src:'local'});renderAskThread(cfg);return;}
   cfg.thread.push({role:'user',text:q});inp.value='';
-  cfg.thread.push({role:'ai',obj:cfg.local(q)||{summary:'該当する分析が見つかりませんでした。'},src:'local'});
+  var obj=cfg.local(q)||{summary:'該当する分析が見つかりませんでした。'};
+  cfg.thread.push({role:'ai',obj:obj,src:'local'});
   renderAskThread(cfg);
+  logAsk(key,q,obj.summary||'');
 }
 function askHistory(cfg){return cfg.thread.slice(-8).map(function(t){return t.role==='user'?('Q: '+t.text):('A: '+((t.obj&&t.obj.summary)||'(図表回答)'));}).join('\n');}
 function askAI(key){
@@ -2127,8 +2133,9 @@ function askAI(key){
       if(data.error){obj={summary:'エラー: '+data.error};}
       else{try{obj=JSON.parse(data.comment);}catch(e){obj=null;}if(!obj||!(obj.summary||obj.blocks))obj={summary:data.comment||'(空の応答)'};}
       cfg.thread.push({role:'ai',obj:obj,src:'ai'});renderAskThread(cfg);
+      logAsk(key,q,(obj&&obj.summary)||'');
     })
-    .catch(function(err){cfg.thread.push({role:'ai',obj:{summary:'通信エラー: '+err.message+'（VercelデプロイとGEMINI_API_KEY設定を確認）'},src:'ai'});renderAskThread(cfg);});
+    .catch(function(err){cfg.thread.push({role:'ai',obj:{summary:'通信エラー: '+err.message+'（VercelデプロイとGEMINI_API_KEY設定を確認）'},src:'ai'});renderAskThread(cfg);logAsk(key,q,'(通信エラー)');});
 }
 // ASK AI 深掘り：スキーマ解説＋クロス集計＋アソシエーション＋傾向を LLM に渡す（知識を厚く）
 function buildAIContext(rows){
