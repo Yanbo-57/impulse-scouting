@@ -373,7 +373,8 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
 /* ASSOCIATION RULES — mockup design (numbered rows, icons, CONF/LIFT bars) */
 .atable{display:flex;flex-direction:column;min-width:900px}
 /* 条件は左に固定幅で詰め（行ごとに独立gridなので固定幅で桁揃え）、反応(RESPONSE)を 1fr で大きく取る */
-.arule{display:grid;grid-template-columns:26px 56px 40px 82px 72px 78px 14px minmax(190px,1fr) 82px 82px 48px;align-items:center;gap:8px;padding:9px 6px;border-bottom:1px solid var(--g100);font-size:12.5px}
+/* 右側4列は RESPONSE/CONF/LIFT を fr で比例配分（どの幅でも 1.6:1:1 で桁バランス維持）、N は固定 */
+.arule{display:grid;grid-template-columns:26px 56px 40px 82px 72px 78px 14px minmax(150px,1.6fr) minmax(98px,1fr) minmax(98px,1fr) 60px;align-items:center;gap:8px;padding:9px 6px;border-bottom:1px solid var(--g100);font-size:12.5px}
 .arule:hover:not(.ar-head){background:var(--g50)}
 .arule.ar-head{border-bottom:2px solid var(--g100);font-size:10px;font-weight:800;color:var(--g400);text-transform:uppercase;letter-spacing:.03em;align-items:end;padding-bottom:7px}
 .ar-head .ar-sub{display:block;font-size:9px;font-weight:700;color:var(--g300);margin-top:1px;text-transform:none;letter-spacing:0}
