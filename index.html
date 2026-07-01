@@ -322,10 +322,11 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
 .cb-chip b{color:var(--navy)}.cb-chip-ic{font-size:11px}
 .cb-chip-x{cursor:pointer;color:var(--g400);font-weight:800;margin-left:2px;border-radius:50%;width:15px;height:15px;display:inline-flex;align-items:center;justify-content:center;line-height:1}
 .cb-chip-x:hover{background:var(--red);color:#fff}
-.cb-pop{position:fixed;inset:0;z-index:70;display:none}
-.cb-pop.on{display:block}
+/* BLITZ/STUNTS モーダル(.cm-overlay)と同じ「flex 中央寄せ」で表示位置を統一 */
+.cb-pop{position:fixed;inset:0;z-index:70;display:none;align-items:center;justify-content:center;padding:20px}
+.cb-pop.on{display:flex;animation:fadeUp .2s ease both}
 .cb-pop-back{position:absolute;inset:0;background:rgba(12,24,48,.5);backdrop-filter:blur(2px)}
-.cb-pop-card{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(1120px,96vw);max-height:94vh;overflow:auto;background:#fff;border-radius:14px;box-shadow:0 22px 60px rgba(0,0,0,.38);display:flex;flex-direction:column}
+.cb-pop-card{position:relative;z-index:1;width:min(1120px,96vw);max-height:84vh;overflow:auto;background:#fff;border-radius:14px;box-shadow:0 22px 60px rgba(0,0,0,.38);display:flex;flex-direction:column}
 .cb-pop-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:15px 20px;border-bottom:1px solid var(--g100);position:sticky;top:0;background:#fff;z-index:2}
 .cb-pop-title{font-size:14px;font-weight:800;color:var(--navy)}
 .cb-sub2{font-size:11px;font-weight:600;color:var(--g400)}
@@ -371,7 +372,8 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
 /* FLOW & SPLITS は SUMMARY のカード（.cs-grid / .cs-card）で表示 */
 /* ASSOCIATION RULES — mockup design (numbered rows, icons, CONF/LIFT bars) */
 .atable{display:flex;flex-direction:column;min-width:900px}
-.arule{display:grid;grid-template-columns:28px repeat(5,minmax(68px,1fr)) 16px minmax(120px,150px) 100px 100px 60px;align-items:center;gap:9px;padding:9px 6px;border-bottom:1px solid var(--g100);font-size:12.5px}
+/* 条件は左に固定幅で詰め（行ごとに独立gridなので固定幅で桁揃え）、反応(RESPONSE)を 1fr で大きく取る */
+.arule{display:grid;grid-template-columns:26px 56px 40px 82px 72px 78px 14px minmax(190px,1fr) 82px 82px 48px;align-items:center;gap:8px;padding:9px 6px;border-bottom:1px solid var(--g100);font-size:12.5px}
 .arule:hover:not(.ar-head){background:var(--g50)}
 .arule.ar-head{border-bottom:2px solid var(--g100);font-size:10px;font-weight:800;color:var(--g400);text-transform:uppercase;letter-spacing:.03em;align-items:end;padding-bottom:7px}
 .ar-head .ar-sub{display:block;font-size:9px;font-weight:700;color:var(--g300);margin-top:1px;text-transform:none;letter-spacing:0}
@@ -383,14 +385,14 @@ textarea:focus{border-color:var(--blue);background:var(--white)}
 .ac-h{display:flex;align-items:center;gap:4px;font-size:9.5px;font-weight:800;color:var(--g400);text-transform:uppercase;letter-spacing:.02em;min-width:0}
 .ac-h .ar-ic{width:12px;height:12px}
 .ac-h .ar-ic[viewBox]{flex-shrink:0}
-.ac-c{font-size:11.5px;font-weight:800;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.ac-c{font-size:11px;font-weight:800;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
 .ac-c.ac-zone{color:#C0392B}.ac-c.ac-dist{color:#0891B2}.ac-c.ac-form{color:#7C3AED}.ac-c.ac-front{color:#0A357E}
 .ac-c.ac-dn{justify-self:start;border:1px solid var(--g200);border-radius:6px;padding:1px 6px;font-size:10.5px;background:var(--g50);color:var(--g600);font-weight:800}
 .ac-empty{color:var(--g200);font-weight:700;text-align:center}
 .ar-other-row{grid-column:1/-1;padding:9px 8px;color:var(--g400);font-size:11.5px;font-weight:700;border-bottom:1px solid var(--g100)}
 .ar-ic{width:15px;height:15px;fill:currentColor}
 .ar-to{color:var(--blue);font-weight:800;text-align:center;font-size:13px}
-.ar-respwrap{display:flex;align-items:center;gap:6px;font-weight:800;min-width:0;font-size:12.5px}
+.ar-respwrap{display:flex;align-items:center;gap:7px;font-weight:800;min-width:0;font-size:13.5px}
 .ar-respwrap.is-cov{color:#0E7C86}.ar-respwrap.is-blz{color:var(--red)}.ar-respwrap.is-front{color:#0A357E}
 .ar-resp-t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ar-m{display:flex;align-items:center;gap:8px}
@@ -1198,16 +1200,6 @@ function buildSpecial2(rows){
     +ov2Item('1ST HALF OPENERS','#0055A4',firstOpen)
     +'</div>';
 }
-function buildNextSteps(rows,a){
-  var steps=[];
-  var d3=rows.filter(function(r){return r.DN===3;});
-  if(d3.length>=3)steps.push('QUICK GAME / EMPTY の準備');
-  steps.push('BOUNDARY ISOLATION の活用');
-  if(a.cov[0])steps.push(a.cov[0][0]+' への beat concept 確認');
-  steps.push('PLAY-ACTION の variation 準備');
-  if(a.sp>=35)steps.push('STUNTS 対応（pass-off）の徹底');
-  return'<div class="card nextsteps"><div class="sec">NEXT STEPS</div><div class="ns-grid">'+steps.map(function(s){return'<div class="ns-item">✔ '+s+'</div>';}).join('')+'</div></div>';
-}
 function buildOverview(rows){
   var a=analyze(rows);
   // 条件検索：右側の追尾ボタン → ポップアップで FIELD ZONE × FORMATION を組み合わせ絞り込み（setupCombo が描画）
@@ -1227,7 +1219,7 @@ function buildOverview(rows){
     +'</div>'
     +pop
     +'<div id="cb-body"></div>';
-  return html+buildNextSteps(rows,a);
+  return html;
 }
 
 // ===== OVERVIEW2 (call-sheet style: BLITZ RATE / STUNTS RATE / COVERAGE per item) =====
@@ -1383,21 +1375,10 @@ function setupCombo(zonesId,formsId,yardId,bodyId,rows,base){
   var pop=document.getElementById('cb-pop'),fab=document.getElementById('cb-fab'),active=document.getElementById('cb-active');
   dockCbBar();if(typeof requestAnimationFrame!=='undefined')requestAnimationFrame(dockCbBar);
   if(!window.__cbResize){window.__cbResize=1;window.addEventListener('resize',dockCbBar);}
-  // ポップアップは「いま見ているビューポートの中央」に表示（position:fixed なのでスクロール位置に追従）。
-  // 縦は画面いっぱいまで使い、内容が収まれば内部スクロール無し。
-  function positionPop(){
-    var card=pop&&pop.querySelector('.cb-pop-card');
-    if(!card)return;
-    var vw=window.innerWidth,vh=window.innerHeight;
-    card.style.width=Math.min(vw-24,1120)+'px';
-    card.style.left='50%';card.style.top='50%';card.style.transform='translate(-50%,-50%)';
-    card.style.maxHeight=Math.round(vh-24)+'px';
-  }
-  function openPop(){if(!pop)return;pop.classList.add('on');positionPop();}
+  // ポップアップは BLITZ/STUNTS モーダルと同じ flex 中央寄せ（CSS）で表示。JS 位置指定は不要。
+  function openPop(){if(pop)pop.classList.add('on');}
   function closePop(){if(pop)pop.classList.remove('on');}
   if(fab)fab.onclick=openPop;
-  if(!window.__cbPopResize){window.__cbPopResize=1;window.addEventListener('resize',function(){var p=document.getElementById('cb-pop');if(p&&p.classList.contains('on')&&window.__cbPositionPop)window.__cbPositionPop();});}
-  window.__cbPositionPop=positionPop;
   var px=document.getElementById('cb-pop-x'),pbk=document.getElementById('cb-pop-back');
   if(px)px.onclick=closePop; if(pbk)pbk.onclick=closePop;
   // ---- ヤードバー ----
